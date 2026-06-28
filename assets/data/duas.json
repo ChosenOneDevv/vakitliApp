@@ -1,0 +1,130 @@
+[
+  {
+    "id": 1,
+    "category": "Günlük",
+    "title": "Besmele",
+    "arabic": "بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ",
+    "transliteration": "Bismillâhi'r-rahmâni'r-rahîm",
+    "meaning": "Rahmân ve Rahîm olan Allah'ın adıyla."
+  },
+  {
+    "id": 2,
+    "category": "Yemek",
+    "title": "Yemekten Önce",
+    "arabic": "بِسْمِ اللهِ وَعَلَىٰ بَرَكَةِ اللهِ",
+    "transliteration": "Bismillâhi ve alâ bereketillâh",
+    "meaning": "Allah'ın adıyla ve Allah'ın bereketiyle (başlarım)."
+  },
+  {
+    "id": 3,
+    "category": "Yemek",
+    "title": "Yemekten Sonra",
+    "arabic": "اَلْحَمْدُ لِلّٰهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ",
+    "transliteration": "Elhamdü lillâhillezî et'amenâ ve sekânâ ve cealenâ müslimîn",
+    "meaning": "Bizi yediren, içiren ve Müslümanlardan kılan Allah'a hamd olsun."
+  },
+  {
+    "id": 4,
+    "category": "Uyku",
+    "title": "Uyumadan Önce",
+    "arabic": "اَللّٰهُمَّ بِاسْمِكَ أَمُوتُ وَأَحْيَا",
+    "transliteration": "Allâhümme bismike emûtü ve ahyâ",
+    "meaning": "Allah'ım! Senin adınla ölür ve dirilirim."
+  },
+  {
+    "id": 5,
+    "category": "Uyku",
+    "title": "Uykudan Uyanınca",
+    "arabic": "اَلْحَمْدُ لِلّٰهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+    "transliteration": "Elhamdü lillâhillezî ahyânâ ba'de mâ emâtenâ ve ileyhi'n-nüşûr",
+    "meaning": "Bizi öldürdükten sonra dirilten Allah'a hamd olsun. Dönüş yalnız O'nadır."
+  },
+  {
+    "id": 6,
+    "category": "Günlük",
+    "title": "Eve Girerken",
+    "arabic": "بِسْمِ اللهِ وَلَجْنَا وَبِسْمِ اللهِ خَرَجْنَا وَعَلَىٰ رَبِّنَا تَوَكَّلْنَا",
+    "transliteration": "Bismillâhi velecnâ ve bismillâhi haracnâ ve alâ rabbinâ tevekkelnâ",
+    "meaning": "Allah'ın adıyla girer, Allah'ın adıyla çıkarız ve yalnız Rabbimize tevekkül ederiz."
+  },
+  {
+    "id": 7,
+    "category": "Günlük",
+    "title": "Nazara / Korunmak İçin",
+    "arabic": "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+    "transliteration": "Eûzü bi-kelimâtillâhi't-tâmmâti min şerri mâ halak",
+    "meaning": "Yarattığı şeylerin şerrinden Allah'ın eksiksiz kelimelerine sığınırım."
+  },
+  {
+    "id": 8,
+    "category": "Zikir",
+    "title": "Tesbih (Namaz Sonrası)",
+    "arabic": "سُبْحَانَ اللهِ وَالْحَمْدُ لِلّٰهِ وَلَا إِلٰهَ إِلَّا اللهُ وَاللهُ أَكْبَرُ",
+    "transliteration": "Sübhânallâhi ve'l-hamdü lillâhi ve lâ ilâhe illallâhü vallâhü ekber",
+    "meaning": "Allah'ı tüm eksikliklerden tenzih ederim, hamd Allah'a mahsustur, Allah'tan başka ilah yoktur, Allah en büyüktür."
+  },
+  {
+    "id": 9,
+    "category": "Zikir",
+    "title": "İstiğfar",
+    "arabic": "أَسْتَغْفِرُ اللهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ",
+    "transliteration": "Estağfirullâhe'l-azîm ve etûbü ileyh",
+    "meaning": "Yüce Allah'tan bağışlanma diler ve O'na tevbe ederim."
+  },
+  {
+    "id": 10,
+    "category": "Namaz",
+    "title": "Sübhâneke",
+    "arabic": "سُبْحَانَكَ اللّٰهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَىٰ جَدُّكَ وَلَا إِلٰهَ غَيْرُكَ",
+    "transliteration": "Sübhânekellâhümme ve bi-hamdik ve tebârekesmük ve teâlâ ceddük ve lâ ilâhe ğayruk",
+    "meaning": "Allah'ım! Seni tenzih eder, sana hamd ederim. İsmin mübarektir, şanın yücedir, senden başka ilah yoktur."
+  },
+  {
+    "id": 11,
+    "category": "Namaz",
+    "title": "Rabbenâ Duaları",
+    "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+    "transliteration": "Rabbenâ âtinâ fi'd-dünyâ haseneten ve fi'l-âhireti haseneten ve kınâ azâbe'n-nâr",
+    "meaning": "Rabbimiz! Bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi ateş azabından koru."
+  },
+  {
+    "id": 12,
+    "category": "Yolculuk",
+    "title": "Yolculuk Duası",
+    "arabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هٰذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَىٰ رَبِّنَا لَمُنْقَلِبُونَ",
+    "transliteration": "Sübhânellezî sahhara lenâ hâzâ ve mâ künnâ lehû mukrinîn ve innâ ilâ rabbinâ lemünkalibûn",
+    "meaning": "Bunu bizim hizmetimize vereni tenzih ederiz; yoksa biz buna güç yetiremezdik. Şüphesiz biz Rabbimize döneceğiz."
+  },
+  {
+    "id": 13,
+    "category": "Sabah-Akşam",
+    "title": "Sabah / Akşam Zikri",
+    "arabic": "اَللّٰهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ",
+    "transliteration": "Allâhümme bike asbahnâ ve bike emseynâ ve bike nahyâ ve bike nemûtü ve ileyke'n-nüşûr",
+    "meaning": "Allah'ım! Seninle sabahladık, seninle akşamladık, seninle yaşar, seninle ölürüz. Dönüş yalnız sanadır."
+  },
+  {
+    "id": 14,
+    "category": "Günlük",
+    "title": "Sıkıntı Anında",
+    "arabic": "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+    "transliteration": "Lâ ilâhe illâ ente sübhâneke innî küntü mine'z-zâlimîn",
+    "meaning": "Senden başka ilah yoktur. Seni tenzih ederim. Gerçekten ben zalimlerden oldum."
+  },
+  {
+    "id": 15,
+    "category": "Zikir",
+    "title": "Havkale",
+    "arabic": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ",
+    "transliteration": "Lâ havle ve lâ kuvvete illâ billâh",
+    "meaning": "Güç ve kuvvet ancak Allah iledir."
+  },
+  {
+    "id": 16,
+    "category": "Sabah-Akşam",
+    "title": "Hasbiyallah",
+    "arabic": "حَسْبِيَ اللهُ لَا إِلٰهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ",
+    "transliteration": "Hasbiyallâhü lâ ilâhe illâ hû, aleyhi tevekkeltü ve hüve rabbü'l-arşi'l-azîm",
+    "meaning": "Allah bana yeter. O'ndan başka ilah yoktur. O'na tevekkül ettim. O, büyük arşın Rabbidir."
+  }
+]
