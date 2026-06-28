@@ -1,13 +1,18 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vakitli/config/constants.dart';
 import 'package:vakitli/models/prayer_time.dart';
 import 'package:vakitli/services/api_service.dart';
 import 'package:vakitli/services/prayer_cache_service.dart';
 
 class PrayerProvider extends ChangeNotifier {
-  final ApiService _apiService = ApiService();
-  final PrayerCacheService _cache = PrayerCacheService();
+  PrayerProvider({ApiService? apiService, PrayerCacheService? cache})
+      : _apiService = apiService ?? ApiService(),
+        _cache = cache ?? PrayerCacheService();
+
+  final ApiService _apiService;
+  final PrayerCacheService _cache;
 
   /// Vakitler güncellenince tetiklenir (AlarmProvider yeniden zamanlasın diye).
   VoidCallback? onPrayerTimesUpdated;
@@ -35,9 +40,9 @@ class PrayerProvider extends ChangeNotifier {
   String? _error;
   Timer? _prayerCheckTimer;
   PrayerEntry? _nextPrayer;
-  double _latitude = 41.0082; // İstanbul varsayılan
-  double _longitude = 28.9784;
-  String _locationName = 'İstanbul';
+  double _latitude = AppConstants.defaultLatitude;
+  double _longitude = AppConstants.defaultLongitude;
+  String _locationName = AppConstants.defaultCity;
   bool _hasFetched = false;
   int _method = ApiService.defaultMethod;
   int _hijriAdjustment = 0;

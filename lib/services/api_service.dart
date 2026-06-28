@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:vakitli/config/constants.dart';
 import 'package:vakitli/models/prayer_time.dart';
 
 class ApiService {
@@ -26,7 +27,7 @@ class ApiService {
 
     try {
       final response =
-          await http.get(url).timeout(const Duration(seconds: 10));
+          await http.get(url).timeout(AppConstants.httpTimeout);
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body) as Map<String, dynamic>;
         if (json['code'] == 200 && json['data'] != null) {
@@ -59,7 +60,7 @@ class ApiService {
 
     try {
       final response =
-          await http.get(url).timeout(const Duration(seconds: 10));
+          await http.get(url).timeout(AppConstants.httpTimeout);
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body) as Map<String, dynamic>;
         if (json['code'] == 200 && json['data'] != null) {

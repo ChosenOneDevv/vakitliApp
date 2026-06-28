@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:vakitli/config/constants.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:vakitli/models/alarm_settings.dart';
@@ -82,9 +83,9 @@ class NotificationService {
     }
 
     final androidDetails = AndroidNotificationDetails(
-      'prayer_times_channel',
-      'Namaz Vakitleri',
-      channelDescription: 'Namaz vakti bildirimleri',
+      AppConstants.prayerChannelId,
+      AppConstants.prayerChannelName,
+      channelDescription: AppConstants.prayerChannelDesc,
       importance: Importance.high,
       priority: Priority.high,
       playSound: true,
