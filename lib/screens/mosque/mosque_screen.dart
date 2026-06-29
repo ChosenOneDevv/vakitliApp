@@ -46,12 +46,9 @@ class _MosqueScreenState extends State<MosqueScreen> {
   }
 
   Future<void> _openInMaps(Mosque m) async {
-    final context = _mapController.camera.center == m.latLng
-        ? null
-        : this.context;
     if (!mounted) return;
     await showModalBottomSheet<void>(
-      context: this.context,
+      context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -75,8 +72,7 @@ class _MosqueScreenState extends State<MosqueScreen> {
                     .titleMedium
                     ?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 4),
-            Text(m.distanceLabel,
-                style: Theme.of(ctx).textTheme.bodySmall),
+            Text(m.distanceLabel, style: Theme.of(ctx).textTheme.bodySmall),
             const SizedBox(height: 16),
             ListTile(
               leading: const Icon(Icons.map_rounded, color: Colors.green),
@@ -110,7 +106,6 @@ class _MosqueScreenState extends State<MosqueScreen> {
         ),
       ),
     );
-    context; // suppress unused warning
   }
 
   @override
