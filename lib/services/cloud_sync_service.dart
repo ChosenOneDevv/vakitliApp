@@ -18,7 +18,6 @@ class CloudSyncService {
     required String city,
     required double lat,
     required double lng,
-    required String madhab,
   }) async {
     final ref = _profileRef;
     if (ref == null) return;
@@ -28,7 +27,6 @@ class CloudSyncService {
       'city': city,
       'lat': lat,
       'lng': lng,
-      'madhab': madhab,
       'onboardingComplete': true,
       'updatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));

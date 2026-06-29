@@ -195,7 +195,7 @@ class NotificationService {
 
     await _scheduleDay(prayerTime, today, alarmSettings, idBase: 0);
     if (tomorrowPrayer != null) {
-      await _scheduleDay(tomorrowPrayer, tomorrow, alarmSettings, idBase: 100);
+      await _scheduleDay(tomorrowPrayer, tomorrow, alarmSettings, idBase: 200);
     }
   }
 
@@ -212,13 +212,27 @@ class NotificationService {
 
       if (!setting.enabled || setting.mode == AlarmMode.off) continue;
 
+      final beforeId = idBase + i * 2 + 1;
+      final onTimeId = idBase + i * 2 + 2;
+
       await schedulePrayerNotification(
-        id: idBase + i + 1,
+        id: beforeId,
         prayerName: entry.name,
         scheduledTime: entry.timeOn(day),
         minutesBefore: setting.effectiveMinutes,
         useEzan: setting.useEzan,
       );
+
+      // Önce alarm + vakitte de bildir seçeneği
+      if (setting.alsoOnTime && setting.effectiveMinutes > 0) {
+        await schedulePrayerNotification(
+          id: onTimeId,
+          prayerName: entry.name,
+          scheduledTime: entry.timeOn(day),
+          minutesBefore: 0,
+          useEzan: setting.useEzan,
+        );
+      }
     }
   }
 

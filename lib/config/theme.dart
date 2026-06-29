@@ -1,5 +1,33 @@
 import 'package:flutter/material.dart';
 
+enum AppThemePreset {
+  klasik,
+  okyanus,
+  col,
+  gece;
+
+  String get label => switch (this) {
+        AppThemePreset.klasik => 'Klasik',
+        AppThemePreset.okyanus => 'Okyanus',
+        AppThemePreset.col => 'Çöl',
+        AppThemePreset.gece => 'Gece',
+      };
+
+  Color get primaryColor => switch (this) {
+        AppThemePreset.klasik => const Color(0xFF1B5E20),
+        AppThemePreset.okyanus => const Color(0xFF0D47A1),
+        AppThemePreset.col => const Color(0xFFBF360C),
+        AppThemePreset.gece => const Color(0xFF212121),
+      };
+
+  Color get accentColor => switch (this) {
+        AppThemePreset.klasik => const Color(0xFFD4AF37),
+        AppThemePreset.okyanus => const Color(0xFF00BCD4),
+        AppThemePreset.col => const Color(0xFFFF8F00),
+        AppThemePreset.gece => const Color(0xFF9E9E9E),
+      };
+}
+
 class AppColors {
   static const Color primaryGreen = Color(0xFF1B5E20);
   static const Color darkGreen = Color(0xFF0D3B13);
@@ -74,52 +102,38 @@ class AppTheme {
     );
   }
 
-  static const _appBarTheme = AppBarTheme(
-    backgroundColor: AppColors.primaryGreen,
-    foregroundColor: AppColors.white,
-    centerTitle: true,
-    elevation: 0,
-    scrolledUnderElevation: 0,
-    surfaceTintColor: Colors.transparent,
-    titleTextStyle: TextStyle(
-      fontFamily: 'Amiri',
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
-      color: AppColors.white,
-      letterSpacing: 0.5,
-    ),
-  );
+  static ThemeData get lightTheme => lightThemeForPreset(AppThemePreset.klasik);
 
-  static final _elevatedButtonTheme = ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: AppColors.primaryGreen,
+  static ThemeData lightThemeForPreset(AppThemePreset preset) {
+    final primary = preset.primaryColor;
+    final secondary = preset.accentColor;
+    final appBarTheme = AppBarTheme(
+      backgroundColor: primary,
       foregroundColor: AppColors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+      centerTitle: true,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
+      titleTextStyle: const TextStyle(
+        fontFamily: 'Amiri',
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: AppColors.white,
+        letterSpacing: 0.5,
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-    ),
-  );
-
-  static const _fabTheme = FloatingActionButtonThemeData(
-    backgroundColor: AppColors.gold,
-    foregroundColor: AppColors.darkText,
-  );
-
-  static ThemeData get lightTheme {
+    );
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.primaryGreen,
-        primary: AppColors.primaryGreen,
-        secondary: AppColors.gold,
-        tertiary: AppColors.navy,
+        seedColor: primary,
+        primary: primary,
+        secondary: secondary,
         surface: AppColors.cream,
         brightness: Brightness.light,
       ),
       scaffoldBackgroundColor: AppColors.scaffoldBg,
-      appBarTheme: _appBarTheme,
+      appBarTheme: appBarTheme,
       cardTheme: CardThemeData(
         color: AppColors.cardBg,
         elevation: 0,
@@ -130,19 +144,32 @@ class AppTheme {
           side: BorderSide(color: AppColors.darkText.withValues(alpha: 0.07)),
         ),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.white,
-        selectedItemColor: AppColors.primaryGreen,
+        selectedItemColor: primary,
         unselectedItemColor: AppColors.lightText,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
-        selectedLabelStyle: TextStyle(
+        selectedLabelStyle: const TextStyle(
             fontFamily: 'Cairo', fontSize: 12, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: TextStyle(fontFamily: 'Cairo', fontSize: 11),
+        unselectedLabelStyle:
+            const TextStyle(fontFamily: 'Cairo', fontSize: 11),
       ),
       textTheme: _textTheme(AppColors.darkText),
-      elevatedButtonTheme: _elevatedButtonTheme,
-      floatingActionButtonTheme: _fabTheme,
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primary,
+          foregroundColor: AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: secondary,
+        foregroundColor: AppColors.darkText,
+      ),
       dividerTheme: const DividerThemeData(
         color: AppColors.darkCream,
         thickness: 1,
@@ -212,20 +239,38 @@ class AppTheme {
     );
   }
 
-  static ThemeData get darkTheme {
+  static ThemeData get darkTheme => darkThemeForPreset(AppThemePreset.klasik);
+
+  static ThemeData darkThemeForPreset(AppThemePreset preset) {
+    final primary = Color.lerp(preset.primaryColor, Colors.white, 0.3)!;
+    final secondary = preset.accentColor;
+    final appBarTheme = AppBarTheme(
+      backgroundColor: preset.primaryColor,
+      foregroundColor: AppColors.white,
+      centerTitle: true,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
+      titleTextStyle: const TextStyle(
+        fontFamily: 'Amiri',
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: AppColors.white,
+        letterSpacing: 0.5,
+      ),
+    );
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.primaryGreen,
-        primary: AppColors.lightGreen,
-        secondary: AppColors.gold,
-        tertiary: AppColors.lightGold,
+        seedColor: preset.primaryColor,
+        primary: primary,
+        secondary: secondary,
         surface: AppColors.darkSurface,
         brightness: Brightness.dark,
       ),
       scaffoldBackgroundColor: AppColors.darkBg,
-      appBarTheme: _appBarTheme,
+      appBarTheme: appBarTheme,
       cardTheme: CardThemeData(
         color: AppColors.darkCard,
         elevation: 0,
@@ -236,19 +281,32 @@ class AppTheme {
           side: BorderSide(color: AppColors.white.withValues(alpha: 0.06)),
         ),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.darkSurface,
-        selectedItemColor: AppColors.lightGreen,
+        selectedItemColor: primary,
         unselectedItemColor: AppColors.lightText,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
-        selectedLabelStyle: TextStyle(
+        selectedLabelStyle: const TextStyle(
             fontFamily: 'Cairo', fontSize: 12, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: TextStyle(fontFamily: 'Cairo', fontSize: 11),
+        unselectedLabelStyle:
+            const TextStyle(fontFamily: 'Cairo', fontSize: 11),
       ),
       textTheme: _textTheme(AppColors.darkOnSurface),
-      elevatedButtonTheme: _elevatedButtonTheme,
-      floatingActionButtonTheme: _fabTheme,
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primary,
+          foregroundColor: AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: secondary,
+        foregroundColor: AppColors.darkText,
+      ),
       dividerTheme: const DividerThemeData(
         color: Color(0xFF333333),
         thickness: 1,

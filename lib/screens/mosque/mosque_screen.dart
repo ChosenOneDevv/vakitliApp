@@ -5,8 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vakitli/config/theme.dart';
 import 'package:vakitli/models/mosque.dart';
+import 'package:vakitli/providers/mosque_geofence_provider.dart';
 import 'package:vakitli/providers/prayer_provider.dart';
+import 'package:vakitli/screens/mosque/saved_mosques_screen.dart';
 import 'package:vakitli/services/mosque_service.dart';
+import 'package:vakitli/services/saved_mosque_service.dart';
 
 class MosqueScreen extends StatefulWidget {
   const MosqueScreen({super.key});
@@ -115,6 +118,14 @@ class _MosqueScreenState extends State<MosqueScreen> {
         title: const Text('Cami Bulucu'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.bookmark_rounded),
+            tooltip: 'Kayıtlı Camiler',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (_) => const SavedMosquesScreen()),
+            ),
+          ),
+          IconButton(
             icon: const Icon(Icons.refresh_rounded),
             onPressed: _loading ? null : _load,
           ),
@@ -205,9 +216,45 @@ class _MosqueScreenState extends State<MosqueScreen> {
               color: AppColors.primaryGreen),
           title: Text(m.name),
           subtitle: Text(m.distanceLabel),
-          trailing: IconButton(
-            icon: const Icon(Icons.directions_rounded, color: AppColors.gold),
-            onPressed: () => _openInMaps(m),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FutureBuilder<bool>(
+                future: context
+                    .read<MosqueGeofenceProvider>()
+                    .isSaved(m.name),
+                builder: (ctx, snap) {
+                  final saved = snap.data ?? false;
+                  return IconButton(
+                    icon: Icon(
+                      saved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+                      color: saved ? AppColors.primaryGreen : AppColors.lightText,
+                    ),
+                    tooltip: saved ? 'Kayıtlı' : 'Kaydet',
+                    onPressed: () async {
+                      final provider =
+                          context.read<MosqueGeofenceProvider>();
+                      if (saved) {
+                        await provider.removeMosque(m.name);
+                      } else {
+                        await provider.addMosque(SavedMosque(
+                          id: m.name,
+                          name: m.name,
+                          latitude: m.latitude,
+                          longitude: m.longitude,
+                        ));
+                      }
+                      if (context.mounted) setState(() {});
+                    },
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.directions_rounded,
+                    color: AppColors.gold),
+                onPressed: () => _openInMaps(m),
+              ),
+            ],
           ),
           onTap: () => _mapController.move(
             LatLng(m.latitude, m.longitude),

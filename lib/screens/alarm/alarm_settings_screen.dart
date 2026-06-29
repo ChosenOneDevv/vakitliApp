@@ -214,7 +214,7 @@ class AlarmSettingsScreen extends StatelessWidget {
             ),
             Padding(
               padding:
-                  const EdgeInsets.only(left: 14, right: 6, bottom: 10),
+                  const EdgeInsets.only(left: 14, right: 6, bottom: 4),
               child: Row(
                 children: [
                   Icon(
@@ -255,6 +255,49 @@ class AlarmSettingsScreen extends StatelessWidget {
                 ],
               ),
             ),
+            if (setting.effectiveMinutes > 0)
+              Padding(
+                padding: const EdgeInsets.only(left: 14, right: 6, bottom: 10),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.alarm_add_rounded,
+                      size: 16,
+                      color: setting.alsoOnTime
+                          ? AppColors.primaryGreen
+                          : Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.4),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Ayrıca vakitte de bildir',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: setting.alsoOnTime
+                                ? AppColors.primaryGreen
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withValues(alpha: 0.6),
+                            fontWeight: setting.alsoOnTime
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                          ),
+                    ),
+                    const Spacer(),
+                    Transform.scale(
+                      scale: 0.85,
+                      child: Switch.adaptive(
+                        value: setting.alsoOnTime,
+                        activeTrackColor: AppColors.primaryGreen,
+                        onChanged: (v) => alarmProvider.setAlsoOnTime(
+                            setting.prayerKey, v),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
           ],
         ],
       ),

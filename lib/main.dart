@@ -22,7 +22,6 @@ import 'package:vakitli/providers/fasting_provider.dart';
 import 'package:vakitli/providers/nafile_provider.dart';
 import 'package:vakitli/providers/dnd_provider.dart';
 import 'package:vakitli/providers/hayd_provider.dart';
-import 'package:vakitli/providers/madhab_provider.dart';
 import 'package:vakitli/providers/profile_provider.dart';
 import 'package:vakitli/providers/theme_provider.dart';
 import 'package:vakitli/providers/radio_provider.dart';
@@ -30,6 +29,8 @@ import 'package:vakitli/providers/hikmet_provider.dart';
 import 'package:vakitli/providers/amel_provider.dart';
 import 'package:vakitli/providers/hutbe_provider.dart';
 import 'package:vakitli/providers/dua_kardesligi_provider.dart';
+import 'package:vakitli/providers/mosque_geofence_provider.dart';
+import 'package:vakitli/providers/quran_provider.dart';
 import 'package:vakitli/screens/auth/auth_screen.dart';
 import 'package:vakitli/screens/main_shell.dart';
 import 'package:vakitli/screens/onboarding/onboarding_screen.dart';
@@ -55,10 +56,9 @@ class VakitliApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ap.AuthProvider()..initialize()),
         ChangeNotifierProvider(create: (_) => LocationProvider()..loadSavedLocation()),
-        ChangeNotifierProvider(create: (_) => MadhabProvider()..initialize()),
-        ChangeNotifierProxyProvider2<LocationProvider, MadhabProvider, PrayerProvider>(
+        ChangeNotifierProxyProvider<LocationProvider, PrayerProvider>(
           create: (_) => PrayerProvider()..initialize(),
-          update: (_, locationProvider, madhabProvider, prayerProvider) {
+          update: (_, locationProvider, prayerProvider) {
             if (locationProvider.currentLocation != null) {
               prayerProvider!.setLocation(
                 locationProvider.currentLocation!.latitude,
@@ -66,8 +66,7 @@ class VakitliApp extends StatelessWidget {
                 locationProvider.currentLocation!.cityName,
               );
             }
-            prayerProvider!.updateAsrSchool(madhabProvider.asrSchool);
-            return prayerProvider;
+            return prayerProvider!;
           },
         ),
         ChangeNotifierProxyProvider<PrayerProvider, AlarmProvider>(
@@ -104,6 +103,9 @@ class VakitliApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AmelProvider()..initialize()),
         ChangeNotifierProvider(create: (_) => HutbeProvider()),
         ChangeNotifierProvider(create: (_) => DuaKardesligiProvider()),
+        ChangeNotifierProvider(
+            create: (_) => MosqueGeofenceProvider()..initialize()),
+        ChangeNotifierProvider(create: (_) => QuranProvider()),
       ],
       child: Consumer2<ThemeProvider, LocaleProvider>(
         builder: (context, themeProvider, localeProvider, child) {
@@ -117,10 +119,10 @@ class VakitliApp extends StatelessWidget {
                 debugShowCheckedModeBanner: false,
                 theme: useDynamic
                     ? AppTheme.dynamicTheme(lightDynamic.harmonized())
-                    : AppTheme.lightTheme,
+                    : themeProvider.currentLightTheme,
                 darkTheme: useDynamic
                     ? AppTheme.dynamicTheme(darkDynamic.harmonized())
-                    : AppTheme.darkTheme,
+                    : themeProvider.currentDarkTheme,
                 themeMode: themeProvider.themeMode,
                 locale: localeProvider.locale,
                 localizationsDelegates: const [

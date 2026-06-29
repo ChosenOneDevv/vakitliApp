@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:vakitli/config/theme.dart';
-import 'package:vakitli/models/madhab.dart';
 import 'package:vakitli/providers/alarm_provider.dart';
 import 'package:vakitli/providers/hayd_provider.dart';
 import 'package:vakitli/providers/location_provider.dart';
-import 'package:vakitli/providers/madhab_provider.dart';
 import 'package:vakitli/providers/prayer_provider.dart';
 import 'package:vakitli/providers/dnd_provider.dart';
 import 'package:vakitli/providers/profile_provider.dart';
@@ -71,18 +69,10 @@ class SettingsScreen extends StatelessWidget {
           // --- Namaz Vakitleri ---
           const _SectionHeader(
               title: 'Namaz Vakitleri', icon: Icons.mosque_rounded),
-          Consumer2<MadhabProvider, PrayerProvider>(
-            builder: (context, madhab, prayer, child) {
+          Consumer<PrayerProvider>(
+            builder: (context, prayer, child) {
               return Column(
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.menu_book_rounded,
-                        color: AppColors.primaryGreen),
-                    title: const Text('Mezhep'),
-                    subtitle: Text(madhab.madhab.label),
-                    trailing: const Icon(Icons.chevron_right_rounded),
-                    onTap: () => _showMadhabDialog(context, madhab),
-                  ),
                   ListTile(
                     leading: const Icon(Icons.calculate_rounded,
                         color: AppColors.primaryGreen),
@@ -241,6 +231,14 @@ class SettingsScreen extends StatelessWidget {
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => _showThemeDialog(context, theme),
                   ),
+                  ListTile(
+                    leading: const Icon(Icons.color_lens_rounded,
+                        color: AppColors.primaryGreen),
+                    title: const Text('Renk Teması'),
+                    subtitle: Text(theme.preset.label),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => _showPresetDialog(context, theme),
+                  ),
                   SwitchListTile(
                     secondary: const Icon(Icons.palette_outlined,
                         color: AppColors.primaryGreen),
@@ -331,41 +329,6 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  void _showMadhabDialog(BuildContext context, MadhabProvider madhab) {
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Mezhep'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: RadioGroup<Madhab>(
-            groupValue: madhab.madhab,
-            onChanged: (value) {
-              if (value != null) madhab.setMadhab(value);
-              Navigator.of(dialogContext).pop();
-            },
-            child: ListView(
-              shrinkWrap: true,
-              children: Madhab.values
-                  .map((m) => RadioListTile<Madhab>(
-                        value: m,
-                        title: Text(m.label),
-                        activeColor: AppColors.primaryGreen,
-                      ))
-                  .toList(),
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Kapat'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showThemeDialog(BuildContext context, ThemeProvider theme) {
     showDialog<void>(
       context: context,
@@ -392,6 +355,39 @@ class SettingsScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  void _showPresetDialog(BuildContext context, ThemeProvider theme) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Renk Teması'),
+        content: RadioGroup<AppThemePreset>(
+          groupValue: theme.preset,
+          onChanged: (v) {
+            if (v != null) theme.setPreset(v);
+            Navigator.of(dialogContext).pop();
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: AppThemePreset.values.map((preset) {
+              return RadioListTile<AppThemePreset>(
+                value: preset,
+                title: Text(preset.label),
+                secondary: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: preset.primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ),
     );
   }
 

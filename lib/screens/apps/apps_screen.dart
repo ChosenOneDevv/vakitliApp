@@ -20,6 +20,7 @@ import 'package:vakitli/screens/amel/amel_screen.dart';
 import 'package:vakitli/screens/tebrik/tebrik_screen.dart';
 import 'package:vakitli/screens/hutbe/hutbe_screen.dart';
 import 'package:vakitli/screens/dua_kardesligi/dua_kardesligi_screen.dart';
+import 'package:vakitli/screens/quran/quran_screen.dart';
 
 class _AppItem {
   final IconData icon;
@@ -39,6 +40,12 @@ class AppsScreen extends StatelessWidget {
   const AppsScreen({super.key});
 
   static const List<_AppItem> _items = [
+    _AppItem(
+      icon: Icons.menu_book_rounded,
+      label: 'Kuran-ı Kerim',
+      subtitle: '114 sure · Uthmani metin',
+      screen: QuranScreen(),
+    ),
     _AppItem(
       icon: Icons.check_circle_rounded,
       label: 'Namaz Takip',

@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vakitli/config/theme.dart';
-import 'package:vakitli/models/madhab.dart';
 import 'package:vakitli/providers/location_provider.dart';
-import 'package:vakitli/providers/madhab_provider.dart';
 import 'package:vakitli/providers/profile_provider.dart';
 import 'package:vakitli/screens/location/city_selection_screen.dart';
 import 'package:vakitli/services/cloud_sync_service.dart';
@@ -22,7 +20,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final _nameController = TextEditingController();
   bool _saving = false;
 
-  static const int _totalPages = 4;
+  static const int _totalPages = 3;
 
   @override
   void dispose() {
@@ -55,7 +53,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> _finish() async {
     setState(() => _saving = true);
     final location = context.read<LocationProvider>();
-    final madhab = context.read<MadhabProvider>();
     final profile = context.read<ProfileProvider>();
 
     await CloudSyncService.saveProfile(
@@ -64,7 +61,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       city: location.currentLocation?.cityName ?? 'İstanbul',
       lat: location.currentLocation?.latitude ?? 41.0082,
       lng: location.currentLocation?.longitude ?? 28.9784,
-      madhab: madhab.madhab.name,
     );
 
     final prefs = await SharedPreferences.getInstance();
@@ -91,7 +87,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   _NamePage(controller: _nameController, onChanged: () => setState(() {})),
                   const _GenderPage(),
                   const _CityPage(),
-                  const _MadhabPage(),
                 ],
               ),
             ),
@@ -426,96 +421,3 @@ class _CityPage extends StatelessWidget {
   }
 }
 
-// ─── Step 4: Mezhep ──────────────────────────────────────────────────────────
-
-class _MadhabPage extends StatelessWidget {
-  const _MadhabPage();
-
-  @override
-  Widget build(BuildContext context) {
-    final madhab = context.watch<MadhabProvider>();
-    return Padding(
-      padding: const EdgeInsets.all(32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 24),
-          const Text('Mezhebi Seçin',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          Text('İkindi vaktinin hesabını etkiler.',
-              style: TextStyle(fontSize: 16, color: Colors.grey[600])),
-          const SizedBox(height: 40),
-          ...Madhab.values.map((m) => Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: _MadhabCard(
-                  madhab: m,
-                  selected: madhab.madhab == m,
-                  onTap: () => madhab.setMadhab(m),
-                ),
-              )),
-        ],
-      ),
-    );
-  }
-}
-
-class _MadhabCard extends StatelessWidget {
-  final Madhab madhab;
-  final bool selected;
-  final VoidCallback onTap;
-  const _MadhabCard(
-      {required this.madhab, required this.selected, required this.onTap});
-
-  static const _descriptions = {
-    Madhab.hanafi: 'İkindi vakti gölge 2x uzadığında başlar',
-    Madhab.shafii: 'İkindi vakti gölge 1x uzadığında başlar',
-    Madhab.maliki: 'İkindi vakti gölge 1x uzadığında başlar',
-    Madhab.hanbali: 'İkindi vakti gölge 1x uzadığında başlar',
-  };
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: selected ? AppColors.darkGreen : Colors.grey[300]!,
-            width: selected ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(16),
-          color: selected
-              ? AppColors.darkGreen.withValues(alpha: 0.08)
-              : Colors.transparent,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(madhab.label,
-                      style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                          color: selected ? AppColors.darkGreen : null)),
-                  const SizedBox(height: 2),
-                  Text(_descriptions[madhab] ?? '',
-                      style: TextStyle(
-                          fontSize: 13, color: Colors.grey[600])),
-                ],
-              ),
-            ),
-            if (selected)
-              const Icon(Icons.check_circle_rounded,
-                  color: AppColors.darkGreen),
-          ],
-        ),
-      ),
-    );
-  }
-}

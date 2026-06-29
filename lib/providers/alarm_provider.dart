@@ -80,6 +80,14 @@ class AlarmProvider extends ChangeNotifier {
     await _reschedule();
   }
 
+  /// Önce alarmla birlikte vakitte de bildirim gönderilsin mi.
+  Future<void> setAlsoOnTime(String prayerKey, bool value) async {
+    _alarmSettings.updateSetting(prayerKey, alsoOnTime: value);
+    await _alarmSettings.save();
+    notifyListeners();
+    await _reschedule();
+  }
+
   /// Kalıcı bildirim (sonraki vakit göstergesi) aç/kapat.
   Future<void> toggleOngoing(bool value) async {
     _ongoingEnabled = value;

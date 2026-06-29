@@ -23,14 +23,7 @@ class PrayerProvider extends ChangeNotifier {
 
   static const String _methodKey = 'calculation_method';
   static const String _hijriAdjustKey = 'hijri_adjustment';
-  static const String _schoolKey = 'asr_school';
   static const String _latAdjustKey = 'latitude_adjustment';
-
-  /// Asr mezhebi (Aladhan `school`).
-  static const Map<int, String> asrSchools = {
-    0: 'Standart (Şâfiî, Mâlikî, Hanbelî)',
-    1: 'Hanefî',
-  };
 
   /// Yüksek enlem kuralı (Aladhan `latitudeAdjustmentMethod`).
   static const Map<int, String> latitudeRules = {
@@ -66,7 +59,6 @@ class PrayerProvider extends ChangeNotifier {
   bool _hasFetched = false;
   int _method = ApiService.defaultMethod;
   int _hijriAdjustment = 0;
-  int _school = 0;
   int _latitudeAdjustment = 0;
   bool _isOffline = false;
 
@@ -77,8 +69,6 @@ class PrayerProvider extends ChangeNotifier {
   /// Hicri tarih gün ofseti (-2..+2). Aladhan `adjustment` parametresi.
   int get hijriAdjustment => _hijriAdjustment;
 
-  int get asrSchool => _school;
-  String get asrSchoolName => asrSchools[_school] ?? 'Standart';
   int get latitudeAdjustment => _latitudeAdjustment;
   String get latitudeRuleName => latitudeRules[_latitudeAdjustment] ?? 'Otomatik';
 
@@ -108,24 +98,7 @@ class PrayerProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _method = prefs.getInt(_methodKey) ?? ApiService.defaultMethod;
     _hijriAdjustment = prefs.getInt(_hijriAdjustKey) ?? 0;
-    _school = prefs.getInt(_schoolKey) ?? 0;
     _latitudeAdjustment = prefs.getInt(_latAdjustKey) ?? 0;
-    await fetchTodayPrayerTimes();
-  }
-
-  /// MadhabProvider değişince ProxyProvider2 tarafından çağrılır.
-  void updateAsrSchool(int school) {
-    if (_school == school) return;
-    _school = school;
-    fetchTodayPrayerTimes();
-  }
-
-  /// Asr mezhebini değiştirir, kaydeder, yeniden çeker.
-  Future<void> setAsrSchool(int school) async {
-    if (_school == school) return;
-    _school = school;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_schoolKey, school);
     await fetchTodayPrayerTimes();
   }
 
@@ -201,7 +174,7 @@ class PrayerProvider extends ChangeNotifier {
         longitude: _longitude,
         method: _method,
         hijriAdjustment: _hijriAdjustment,
-        school: _school,
+        school: 0,
         latitudeAdjustment: _latitudeAdjustment,
         date: now,
       );
@@ -210,7 +183,7 @@ class PrayerProvider extends ChangeNotifier {
         longitude: _longitude,
         method: _method,
         hijriAdjustment: _hijriAdjustment,
-        school: _school,
+        school: 0,
         latitudeAdjustment: _latitudeAdjustment,
         date: tomorrow,
       );
@@ -256,7 +229,7 @@ class PrayerProvider extends ChangeNotifier {
         longitude: _longitude,
         method: _method,
         hijriAdjustment: _hijriAdjustment,
-        school: _school,
+        school: 0,
         latitudeAdjustment: _latitudeAdjustment,
       );
       if (monthly.isNotEmpty) {

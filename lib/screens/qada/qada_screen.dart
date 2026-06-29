@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:vakitli/config/theme.dart';
-import 'package:vakitli/models/madhab.dart';
-import 'package:vakitli/providers/madhab_provider.dart';
 import 'package:vakitli/providers/qada_provider.dart';
 import 'package:vakitli/services/qada_service.dart';
 import 'package:vakitli/utils/qada_calculator.dart';
@@ -47,7 +45,6 @@ class QadaScreen extends StatelessWidget {
   }
 
   void _openCalculator(BuildContext context, QadaProvider provider) {
-    final madhab = context.read<MadhabProvider>().madhab;
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -55,7 +52,6 @@ class QadaScreen extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) => _CalculatorSheet(
-        madhab: madhab,
         onConfirm: (calc) async {
           await provider.addCalculated(calc);
           if (context.mounted) {
@@ -96,10 +92,9 @@ class _CalculateButton extends StatelessWidget {
 // ─── Hesaplama bottom sheet ───────────────────────────────────────────────────
 
 class _CalculatorSheet extends StatefulWidget {
-  final Madhab madhab;
   final Future<void> Function(QadaCalculation) onConfirm;
 
-  const _CalculatorSheet({required this.madhab, required this.onConfirm});
+  const _CalculatorSheet({required this.onConfirm});
 
   @override
   State<_CalculatorSheet> createState() => _CalculatorSheetState();
@@ -110,6 +105,7 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
   DateTime? _startDate;
   bool _isFemale = false;
   int _monthlyHaydDays = 5;
+  bool _includeWitr = true;
   QadaCalculation? _result;
   bool _confirming = false;
 
@@ -136,15 +132,21 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 4),
-            Text(
-              'Mezhep: ${widget.madhab.label}${widget.madhab.isViterWajib ? " (vitir dahil)" : ""}',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: AppColors.gold),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Checkbox(
+                  value: _includeWitr,
+                  activeColor: AppColors.primaryGreen,
+                  onChanged: (v) => setState(() {
+                    _includeWitr = v ?? true;
+                    _result = null;
+                  }),
+                ),
+                const Text('Vitiri dahil et'),
+              ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 12),
 
             // Buluğ tarihi
             _DateField(
@@ -260,7 +262,7 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
 
             // Sonuç
             if (_result != null) ...[
-              _ResultTable(result: _result!, madhab: widget.madhab),
+              _ResultTable(result: _result!, includeWitr: _includeWitr),
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -304,7 +306,7 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
     final calc = QadaCalculator.calculate(
       bulughDate: _bulughDate!,
       prayerStartDate: _startDate!,
-      isViterWajib: widget.madhab.isViterWajib,
+      isViterWajib: _includeWitr,
       monthlyHaydDays: _isFemale ? _monthlyHaydDays : 0,
     );
     setState(() => _result = calc);
@@ -388,9 +390,9 @@ class _DateField extends StatelessWidget {
 
 class _ResultTable extends StatelessWidget {
   final QadaCalculation result;
-  final Madhab madhab;
+  final bool includeWitr;
 
-  const _ResultTable({required this.result, required this.madhab});
+  const _ResultTable({required this.result, required this.includeWitr});
 
   @override
   Widget build(BuildContext context) {
@@ -400,7 +402,7 @@ class _ResultTable extends StatelessWidget {
       ('İkindi', result.asr),
       ('Akşam', result.maghrib),
       ('Yatsı', result.isha),
-      if (madhab.isViterWajib) ('Vitir', result.witr),
+      if (includeWitr) ('Vitir', result.witr),
     ];
 
     return Card(

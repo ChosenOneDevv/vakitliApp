@@ -61,6 +61,9 @@ class PrayerAlarmSetting {
   /// Bildirim sesi olarak ezan kullanılsın mı.
   bool useEzan;
 
+  /// Önce alarm kuruluyken ayrıca vakitte de bildirim gönderilsin mi.
+  bool alsoOnTime;
+
   PrayerAlarmSetting({
     required this.prayerKey,
     required this.prayerName,
@@ -68,6 +71,7 @@ class PrayerAlarmSetting {
     this.mode = AlarmMode.onTime,
     this.customMinutes = 10,
     this.useEzan = false,
+    this.alsoOnTime = false,
   });
 
   /// Bildirimin vakitten kaç dk önce kurulacağı.
@@ -85,6 +89,7 @@ class PrayerAlarmSetting {
         'mode': mode.index,
         'customMinutes': customMinutes,
         'useEzan': useEzan,
+        'alsoOnTime': alsoOnTime,
       };
 
   factory PrayerAlarmSetting.fromJson(Map<String, dynamic> json) {
@@ -95,6 +100,7 @@ class PrayerAlarmSetting {
       mode: AlarmMode.values[json['mode'] as int? ?? 1],
       customMinutes: json['customMinutes'] as int? ?? 10,
       useEzan: json['useEzan'] as bool? ?? false,
+      alsoOnTime: json['alsoOnTime'] as bool? ?? false,
     );
   }
 }
@@ -130,13 +136,14 @@ class AlarmSettings {
   List<PrayerAlarmSetting> get allSettings => _settings.values.toList();
 
   void updateSetting(String prayerKey,
-      {bool? enabled, AlarmMode? mode, int? customMinutes, bool? useEzan}) {
+      {bool? enabled, AlarmMode? mode, int? customMinutes, bool? useEzan, bool? alsoOnTime}) {
     final setting = _settings[prayerKey];
     if (setting != null) {
       if (enabled != null) setting.enabled = enabled;
       if (mode != null) setting.mode = mode;
       if (customMinutes != null) setting.customMinutes = customMinutes;
       if (useEzan != null) setting.useEzan = useEzan;
+      if (alsoOnTime != null) setting.alsoOnTime = alsoOnTime;
     }
   }
 
