@@ -8,10 +8,10 @@ import 'package:vakitli/models/hutbe.dart';
 class HutbeService {
   static const String _cacheKey = 'hutbe_cache';
 
-  /// Önce cache kontrol eder; stale ise Diyanet'ten çeker.
-  Future<Hutbe?> getHutbe() async {
+  /// Önce cache kontrol eder; stale veya forceRefresh ise Diyanet'ten çeker.
+  Future<Hutbe?> getHutbe({bool forceRefresh = false}) async {
     final cached = await _loadCached();
-    if (cached != null && !cached.isStale) return cached;
+    if (!forceRefresh && cached != null && !cached.isStale) return cached;
 
     final fetched = await _fetchFromDiyanet();
     if (fetched != null) {
@@ -39,42 +39,58 @@ class HutbeService {
 
   Future<Hutbe?> _fetchFromDiyanet() async {
     try {
-      final response = await http
+      // 1. Ana sayfadan güncel hutbe detail URL'ini al
+      final mainResp = await http
           .get(
-            Uri.parse('https://hutbeler.diyanet.gov.tr/'),
-            headers: {'User-Agent': 'Mozilla/5.0', 'Accept-Charset': 'UTF-8'},
+            Uri.parse('https://www.diyanet.gov.tr/tr-TR/'),
+            headers: {'User-Agent': 'Mozilla/5.0'},
           )
           .timeout(AppConstants.httpTimeout);
+      if (mainResp.statusCode != 200) return null;
 
-      if (response.statusCode != 200) return null;
+      final linkMatch = RegExp(
+        r'href="(/tr-TR/Kurumsal/Detay/\d+/cuma-hutbesi[^"]*)"',
+      ).firstMatch(mainResp.body);
+      if (linkMatch == null) return null;
 
-      final body = response.body;
+      final detailPath = linkMatch.group(1)!;
 
-      // Başlık: <h1> veya meta title içinden
-      final titleMatch =
-          RegExp(r'<title[^>]*>([^<]+)</title>').firstMatch(body);
+      // 2. Detail sayfasını çek
+      final detailResp = await http
+          .get(
+            Uri.parse('https://www.diyanet.gov.tr$detailPath'),
+            headers: {'User-Agent': 'Mozilla/5.0'},
+          )
+          .timeout(AppConstants.httpTimeout);
+      if (detailResp.statusCode != 200) return null;
+
+      final body = detailResp.body;
+
+      // Başlık
+      final titleMatch = RegExp(r'<title[^>]*>([^<]+)</title>').firstMatch(body);
       final rawTitle = titleMatch?.group(1)?.trim() ?? 'Cuma Hutbesi';
       final title = rawTitle
           .replaceAll(RegExp(r'\s*[-|]\s*Diyanet.*', caseSensitive: false), '')
+          .replaceAll('&quot;', '"')
           .trim();
 
-      // Hutbe metni: <div class="hutbe-detay-icerik"> veya <article> içinden
-      String text = '';
+      // İçerik: <div class="content-detail">...</div>
       final contentMatch = RegExp(
-        r'<div[^>]*class="[^"]*hutbe[^"]*icerik[^"]*"[^>]*>([\s\S]*?)</div>',
+        r'<div[^>]*class="content-detail"[^>]*>([\s\S]*?)</div>\s*</div>',
         caseSensitive: false,
       ).firstMatch(body);
+
+      String text = '';
       if (contentMatch != null) {
         text = _stripHtml(contentMatch.group(1) ?? '');
       } else {
-        // Fallback: tüm <p> taglerinden metin topla
-        final pTags = RegExp(r'<p[^>]*>([\s\S]*?)</p>', caseSensitive: false)
+        // Fallback: uzun <p> taglerini topla
+        text = RegExp(r'<p[^>]*>([\s\S]*?)</p>', caseSensitive: false)
             .allMatches(body)
             .map((m) => _stripHtml(m.group(1) ?? '').trim())
-            .where((t) => t.length > 100)
-            .take(10)
+            .where((t) => t.length > 80)
+            .take(12)
             .join('\n\n');
-        text = pTags;
       }
 
       if (text.trim().isEmpty) return null;
@@ -82,8 +98,7 @@ class HutbeService {
       final now = DateTime.now();
       return Hutbe(
         title: title.isNotEmpty ? title : 'Cuma Hutbesi',
-        date:
-            '${now.day}.${now.month}.${now.year}',
+        date: '${now.day}.${now.month}.${now.year}',
         text: text.trim(),
         source: 'Diyanet İşleri Başkanlığı',
         fetchedAt: now,
@@ -95,14 +110,39 @@ class HutbeService {
   }
 
   String _stripHtml(String html) {
-    return html
-        .replaceAll(RegExp(r'<[^>]+>'), ' ')
-        .replaceAll(RegExp(r'&nbsp;'), ' ')
-        .replaceAll(RegExp(r'&amp;'), '&')
-        .replaceAll(RegExp(r'&lt;'), '<')
-        .replaceAll(RegExp(r'&gt;'), '>')
-        .replaceAll(RegExp(r'&quot;'), '"')
-        .replaceAll(RegExp(r'\s+'), ' ')
-        .trim();
+    var s = html.replaceAll(RegExp(r'<[^>]+>'), ' ');
+
+    // Numeric entities (decimal): &#123; or &#x7B;
+    s = s.replaceAllMapped(RegExp(r'&#([0-9]+);'), (m) {
+      final code = int.tryParse(m.group(1)!);
+      return code != null ? String.fromCharCode(code) : m.group(0)!;
+    });
+    s = s.replaceAllMapped(RegExp(r'&#x([0-9a-fA-F]+);'), (m) {
+      final code = int.tryParse(m.group(1)!, radix: 16);
+      return code != null ? String.fromCharCode(code) : m.group(0)!;
+    });
+
+    // Named entities (common + Turkish-relevant)
+    const entities = {
+      '&nbsp;': ' ', '&amp;': '&', '&lt;': '<', '&gt;': '>',
+      '&quot;': '"', '&apos;': "'",
+      '&ldquo;': '"', '&rdquo;': '"', '&lsquo;': '‘', '&rsquo;': '’',
+      '&mdash;': '—', '&ndash;': '–', '&hellip;': '…',
+      '&copy;': '©',
+      // Latin extended (Turkish)
+      '&ccedil;': 'ç', '&Ccedil;': 'Ç',
+      '&ouml;': 'ö', '&Ouml;': 'Ö',
+      '&uuml;': 'ü', '&Uuml;': 'Ü',
+      '&acirc;': 'â', '&Acirc;': 'Â',
+      '&icirc;': 'î', '&Icirc;': 'Î',
+      '&ucirc;': 'û', '&Ucirc;': 'Û',
+      '&ecirc;': 'ê', '&Ecirc;': 'Ê',
+      '&atilde;': 'ã', '&otilde;': 'õ',
+    };
+    for (final entry in entities.entries) {
+      s = s.replaceAll(entry.key, entry.value);
+    }
+
+    return s.replaceAll(RegExp(r'\s+'), ' ').trim();
   }
 }

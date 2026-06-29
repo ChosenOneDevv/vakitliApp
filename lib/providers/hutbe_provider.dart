@@ -13,12 +13,12 @@ class HutbeProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  Future<void> load() async {
+  Future<void> load({bool forceRefresh = false}) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
     try {
-      _hutbe = await _service.getHutbe();
+      _hutbe = await _service.getHutbe(forceRefresh: forceRefresh);
       if (_hutbe == null) {
         _error = 'Hutbe yüklenemedi. İnternet bağlantınızı kontrol edin.';
       }
@@ -31,6 +31,6 @@ class HutbeProvider extends ChangeNotifier {
 
   Future<void> refresh() async {
     _hutbe = null;
-    await load();
+    await load(forceRefresh: true);
   }
 }
