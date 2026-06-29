@@ -51,6 +51,12 @@
 	<string>Namaz vakitlerini konumunuza göre hesaplamak için konum izni gereklidir.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Namaz vakti bildirimlerini doğru şekilde göndermek için konum izni gereklidir.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>AR Kıble özelliği için kamera erişimi gereklidir.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

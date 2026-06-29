@@ -43,6 +43,14 @@ class TrackerProvider extends ChangeNotifier {
     await _service.saveLogs(_logs);
   }
 
+  Future<void> toggleJamaah(String prayerKey) async {
+    final key = TrackerService.dateKey(DateTime.now());
+    final current = _logs[key] ?? PrayerLog.empty(key);
+    _logs[key] = current.copyWithJamaahToggle(prayerKey);
+    notifyListeners();
+    await _service.saveLogs(_logs);
+  }
+
   /// Son 7 günün özeti (en eski -> bugün).
   List<DaySummary> get weeklySummary {
     final today = DateTime.now();
@@ -72,6 +80,23 @@ class TrackerProvider extends ChangeNotifier {
   /// Tüm zamanların toplam kılınan farz namaz sayısı.
   int get totalCompleted =>
       _logs.values.fold(0, (sum, log) => sum + log.completedCount);
+
+  /// Tüm zamanların toplam cemaatle kılınan farz sayısı.
+  int get totalJamaah =>
+      _logs.values.fold(0, (sum, log) => sum + log.jamaahCount);
+
+  /// Beş vakti tam tamamlanmış gün sayısı.
+  int get fullDaysCount => _logs.values.where((log) => log.isComplete).length;
+
+  /// Son [days] günün özeti (en eski -> bugün) — ısı haritası için.
+  List<DaySummary> lastDays(int days) {
+    final today = DateTime.now();
+    return List.generate(days, (i) {
+      final date = DateTime(today.year, today.month, today.day)
+          .subtract(Duration(days: days - 1 - i));
+      return DaySummary(date: date, completed: logForDay(date).completedCount);
+    });
+  }
 
   /// Ardışık tam-gün (5 vakit) serisi. Bugün veya dün ile bitmeli, yoksa 0.
   int get streak {

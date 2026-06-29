@@ -5,6 +5,7 @@ import 'package:vakitli/config/constants.dart';
 import 'package:vakitli/models/prayer_time.dart';
 import 'package:vakitli/services/api_service.dart';
 import 'package:vakitli/services/prayer_cache_service.dart';
+import 'package:vakitli/services/widget_service.dart';
 
 class PrayerProvider extends ChangeNotifier {
   PrayerProvider({ApiService? apiService, PrayerCacheService? cache})
@@ -17,8 +18,27 @@ class PrayerProvider extends ChangeNotifier {
   /// Vakitler güncellenince tetiklenir (AlarmProvider yeniden zamanlasın diye).
   VoidCallback? onPrayerTimesUpdated;
 
+  /// Bir namaz vakti girdiğinde tetiklenir (DND sessiz mod için).
+  void Function(String prayerName)? onPrayerEntered;
+
   static const String _methodKey = 'calculation_method';
   static const String _hijriAdjustKey = 'hijri_adjustment';
+  static const String _schoolKey = 'asr_school';
+  static const String _latAdjustKey = 'latitude_adjustment';
+
+  /// Asr mezhebi (Aladhan `school`).
+  static const Map<int, String> asrSchools = {
+    0: 'Standart (Şâfiî, Mâlikî, Hanbelî)',
+    1: 'Hanefî',
+  };
+
+  /// Yüksek enlem kuralı (Aladhan `latitudeAdjustmentMethod`).
+  static const Map<int, String> latitudeRules = {
+    0: 'Otomatik',
+    1: 'Gece Ortası',
+    2: 'Yedide Bir',
+    3: 'Açı Temelli',
+  };
 
   /// Aladhan hesaplama metotları (id -> ad).
   static const Map<int, String> calculationMethods = {
@@ -46,6 +66,8 @@ class PrayerProvider extends ChangeNotifier {
   bool _hasFetched = false;
   int _method = ApiService.defaultMethod;
   int _hijriAdjustment = 0;
+  int _school = 0;
+  int _latitudeAdjustment = 0;
   bool _isOffline = false;
 
   int get calculationMethod => _method;
@@ -54,6 +76,11 @@ class PrayerProvider extends ChangeNotifier {
 
   /// Hicri tarih gün ofseti (-2..+2). Aladhan `adjustment` parametresi.
   int get hijriAdjustment => _hijriAdjustment;
+
+  int get asrSchool => _school;
+  String get asrSchoolName => asrSchools[_school] ?? 'Standart';
+  int get latitudeAdjustment => _latitudeAdjustment;
+  String get latitudeRuleName => latitudeRules[_latitudeAdjustment] ?? 'Otomatik';
 
   /// Ağdan güncellenemeyip cache gösteriliyor mu.
   bool get isOffline => _isOffline;
@@ -81,6 +108,33 @@ class PrayerProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _method = prefs.getInt(_methodKey) ?? ApiService.defaultMethod;
     _hijriAdjustment = prefs.getInt(_hijriAdjustKey) ?? 0;
+    _school = prefs.getInt(_schoolKey) ?? 0;
+    _latitudeAdjustment = prefs.getInt(_latAdjustKey) ?? 0;
+    await fetchTodayPrayerTimes();
+  }
+
+  /// MadhabProvider değişince ProxyProvider2 tarafından çağrılır.
+  void updateAsrSchool(int school) {
+    if (_school == school) return;
+    _school = school;
+    fetchTodayPrayerTimes();
+  }
+
+  /// Asr mezhebini değiştirir, kaydeder, yeniden çeker.
+  Future<void> setAsrSchool(int school) async {
+    if (_school == school) return;
+    _school = school;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_schoolKey, school);
+    await fetchTodayPrayerTimes();
+  }
+
+  /// Yüksek enlem kuralını değiştirir, kaydeder, yeniden çeker.
+  Future<void> setLatitudeAdjustment(int value) async {
+    if (_latitudeAdjustment == value) return;
+    _latitudeAdjustment = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_latAdjustKey, value);
     await fetchTodayPrayerTimes();
   }
 
@@ -131,6 +185,7 @@ class PrayerProvider extends ChangeNotifier {
       _hasFetched = true;
       _calculateNextPrayer();
       _startPrayerCheckTimer();
+      _updateWidget();
       _isLoading = false;
       notifyListeners();
       onPrayerTimesUpdated?.call();
@@ -146,6 +201,8 @@ class PrayerProvider extends ChangeNotifier {
         longitude: _longitude,
         method: _method,
         hijriAdjustment: _hijriAdjustment,
+        school: _school,
+        latitudeAdjustment: _latitudeAdjustment,
         date: now,
       );
       final next = await _apiService.getDailyPrayerTimes(
@@ -153,6 +210,8 @@ class PrayerProvider extends ChangeNotifier {
         longitude: _longitude,
         method: _method,
         hijriAdjustment: _hijriAdjustment,
+        school: _school,
+        latitudeAdjustment: _latitudeAdjustment,
         date: tomorrow,
       );
 
@@ -168,6 +227,7 @@ class PrayerProvider extends ChangeNotifier {
         }
         _calculateNextPrayer();
         _startPrayerCheckTimer();
+        _updateWidget();
         onPrayerTimesUpdated?.call();
         _prefetchMonth();
       } else if (_todayPrayer == null) {
@@ -196,6 +256,8 @@ class PrayerProvider extends ChangeNotifier {
         longitude: _longitude,
         method: _method,
         hijriAdjustment: _hijriAdjustment,
+        school: _school,
+        latitudeAdjustment: _latitudeAdjustment,
       );
       if (monthly.isNotEmpty) {
         await _cache.putMany(_latitude, _longitude, monthly);
@@ -222,6 +284,26 @@ class PrayerProvider extends ChangeNotifier {
     _nextPrayer = entries.first;
   }
 
+  /// Ana ekran widget'ını sonraki vakit bilgisiyle günceller.
+  void _updateWidget() {
+    final next = _nextPrayer;
+    final target = nextPrayerTime;
+    if (next == null || target == null) return;
+
+    final diff = target.difference(DateTime.now());
+    final h = diff.inHours;
+    final m = diff.inMinutes.remainder(60);
+    final remaining =
+        h > 0 ? '$h sa $m dk kaldı' : '$m dk kaldı';
+
+    WidgetService.update(
+      prayerName: next.name,
+      time: next.time,
+      remaining: remaining,
+      city: _locationName,
+    );
+  }
+
   /// Her 30 saniyede vakit geçişini kontrol et (her saniye rebuild yerine)
   void _startPrayerCheckTimer() {
     _prayerCheckTimer?.cancel();
@@ -229,6 +311,9 @@ class PrayerProvider extends ChangeNotifier {
       final oldNext = _nextPrayer?.name;
       _calculateNextPrayer();
       if (_nextPrayer?.name != oldNext) {
+        // oldNext vakti girdi (artık geçmişte) → DND tetikle.
+        if (oldNext != null) onPrayerEntered?.call(oldNext);
+        _updateWidget();
         notifyListeners();
       }
     });

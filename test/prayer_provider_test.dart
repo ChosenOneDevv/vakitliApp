@@ -15,6 +15,8 @@ class FakeApiService extends ApiService {
     required double longitude,
     int method = ApiService.defaultMethod,
     int hijriAdjustment = 0,
+    int school = 0,
+    int latitudeAdjustment = 0,
     DateTime? date,
   }) async =>
       daily;
@@ -25,6 +27,8 @@ class FakeApiService extends ApiService {
     required double longitude,
     int method = ApiService.defaultMethod,
     int hijriAdjustment = 0,
+    int school = 0,
+    int latitudeAdjustment = 0,
     int? month,
     int? year,
   }) async =>

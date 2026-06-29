@@ -36,94 +36,62 @@ class PrayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final alarmOn = alarmSetting != null && alarmSetting!.enabled;
+
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.fromLTRB(14, 13, 16, 13),
       decoration: BoxDecoration(
         color: isNext
-            ? AppColors.primaryGreen.withValues(alpha: 0.08)
-            : Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(14),
-        border: isNext
-            ? Border.all(color: AppColors.primaryGreen.withValues(alpha: 0.4), width: 1.5)
-            : Border.all(
-                color: Theme.of(context).dividerColor.withValues(alpha: 0.5),
-                width: 0.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+            ? AppColors.primaryGreen.withValues(alpha: 0.10)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        children: [
+          // Sıradaki vakit için ince vurgu çubuğu.
+          Container(
+            width: 3,
+            height: 22,
+            decoration: BoxDecoration(
+              color: isNext ? AppColors.primaryGreen : Colors.transparent,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Icon(
+            _getIcon(),
+            size: 21,
+            color: isNext ? AppColors.primaryGreen : AppColors.lightText,
+          ),
+          const SizedBox(width: 12),
+          Text(
+            entry.name,
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              fontSize: 15.5,
+              fontWeight: isNext ? FontWeight.w700 : FontWeight.w500,
+              color: isNext ? AppColors.primaryGreen : onSurface,
+            ),
+          ),
+          const Spacer(),
+          if (alarmOn)
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Icon(Icons.notifications_active_rounded,
+                  size: 15, color: AppColors.gold.withValues(alpha: 0.9)),
+            ),
+          Text(
+            entry.time,
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              fontSize: 17,
+              fontWeight: FontWeight.w700,
+              color: isNext ? AppColors.primaryGreen : onSurface,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
           ),
         ],
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        leading: Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: isNext
-                ? AppColors.primaryGreen.withValues(alpha: 0.15)
-                : AppColors.gold.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(
-            _getIcon(),
-            color: isNext ? AppColors.primaryGreen : AppColors.gold,
-            size: 24,
-          ),
-        ),
-        title: Text(
-          entry.name,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: isNext
-                    ? AppColors.primaryGreen
-                    : Theme.of(context).colorScheme.onSurface,
-                fontWeight: isNext ? FontWeight.w700 : FontWeight.w600,
-              ),
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (alarmSetting != null && alarmSetting!.enabled)
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Icon(
-                  Icons.notifications_active_rounded,
-                  size: 16,
-                  color: AppColors.gold,
-                ),
-              ),
-            Text(
-              entry.time,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: isNext
-                    ? AppColors.primaryGreen
-                    : Theme.of(context).colorScheme.onSurface,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20,
-                  ),
-            ),
-            if (isNext) ...[
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryGreen,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  'Sıradaki',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-              ),
-            ],
-          ],
-        ),
       ),
     );
   }

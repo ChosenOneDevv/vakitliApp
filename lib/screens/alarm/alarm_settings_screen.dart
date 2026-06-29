@@ -62,6 +62,10 @@ class AlarmSettingsScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 16),
+
+              // Kalıcı bildirim
+              _buildOngoingTile(context, alarmProvider),
               const SizedBox(height: 20),
 
               // Alarm ayarları listesi
@@ -73,6 +77,57 @@ class AlarmSettingsScreen extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildOngoingTile(BuildContext context, AlarmProvider alarmProvider) {
+    return Container(
+      decoration: BoxDecoration(
+        color: alarmProvider.ongoingEnabled
+            ? AppColors.navy.withValues(alpha: 0.06)
+            : Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: alarmProvider.ongoingEnabled
+              ? AppColors.navy.withValues(alpha: 0.25)
+              : AppColors.darkCream,
+          width: alarmProvider.ongoingEnabled ? 1.5 : 0.5,
+        ),
+      ),
+      child: SwitchListTile.adaptive(
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+        secondary: Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            color: alarmProvider.ongoingEnabled
+                ? AppColors.navy.withValues(alpha: 0.12)
+                : AppColors.gold.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(11),
+          ),
+          child: Icon(
+            Icons.notifications_active_outlined,
+            color: alarmProvider.ongoingEnabled ? AppColors.navy : AppColors.gold,
+            size: 22,
+          ),
+        ),
+        title: Text(
+          'Kalıcı Bildirim',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+        ),
+        subtitle: Text(
+          'Sonraki vakti bildirim çubuğunda göster',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
+        ),
+        value: alarmProvider.ongoingEnabled,
+        activeTrackColor: AppColors.navy,
+        onChanged: (v) => alarmProvider.toggleOngoing(v),
       ),
     );
   }
@@ -152,11 +207,55 @@ class AlarmSettingsScreen extends StatelessWidget {
               },
             ),
           ),
-          if (setting.enabled)
+          if (setting.enabled) ...[
             Padding(
-              padding: const EdgeInsets.only(left: 14, right: 14, bottom: 12),
+              padding: const EdgeInsets.only(left: 14, right: 14, bottom: 8),
               child: _buildModeSelector(context, setting, alarmProvider),
             ),
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 14, right: 6, bottom: 10),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.volume_up_rounded,
+                    size: 16,
+                    color: setting.useEzan
+                        ? AppColors.gold
+                        : Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.4),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Ezan sesi',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: setting.useEzan
+                              ? AppColors.gold
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withValues(alpha: 0.6),
+                          fontWeight: setting.useEzan
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                        ),
+                  ),
+                  const Spacer(),
+                  Transform.scale(
+                    scale: 0.85,
+                    child: Switch.adaptive(
+                      value: setting.useEzan,
+                      activeTrackColor: AppColors.gold,
+                      onChanged: (v) =>
+                          alarmProvider.setAlarmEzan(setting.prayerKey, v),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -174,10 +273,18 @@ class AlarmSettingsScreen extends StatelessWidget {
       runSpacing: 6,
       children: modes.map((mode) {
         final isSelected = setting.mode == mode;
+        final isCustom = mode == AlarmMode.custom;
+        final label = isCustom && isSelected
+            ? '${setting.customMinutes} dk önce'
+            : (isCustom ? 'Özel…' : mode.label);
         return GestureDetector(
           onTap: () async {
-            // setAlarmMode bildirimleri otomatik yeniden kurar.
-            await alarmProvider.setAlarmMode(setting.prayerKey, mode);
+            if (isCustom) {
+              _showCustomMinutesDialog(context, setting, alarmProvider);
+            } else {
+              // setAlarmMode bildirimleri otomatik yeniden kurar.
+              await alarmProvider.setAlarmMode(setting.prayerKey, mode);
+            }
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
@@ -193,7 +300,7 @@ class AlarmSettingsScreen extends StatelessWidget {
               ),
             ),
             child: Text(
-              mode.label,
+              label,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: isSelected
                         ? AppColors.white
@@ -204,6 +311,46 @@ class AlarmSettingsScreen extends StatelessWidget {
           ),
         );
       }).toList(),
+    );
+  }
+
+  void _showCustomMinutesDialog(
+    BuildContext context,
+    PrayerAlarmSetting setting,
+    AlarmProvider alarmProvider,
+  ) {
+    final controller =
+        TextEditingController(text: '${setting.customMinutes}');
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('${setting.prayerName} — Özel Süre'),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          autofocus: true,
+          decoration: const InputDecoration(
+            labelText: 'Kaç dakika önce',
+            suffixText: 'dk',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('İptal'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final m = int.tryParse(controller.text.trim());
+              if (m != null && m >= 0) {
+                alarmProvider.setCustomMinutes(setting.prayerKey, m);
+              }
+              Navigator.of(dialogContext).pop();
+            },
+            child: const Text('Kaydet'),
+          ),
+        ],
+      ),
     );
   }
 }

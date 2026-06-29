@@ -6,10 +6,14 @@ class CountdownTimer extends StatefulWidget {
   final String prayerName;
   final DateTime targetTime;
 
+  /// Önceki vakitten sonraki vakte geçen oran (0..1) — ilerleme çubuğu.
+  final double progress;
+
   const CountdownTimer({
     super.key,
     required this.prayerName,
     required this.targetTime,
+    this.progress = 0,
   });
 
   @override
@@ -18,9 +22,6 @@ class CountdownTimer extends StatefulWidget {
 
 class _CountdownTimerState extends State<CountdownTimer> {
   Timer? _timer;
-  // Saniyede bir değişen tek parça. setState yerine ValueNotifier kullanılır;
-  // böylece her saniye sadece saat Text'i rebuild olur, gradient/shadow/Column
-  // değil.
   final ValueNotifier<String> _formatted = ValueNotifier('00:00:00');
 
   @override
@@ -56,68 +57,90 @@ class _CountdownTimerState extends State<CountdownTimer> {
 
   @override
   Widget build(BuildContext context) {
+    final timeStr =
+        '${widget.targetTime.hour.toString().padLeft(2, '0')}:${widget.targetTime.minute.toString().padLeft(2, '0')}';
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
+      padding: const EdgeInsets.fromLTRB(24, 22, 24, 20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.darkGreen,
-            AppColors.primaryGreen,
-            AppColors.lightGreen,
-          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [AppColors.primaryGreen, AppColors.darkGreen],
         ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primaryGreen.withValues(alpha: 0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Sonraki Vakit',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.lightGold,
-                  letterSpacing: 1.2,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'SONRAKİ VAKİT',
+                style: TextStyle(
+                  fontFamily: 'Cairo',
+                  fontSize: 11,
+                  letterSpacing: 2,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.lightGold.withValues(alpha: 0.9),
                 ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  timeStr,
+                  style: const TextStyle(
+                    fontFamily: 'Cairo',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.white,
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 6),
           Text(
             widget.prayerName,
-            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                  color: AppColors.white,
-                  fontSize: 26,
-                ),
+            style: const TextStyle(
+              fontFamily: 'Amiri',
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: AppColors.white,
+            ),
           ),
-          const SizedBox(height: 14),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: AppColors.gold.withValues(alpha: 0.3),
-                width: 1,
+          const SizedBox(height: 10),
+          ValueListenableBuilder<String>(
+            valueListenable: _formatted,
+            builder: (context, value, child) => Text(
+              value,
+              style: const TextStyle(
+                fontFamily: 'Cairo',
+                color: AppColors.white,
+                fontSize: 52,
+                height: 1.0,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1,
+                fontFeatures: [FontFeature.tabularFigures()],
               ),
             ),
-            child: ValueListenableBuilder<String>(
-              valueListenable: _formatted,
-              builder: (context, value, child) => Text(
-                value,
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: AppColors.white,
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 4,
-                      fontFamily: 'monospace',
-                    ),
-              ),
+          ),
+          const SizedBox(height: 16),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: LinearProgressIndicator(
+              value: widget.progress.clamp(0, 1),
+              minHeight: 5,
+              backgroundColor: Colors.white.withValues(alpha: 0.15),
+              valueColor: const AlwaysStoppedAnimation(AppColors.gold),
             ),
           ),
         ],

@@ -1,0 +1,93 @@
+[
+  {
+    "id": 1,
+    "category": "Hayız Hükümleri",
+    "title": "Hayız nedir?",
+    "content": "Hayız, sağlıklı bir kadının rahimden gelen ve hastalık ya da doğumla ilgisi olmayan kandır. Hanefî mezhebine göre hayızın en az süresi 3 gün, en fazlası 10 gündür. Şâfiî mezhebine göre ise en az 1 gün 1 gece, en fazla 15 gündür.",
+    "source": "İbn Âbidîn, Reddü'l-Muhtâr; Nevevî, el-Mecmû'"
+  },
+  {
+    "id": 2,
+    "category": "Hayız Hükümleri",
+    "title": "Hayızlı kadın ne yapamaz?",
+    "content": "Hayız döneminde şunlar yasaktır:\n• Namaz kılmak (ve kazasını tutmak gerekmez)\n• Oruç tutmak (daha sonra kaza edilir)\n• Kur'an-ı Kerim'e dokunmak ve okumak (Hanefî'ye göre dokunmak yasak, bazı mezheplere göre ezberi okumak caiz)\n• Camiye girmek\n• Tavaf etmek\n• Eşiyle cinsel ilişki",
+    "source": "Merğînânî, el-Hidâye; İbn Kudâme, el-Muğnî"
+  },
+  {
+    "id": 3,
+    "category": "Hayız Hükümleri",
+    "title": "Hayız bitince ne yapılır?",
+    "content": "Hayız bitince gusül abdesti (boy abdesti) alınması farzdır. Gusülsüz namaz, oruç ve diğer ibadetler geçerli değildir. Kan kesilmiş fakat gusül alınmamışsa namaz yine kılınamaz.",
+    "source": "Buhârî, Hayz 1; Müslim, Hayz 69"
+  },
+  {
+    "id": 4,
+    "category": "Hayız Hükümleri",
+    "title": "Hayızda zikir ve dua",
+    "content": "Hayızlı kadın Kur'an okuyamasa da zikir, dua, salevat ve tesbih çekebilir. Sabah-akşam dualarını, istiğfar ve salavatı okumakta herhangi bir sakınca yoktur. Bu dönemde manevi bağı canlı tutmak önerilir.",
+    "source": "Fetâvâ-yı Hindiyye; Nevevî, el-Ezkâr"
+  },
+  {
+    "id": 5,
+    "category": "Nifas Hükümleri",
+    "title": "Nifas nedir?",
+    "content": "Nifas, doğumdan sonra gelen kandır. Hanefî mezhebine göre en fazla 40 gündür; 40 günden önce kan kesilirse gusül alınır ve ibadete başlanır. Şâfiî mezhebine göre de en fazla 60 gündür. En az süresi için mezheplerde farklı görüşler vardır.",
+    "source": "Kâsânî, Bedâiu's-Sanâi'; Şîrâzî, el-Mühezzeb"
+  },
+  {
+    "id": 6,
+    "category": "Nifas Hükümleri",
+    "title": "Nifas hükümleri hayızla aynıdır",
+    "content": "Nifas döneminde namaz, oruç, Kur'an okuma ve diğer ibadetler hayız dönemindeki gibi yasaktır. Kan 40 günden önce kesilirse hemen gusül alınır. 40 günü geçen kan ise istihaza (özür kanı) sayılır.",
+    "source": "İbn Âbidîn, Reddü'l-Muhtâr"
+  },
+  {
+    "id": 7,
+    "category": "Nifas Hükümleri",
+    "title": "İstihaza (özür kanı)",
+    "content": "İstihaza; hayız ve nifas dışında gelen hastalık kaynaklı kandır. İstihazalı kadın hayız veya nifas hükümlerine tabi değildir. Her namaz vakti için abdest alır ve normal ibadetlerine devam eder.",
+    "source": "Serahsî, el-Mebsût; Nevevî, el-Mecmû'"
+  },
+  {
+    "id": 8,
+    "category": "Namaz ve Oruç",
+    "title": "Kaçırılan oruçların kazası",
+    "content": "Hayız ve nifas döneminde tutulamayan oruçlar daha sonra kaza edilmelidir. Hz. Aişe (r.a.) şöyle aktarmıştır: 'Biz hayız döneminde orucumuzu kaza ederdik ama namazı kaza etmezdik.' Bu nedenle oruç sayısını not etmek faydalıdır.",
+    "source": "Buhârî, Hayz 20; Müslim, Hayz 69"
+  },
+  {
+    "id": 9,
+    "category": "Namaz ve Oruç",
+    "title": "Namaz kazası gerekmez",
+    "content": "Hayız ve nifas döneminde kılınamayan namazlar kaza edilmez. Bu İslam'ın kadına tanıdığı bir kolaylıktır. Hz. Peygamber (s.a.v.) döneminde sahabiyeler bu uygulamayı bizzat yaşamış ve aktarmıştır.",
+    "source": "Buhârî, Hayz 20; Ebû Dâvûd, Tahâret 104"
+  },
+  {
+    "id": 10,
+    "category": "Namaz ve Oruç",
+    "title": "Ramazan'da hayız",
+    "content": "Ramazan'da hayız başlayan kadın o günden itibaren oruç tutamaz. Kan kesilince gusül alır ve kalan günlerde orucuna devam eder. Hayız nedeniyle tutamadığı günleri Ramazan'dan sonra kaza eder. Fidye gerekmez.",
+    "source": "Buhârî, Savm 40; Müslim, Sıyâm 14"
+  },
+  {
+    "id": 11,
+    "category": "Kaza Namazı",
+    "title": "Hayız günlerinde kaza borcu oluşmaz",
+    "content": "Hayız ve nifas günlerinde namaz borcu oluşmaz ve bu günler kaza namazı hesabında düşülür. Kaza namazı hesabı yapılırken hayızlı olunan günler toplam borç süresinden çıkarılmalıdır. Uygulamamızdaki kaza hesaplama aracında bu düşümü yapabilirsiniz.",
+    "source": "İcmâ; Buhârî, Hayz 20"
+  },
+  {
+    "id": 12,
+    "category": "Kaza Namazı",
+    "title": "Vitir'in kaza hükmü (kadın için)",
+    "content": "Hanefî mezhebinde vitir namazı vaciptir; hayız dışındaki dönemlerde kılınmayan vitirler kaza edilmelidir. Diğer mezheplerde vitir sünnettir ve kaza gerekmez. Kaza hesabı yaparken mezhebi doğru seçin; uygulama bunu otomatik hesaplar.",
+    "source": "İbn Âbidîn, Reddü'l-Muhtâr; Nevevî, el-Mecmû'"
+  },
+  {
+    "id": 13,
+    "category": "Kaza Namazı",
+    "title": "Kaza namazı nasıl kılınır?",
+    "content": "Kaza namazı, vaktinde kılınamayan namazın aynısıdır. Sabah namazının kazası 2 rekât, öğle ve ikindi 4 rekât, akşam 3 rekât, yatsı 4 rekât kılınır. Kasden bırakılan namazlarda niyet 'falan vaktin kazası' şeklinde yapılır.",
+    "source": "Merğînânî, el-Hidâye; İbn Kudâme, el-Muğnî"
+  }
+]

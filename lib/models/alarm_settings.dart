@@ -8,6 +8,7 @@ enum AlarmMode {
   before10,
   before15,
   before30,
+  custom,
 }
 
 extension AlarmModeExtension on AlarmMode {
@@ -25,15 +26,13 @@ extension AlarmModeExtension on AlarmMode {
         return '15 dk önce';
       case AlarmMode.before30:
         return '30 dk önce';
+      case AlarmMode.custom:
+        return 'Özel';
     }
   }
 
   int get minutesBefore {
     switch (this) {
-      case AlarmMode.off:
-        return 0;
-      case AlarmMode.onTime:
-        return 0;
       case AlarmMode.before5:
         return 5;
       case AlarmMode.before10:
@@ -42,6 +41,10 @@ extension AlarmModeExtension on AlarmMode {
         return 15;
       case AlarmMode.before30:
         return 30;
+      case AlarmMode.off:
+      case AlarmMode.onTime:
+      case AlarmMode.custom:
+        return 0;
     }
   }
 }
@@ -52,18 +55,36 @@ class PrayerAlarmSetting {
   bool enabled;
   AlarmMode mode;
 
+  /// `mode == custom` için kullanıcı tanımlı dakika (vaktinden önce).
+  int customMinutes;
+
+  /// Bildirim sesi olarak ezan kullanılsın mı.
+  bool useEzan;
+
   PrayerAlarmSetting({
     required this.prayerKey,
     required this.prayerName,
     this.enabled = false,
     this.mode = AlarmMode.onTime,
+    this.customMinutes = 10,
+    this.useEzan = false,
   });
+
+  /// Bildirimin vakitten kaç dk önce kurulacağı.
+  int get effectiveMinutes =>
+      mode == AlarmMode.custom ? customMinutes : mode.minutesBefore;
+
+  /// UI'da gösterilecek etiket (özel için dakikayı yazar).
+  String get displayLabel =>
+      mode == AlarmMode.custom ? '$customMinutes dk önce' : mode.label;
 
   Map<String, dynamic> toJson() => {
         'prayerKey': prayerKey,
         'prayerName': prayerName,
         'enabled': enabled,
         'mode': mode.index,
+        'customMinutes': customMinutes,
+        'useEzan': useEzan,
       };
 
   factory PrayerAlarmSetting.fromJson(Map<String, dynamic> json) {
@@ -72,6 +93,8 @@ class PrayerAlarmSetting {
       prayerName: json['prayerName'] as String,
       enabled: json['enabled'] as bool? ?? false,
       mode: AlarmMode.values[json['mode'] as int? ?? 1],
+      customMinutes: json['customMinutes'] as int? ?? 10,
+      useEzan: json['useEzan'] as bool? ?? false,
     );
   }
 }
@@ -106,11 +129,14 @@ class AlarmSettings {
 
   List<PrayerAlarmSetting> get allSettings => _settings.values.toList();
 
-  void updateSetting(String prayerKey, {bool? enabled, AlarmMode? mode}) {
+  void updateSetting(String prayerKey,
+      {bool? enabled, AlarmMode? mode, int? customMinutes, bool? useEzan}) {
     final setting = _settings[prayerKey];
     if (setting != null) {
       if (enabled != null) setting.enabled = enabled;
       if (mode != null) setting.mode = mode;
+      if (customMinutes != null) setting.customMinutes = customMinutes;
+      if (useEzan != null) setting.useEzan = useEzan;
     }
   }
 

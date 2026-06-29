@@ -34,4 +34,23 @@ class HadithService {
       return null;
     }
   }
+
+  /// Aktif namaz vaktine göre hadis döner. Gün + vakit indeksiyle döngüsel seçim.
+  Future<Hadith?> getHadithForPrayer(String prayerKey) async {
+    final hadiths = await loadHadiths();
+    if (hadiths.isEmpty) return null;
+    final prayerIndex = const {
+      'fajr': 0,
+      'sunrise': 1,
+      'dhuhr': 2,
+      'asr': 3,
+      'maghrib': 4,
+      'isha': 5,
+    }[prayerKey] ??
+        0;
+    final now = DateTime.now();
+    final dayOfYear = now.difference(DateTime(now.year, 1, 1)).inDays;
+    final index = (dayOfYear * 6 + prayerIndex) % hadiths.length;
+    return hadiths[index];
+  }
 }

@@ -66,39 +66,61 @@ class NotificationService {
     required int id,
     required String prayerName,
     required DateTime scheduledTime,
-    required AlarmMode mode,
+    required int minutesBefore,
+    bool useEzan = false,
   }) async {
     final actualTime =
-        scheduledTime.subtract(Duration(minutes: mode.minutesBefore));
+        scheduledTime.subtract(Duration(minutes: minutesBefore));
 
     if (actualTime.isBefore(DateTime.now())) return;
 
     final tzTime = tz.TZDateTime.from(actualTime, tz.local);
 
     String body;
-    if (mode == AlarmMode.onTime) {
+    if (minutesBefore == 0) {
       body = '$prayerName vakti girdi.';
     } else {
-      body = '$prayerName vaktine ${mode.minutesBefore} dakika kaldı.';
+      body = '$prayerName vaktine $minutesBefore dakika kaldı.';
     }
 
-    final androidDetails = AndroidNotificationDetails(
-      AppConstants.prayerChannelId,
-      AppConstants.prayerChannelName,
-      channelDescription: AppConstants.prayerChannelDesc,
-      importance: Importance.high,
-      priority: Priority.high,
-      playSound: true,
-      enableVibration: true,
-      icon: '@mipmap/ic_launcher',
-      styleInformation: BigTextStyleInformation(body),
-    );
+    final androidDetails = useEzan
+        ? AndroidNotificationDetails(
+            AppConstants.ezanChannelId,
+            AppConstants.ezanChannelName,
+            channelDescription: 'Namaz vakti ezan sesiyle bildirimi',
+            importance: Importance.high,
+            priority: Priority.high,
+            sound: const RawResourceAndroidNotificationSound(
+                AppConstants.ezanSoundFile),
+            playSound: true,
+            enableVibration: false,
+            icon: '@mipmap/ic_launcher',
+            styleInformation: BigTextStyleInformation(body),
+          )
+        : AndroidNotificationDetails(
+            AppConstants.prayerChannelId,
+            AppConstants.prayerChannelName,
+            channelDescription: AppConstants.prayerChannelDesc,
+            importance: Importance.high,
+            priority: Priority.high,
+            playSound: true,
+            enableVibration: true,
+            icon: '@mipmap/ic_launcher',
+            styleInformation: BigTextStyleInformation(body),
+          );
 
-    const iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
+    final iosDetails = useEzan
+        ? const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+            sound: '${AppConstants.ezanSoundFile}.mp3',
+          )
+        : const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          );
 
     final details = NotificationDetails(
       android: androidDetails,
@@ -116,6 +138,46 @@ class NotificationService {
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: null,
     );
+  }
+
+  /// Sistem bildirim çubuğunda kalıcı "sonraki vakit" göstergesi.
+  Future<void> showOngoingNotification({
+    required String nextPrayerName,
+    required String prayerTime,
+    required String remaining,
+  }) async {
+    const androidDetails = AndroidNotificationDetails(
+      AppConstants.ongoingChannelId,
+      AppConstants.ongoingChannelName,
+      channelDescription: 'Sonraki namaz vaktini sürekli gösterir',
+      importance: Importance.low,
+      priority: Priority.low,
+      ongoing: true,
+      autoCancel: false,
+      showWhen: false,
+      channelShowBadge: false,
+      playSound: false,
+      enableVibration: false,
+      icon: '@mipmap/ic_launcher',
+    );
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: false,
+      presentBadge: false,
+      presentSound: false,
+    );
+    const details =
+        NotificationDetails(android: androidDetails, iOS: iosDetails);
+
+    await _plugin.show(
+      AppConstants.ongoingNotifId,
+      'Vakitli — $nextPrayerName',
+      '$prayerTime · $remaining kaldı',
+      details,
+    );
+  }
+
+  Future<void> cancelOngoingNotification() async {
+    await _plugin.cancel(AppConstants.ongoingNotifId);
   }
 
   /// Bugün (kalan vakitler) + yarın (tüm vakitler) için bildirim kurar.
@@ -154,7 +216,8 @@ class NotificationService {
         id: idBase + i + 1,
         prayerName: entry.name,
         scheduledTime: entry.timeOn(day),
-        mode: setting.mode,
+        minutesBefore: setting.effectiveMinutes,
+        useEzan: setting.useEzan,
       );
     }
   }

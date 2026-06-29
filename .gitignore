@@ -1,3 +1,9 @@
+# Release signing — never commit these
+android/key.properties
+android/app/google-services.json
+*.jks
+*.keystore
+
 # Miscellaneous
 *.class
 *.log
@@ -43,3 +49,12 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Geliştirme içi dokümanlar (lokal kalır, GitHub'a gitmez)
+/progress.md
+/CLAUDE.md
+/Agents.md
+
+# Logo kaynak dosyaları (büyük, üretim için gerekmez)
+/logo.png
+/magnific_*.png

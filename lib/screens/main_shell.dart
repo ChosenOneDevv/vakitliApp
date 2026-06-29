@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vakitli/config/theme.dart';
 import 'package:vakitli/providers/prayer_provider.dart';
-import 'package:vakitli/providers/qibla_provider.dart';
 import 'package:vakitli/screens/home/home_screen.dart';
 import 'package:vakitli/screens/qibla/qibla_screen.dart';
-import 'package:vakitli/screens/tracker/tracker_screen.dart';
-import 'package:vakitli/screens/tasbih/tasbih_screen.dart';
-import 'package:vakitli/screens/hadith/hadith_screen.dart';
-import 'package:vakitli/screens/settings/settings_screen.dart';
+import 'package:vakitli/screens/apps/apps_screen.dart';
+import 'package:vakitli/widgets/radio_mini_player.dart';
 
 class _TabItem {
   final IconData icon;
@@ -33,16 +30,34 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   int _currentIndex = 0;
-  bool _hasCompass = false;
-  // Lazy IndexedStack: sadece ziyaret edilen sekme build edilir. Açılışta 6
-  // ekranın hepsini birden build etmek startup lag yapıyordu.
+  // Lazy IndexedStack: sadece ziyaret edilen sekme build edilir.
   final Set<int> _visited = {0};
+
+  static const List<_TabItem> _tabs = [
+    _TabItem(
+      icon: Icons.mosque_outlined,
+      activeIcon: Icons.mosque_rounded,
+      label: 'Ana Sayfa',
+      screen: HomeScreen(),
+    ),
+    _TabItem(
+      icon: Icons.explore_outlined,
+      activeIcon: Icons.explore_rounded,
+      label: 'Kıble',
+      screen: QiblaScreen(),
+    ),
+    _TabItem(
+      icon: Icons.apps_outlined,
+      activeIcon: Icons.apps_rounded,
+      label: 'Uygulamalar',
+      screen: AppsScreen(),
+    ),
+  ];
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _checkCompass();
   }
 
   @override
@@ -59,82 +74,25 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _checkCompass() async {
-    final available = await QiblaProvider.checkCompassAvailability();
-    if (mounted && available != _hasCompass) {
-      setState(() {
-        _hasCompass = available;
-      });
-    }
-  }
-
-  List<_TabItem> get _tabs {
-    final tabs = <_TabItem>[
-      const _TabItem(
-        icon: Icons.mosque_outlined,
-        activeIcon: Icons.mosque_rounded,
-        label: 'Vakitler',
-        screen: HomeScreen(),
-      ),
-    ];
-
-    if (_hasCompass) {
-      tabs.add(const _TabItem(
-        icon: Icons.explore_outlined,
-        activeIcon: Icons.explore_rounded,
-        label: 'Kıble',
-        screen: QiblaScreen(),
-      ));
-    }
-
-    tabs.addAll(const [
-      _TabItem(
-        icon: Icons.check_circle_outline_rounded,
-        activeIcon: Icons.check_circle_rounded,
-        label: 'Takip',
-        screen: TrackerScreen(),
-      ),
-      _TabItem(
-        icon: Icons.radio_button_checked_rounded,
-        activeIcon: Icons.radio_button_checked_rounded,
-        label: 'Tesbih',
-        screen: TasbihScreen(),
-      ),
-      _TabItem(
-        icon: Icons.menu_book_outlined,
-        activeIcon: Icons.menu_book_rounded,
-        label: 'Hadis',
-        screen: HadithScreen(),
-      ),
-      _TabItem(
-        icon: Icons.settings_outlined,
-        activeIcon: Icons.settings_rounded,
-        label: 'Ayarlar',
-        screen: SettingsScreen(),
-      ),
-    ]);
-
-    return tabs;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final tabs = _tabs;
-    if (_currentIndex >= tabs.length) {
-      _currentIndex = 0;
-    }
-
     _visited.add(_currentIndex);
 
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: List.generate(tabs.length, (i) {
-          // Ziyaret edilmemiş sekme boş kalır; ilk açıldığında build edilir.
-          return _visited.contains(i)
-              ? tabs[i].screen
-              : const SizedBox.shrink();
-        }),
+      body: Column(
+        children: [
+          Expanded(
+            child: IndexedStack(
+              index: _currentIndex,
+              children: List.generate(_tabs.length, (i) {
+                return _visited.contains(i)
+                    ? _tabs[i].screen
+                    : const SizedBox.shrink();
+              }),
+            ),
+          ),
+          const RadioMiniPlayer(),
+        ],
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -153,7 +111,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
               _currentIndex = index;
             });
           },
-          items: tabs.map((item) {
+          items: _tabs.map((item) {
             return BottomNavigationBarItem(
               icon: Icon(item.icon),
               activeIcon: Icon(item.activeIcon),

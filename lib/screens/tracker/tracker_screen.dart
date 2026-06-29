@@ -33,6 +33,10 @@ class TrackerScreen extends StatelessWidget {
                 monthly: provider.monthlyCompleted,
                 total: provider.totalCompleted,
               ),
+              const SizedBox(height: 16),
+              _HeatmapCard(days: provider.lastDays(35)),
+              const SizedBox(height: 16),
+              _AchievementsCard(provider: provider),
               const SizedBox(height: 20),
             ],
           );
@@ -129,11 +133,12 @@ class _TodayCard extends StatelessWidget {
             const Divider(height: 1),
             ...PrayerLog.prayerKeys.map((key) {
               final done = log.isDone(key);
+              final jamaah = log.isJamaah(key);
               return InkWell(
                 onTap: () => provider.togglePrayer(key),
                 borderRadius: BorderRadius.circular(8),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.symmetric(vertical: 6),
                   child: Row(
                     children: [
                       Icon(
@@ -144,15 +149,35 @@ class _TodayCard extends StatelessWidget {
                             done ? AppColors.primaryGreen : AppColors.lightText,
                       ),
                       const SizedBox(width: 14),
-                      Text(
-                        PrayerLog.prayerNames[key]!,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: done
-                                  ? Theme.of(context).colorScheme.onSurface
-                                  : AppColors.lightText,
-                              fontWeight:
-                                  done ? FontWeight.w600 : FontWeight.normal,
-                            ),
+                      Expanded(
+                        child: Text(
+                          PrayerLog.prayerNames[key]!,
+                          style:
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: done
+                                        ? Theme.of(context).colorScheme.onSurface
+                                        : AppColors.lightText,
+                                    fontWeight: done
+                                        ? FontWeight.w600
+                                        : FontWeight.normal,
+                                  ),
+                        ),
+                      ),
+                      // Cemaat işareti — sadece kılındıysa aktif.
+                      IconButton(
+                        tooltip: 'Cemaatle',
+                        visualDensity: VisualDensity.compact,
+                        icon: Icon(
+                          jamaah ? Icons.mosque_rounded : Icons.mosque_outlined,
+                          size: 20,
+                          color: jamaah
+                              ? AppColors.gold
+                              : (done
+                                  ? AppColors.lightText
+                                  : AppColors.lightText.withValues(alpha: 0.3)),
+                        ),
+                        onPressed:
+                            done ? () => provider.toggleJamaah(key) : null,
                       ),
                     ],
                   ),
@@ -262,6 +287,143 @@ class _StatsRow extends StatelessWidget {
       ],
     );
   }
+}
+
+class _HeatmapCard extends StatelessWidget {
+  final List<DaySummary> days;
+
+  const _HeatmapCard({required this.days});
+
+  Color _cellColor(int completed) {
+    if (completed == 0) return AppColors.lightText.withValues(alpha: 0.15);
+    final ratio = completed / 5;
+    return AppColors.primaryGreen.withValues(alpha: 0.25 + ratio * 0.6);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.grid_view_rounded,
+                    size: 20, color: AppColors.gold),
+                const SizedBox(width: 8),
+                Text('Son 5 Hafta',
+                    style: Theme.of(context).textTheme.titleMedium),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: days
+                  .map((d) => Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: _cellColor(d.completed),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AchievementsCard extends StatelessWidget {
+  final TrackerProvider provider;
+
+  const _AchievementsCard({required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    final badges = <_Badge>[
+      _Badge(Icons.flag_rounded, 'İlk Adım', provider.totalCompleted >= 1),
+      _Badge(Icons.local_fire_department_rounded, '7 Gün Seri',
+          provider.streak >= 7),
+      _Badge(
+          Icons.calendar_month_rounded, '30 Gün Seri', provider.streak >= 30),
+      _Badge(Icons.workspace_premium_rounded, '100 Namaz',
+          provider.totalCompleted >= 100),
+      _Badge(Icons.mosque_rounded, 'Cemaat (10)', provider.totalJamaah >= 10),
+      _Badge(Icons.verified_rounded, 'Tam Gün', provider.fullDaysCount >= 1),
+    ];
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.emoji_events_rounded,
+                    size: 20, color: AppColors.gold),
+                const SizedBox(width: 8),
+                Text('Başarımlar',
+                    style: Theme.of(context).textTheme.titleMedium),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: badges.map((b) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        color: b.unlocked
+                            ? AppColors.gold.withValues(alpha: 0.18)
+                            : AppColors.lightText.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        b.icon,
+                        color: b.unlocked ? AppColors.gold : AppColors.lightText,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    SizedBox(
+                      width: 64,
+                      child: Text(
+                        b.label,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: b.unlocked
+                                  ? Theme.of(context).colorScheme.onSurface
+                                  : AppColors.lightText,
+                            ),
+                      ),
+                    ),
+                  ],
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Badge {
+  final IconData icon;
+  final String label;
+  final bool unlocked;
+  const _Badge(this.icon, this.label, this.unlocked);
 }
 
 class _StatBox extends StatelessWidget {

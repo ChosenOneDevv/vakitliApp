@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:vakitli/config/theme.dart';
 import 'package:vakitli/providers/location_provider.dart';
 import 'package:vakitli/providers/qibla_provider.dart';
+import 'package:vakitli/screens/qibla/qibla_ar_screen.dart';
 
 class QiblaScreen extends StatefulWidget {
   const QiblaScreen({super.key});
@@ -46,7 +47,18 @@ class _QiblaScreenState extends State<QiblaScreen> {
     return ChangeNotifierProvider.value(
       value: _qiblaProvider!,
       child: Scaffold(
-        appBar: AppBar(title: const Text('Kıble Pusulası')),
+        appBar: AppBar(
+          title: const Text('Kıble Pusulası'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.view_in_ar_rounded),
+              tooltip: 'AR Kıble',
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const QiblaArScreen()),
+              ),
+            ),
+          ],
+        ),
         body: Consumer<QiblaProvider>(
           builder: (context, provider, _) {
             if (!provider.initialized) {

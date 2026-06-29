@@ -42,6 +42,39 @@ void main() {
       expect(restored.isDone('asr'), true);
       expect(restored.completedCount, 1);
     });
+
+    test('jamaah only togglable when prayer done', () {
+      var log = PrayerLog.empty('2026-06-28');
+      log = log.copyWithJamaahToggle('fajr'); // kılınmadı → değişmez
+      expect(log.isJamaah('fajr'), false);
+      log = log.copyWithToggle('fajr'); // kılındı
+      log = log.copyWithJamaahToggle('fajr');
+      expect(log.isJamaah('fajr'), true);
+      expect(log.jamaahCount, 1);
+    });
+
+    test('un-doing a prayer clears its jamaah', () {
+      var log = PrayerLog.empty('2026-06-28')
+          .copyWithToggle('dhuhr')
+          .copyWithJamaahToggle('dhuhr');
+      expect(log.isJamaah('dhuhr'), true);
+      log = log.copyWithToggle('dhuhr'); // kılınmadıya dön
+      expect(log.isJamaah('dhuhr'), false);
+    });
+
+    test('fromJson eski düz format jamaah=false verir', () {
+      final log = PrayerLog.fromJson('2026-06-28', {'fajr': true});
+      expect(log.isDone('fajr'), true);
+      expect(log.isJamaah('fajr'), false);
+    });
+
+    test('jamaah yeni format roundtrip', () {
+      final log = PrayerLog.empty('2026-06-28')
+          .copyWithToggle('isha')
+          .copyWithJamaahToggle('isha');
+      final restored = PrayerLog.fromJson('2026-06-28', log.toJson());
+      expect(restored.isJamaah('isha'), true);
+    });
   });
 
   group('TrackerProvider stats', () {
@@ -100,6 +133,16 @@ void main() {
       };
       final provider = await providerWith(logs);
       expect(provider.totalCompleted, 3);
+    });
+
+    test('fullDaysCount + lastDays length', () async {
+      final now = DateTime.now();
+      final provider = await providerWith({
+        TrackerService.dateKey(now): fullDay(),
+      });
+      expect(provider.fullDaysCount, 1);
+      expect(provider.lastDays(35).length, 35);
+      expect(provider.lastDays(35).last.completed, 5);
     });
   });
 }

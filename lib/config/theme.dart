@@ -79,11 +79,14 @@ class AppTheme {
     foregroundColor: AppColors.white,
     centerTitle: true,
     elevation: 0,
+    scrolledUnderElevation: 0,
+    surfaceTintColor: Colors.transparent,
     titleTextStyle: TextStyle(
       fontFamily: 'Amiri',
-      fontSize: 22,
+      fontSize: 20,
       fontWeight: FontWeight.bold,
       color: AppColors.white,
+      letterSpacing: 0.5,
     ),
   );
 
@@ -119,9 +122,12 @@ class AppTheme {
       appBarTheme: _appBarTheme,
       cardTheme: CardThemeData(
         color: AppColors.cardBg,
-        elevation: 2,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(18),
+          side: BorderSide(color: AppColors.darkText.withValues(alpha: 0.07)),
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -129,6 +135,7 @@ class AppTheme {
         selectedItemColor: AppColors.primaryGreen,
         unselectedItemColor: AppColors.lightText,
         type: BottomNavigationBarType.fixed,
+        elevation: 0,
         selectedLabelStyle: TextStyle(
             fontFamily: 'Cairo', fontSize: 12, fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(fontFamily: 'Cairo', fontSize: 11),
@@ -138,6 +145,68 @@ class AppTheme {
       floatingActionButtonTheme: _fabTheme,
       dividerTheme: const DividerThemeData(
         color: AppColors.darkCream,
+        thickness: 1,
+      ),
+    );
+  }
+
+  /// Material You — cihaz duvar kağıdından gelen dinamik renk şeması.
+  static ThemeData dynamicTheme(ColorScheme scheme) {
+    final isDark = scheme.brightness == Brightness.dark;
+    final textColor = isDark ? AppColors.darkOnSurface : AppColors.darkText;
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: scheme,
+      scaffoldBackgroundColor: scheme.surface,
+      appBarTheme: AppBarTheme(
+        backgroundColor: scheme.primary,
+        foregroundColor: scheme.onPrimary,
+        centerTitle: true,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        titleTextStyle: TextStyle(
+          fontFamily: 'Amiri',
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: scheme.onPrimary,
+          letterSpacing: 0.5,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: scheme.surfaceContainerHighest.withValues(alpha: isDark ? 0.5 : 0.4),
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+          side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.4)),
+        ),
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: scheme.surface,
+        selectedItemColor: scheme.primary,
+        unselectedItemColor: scheme.onSurfaceVariant,
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+        selectedLabelStyle: const TextStyle(
+            fontFamily: 'Cairo', fontSize: 12, fontWeight: FontWeight.w600),
+        unselectedLabelStyle:
+            const TextStyle(fontFamily: 'Cairo', fontSize: 11),
+      ),
+      textTheme: _textTheme(textColor),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: scheme.primary,
+          foregroundColor: scheme.onPrimary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        ),
+      ),
+      dividerTheme: DividerThemeData(
+        color: scheme.outlineVariant.withValues(alpha: 0.5),
         thickness: 1,
       ),
     );
@@ -159,9 +228,12 @@ class AppTheme {
       appBarTheme: _appBarTheme,
       cardTheme: CardThemeData(
         color: AppColors.darkCard,
-        elevation: 2,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(18),
+          side: BorderSide(color: AppColors.white.withValues(alpha: 0.06)),
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -169,6 +241,7 @@ class AppTheme {
         selectedItemColor: AppColors.lightGreen,
         unselectedItemColor: AppColors.lightText,
         type: BottomNavigationBarType.fixed,
+        elevation: 0,
         selectedLabelStyle: TextStyle(
             fontFamily: 'Cairo', fontSize: 12, fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(fontFamily: 'Cairo', fontSize: 11),

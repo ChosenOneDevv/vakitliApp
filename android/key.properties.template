@@ -1,0 +1,4 @@
+storePassword=KEYSTORE_SIFRE
+keyPassword=KEY_SIFRE
+keyAlias=vakitli
+storeFile=/home/KULLANICI/vakitli-release.jks
