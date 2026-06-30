@@ -25,25 +25,25 @@ class RadioProvider extends ChangeNotifier {
       id: 'husary',
       name: 'Mahmud Halil Husari',
       description: 'Mahmud Halil el-Husari tilâveti',
-      streamUrl: 'https://live.mp3quran.net/husary/stream.mp3',
+      streamUrl: 'https://stream.mp3quran.net/husary/',
     ),
     RadioStation(
       id: 'quran_kareem',
       name: 'Kur\'an-ı Kerim',
       description: 'Sürekli Kur\'an-ı Kerim yayını',
-      streamUrl: 'https://stream.radiojar.com/4xng22g9xyquv',
+      streamUrl: 'https://n03.radiojar.com/4xng22g9xyquv',
     ),
     RadioStation(
       id: 'murattal',
       name: 'Mürâttel',
       description: 'Mürâttel okuyuş yayını',
-      streamUrl: 'https://stream.radiojar.com/0tpy1h0kxtzuv',
+      streamUrl: 'https://n03.radiojar.com/0tpy1h0kxtzuv',
     ),
     RadioStation(
       id: 'minshawi',
       name: 'Muhammed Sıddık Minşâvî',
       description: 'Minşâvî mücevved tilâveti',
-      streamUrl: 'https://live.mp3quran.net/minsh/stream.mp3',
+      streamUrl: 'https://stream.mp3quran.net/minsh/',
     ),
   ];
 
