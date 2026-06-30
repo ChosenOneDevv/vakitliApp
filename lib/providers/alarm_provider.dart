@@ -6,11 +6,13 @@ import 'package:vakitli/services/notification_service.dart';
 
 class AlarmProvider extends ChangeNotifier {
   static const String _ongoingKey = 'ongoing_notif_enabled';
+  static const String _exemptionKey = 'hayd_exemption_active';
 
   final AlarmSettings _alarmSettings = AlarmSettings();
   final NotificationService _notificationService = NotificationService();
   bool _initialized = false;
   bool _ongoingEnabled = false;
+  bool _exemptionActive = false;
 
   // Son bilinen vakitler — ayar değişince yeniden kurmak için saklanır.
   PrayerTime? _todayPrayer;
@@ -21,12 +23,16 @@ class AlarmProvider extends ChangeNotifier {
   bool get initialized => _initialized;
   bool get ongoingEnabled => _ongoingEnabled;
 
+  /// Hayız/nifas muafiyeti aktif mi? Aktifken namaz alarmları kurulmaz.
+  bool get exemptionActive => _exemptionActive;
+
   Future<void> initialize() async {
     if (_initialized) return;
     await _notificationService.initialize();
     await _alarmSettings.load();
     final prefs = await SharedPreferences.getInstance();
     _ongoingEnabled = prefs.getBool(_ongoingKey) ?? false;
+    _exemptionActive = prefs.getBool(_exemptionKey) ?? false;
     _initialized = true;
     notifyListeners();
     // Vakitler init'ten önce gelmiş olabilir → varsa şimdi kur.
@@ -117,8 +123,28 @@ class AlarmProvider extends ChangeNotifier {
     _updateOngoingNotif();
   }
 
+  /// Hayız/nifas muafiyet modunu aç/kapat. Açıkken namaz alarmları iptal
+  /// edilir ve yeniden kurulmaz; kapanınca normal program geri yüklenir.
+  Future<void> setExemption(bool value) async {
+    if (_exemptionActive == value) return;
+    _exemptionActive = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_exemptionKey, value);
+    notifyListeners();
+    if (value) {
+      await _notificationService.cancelAllNotifications();
+    } else {
+      await _reschedule();
+    }
+  }
+
   Future<void> _reschedule() async {
     if (!_initialized || _todayPrayer == null) return;
+    if (_exemptionActive) {
+      // Muafiyet modunda namaz alarmı kurulmaz.
+      await _notificationService.cancelAllNotifications();
+      return;
+    }
     await _notificationService.scheduleAllPrayerNotifications(
       prayerTime: _todayPrayer!,
       tomorrowPrayer: _tomorrowPrayer,
@@ -127,10 +153,13 @@ class AlarmProvider extends ChangeNotifier {
   }
 
   void _updateOngoingNotif() {
-    if (!_ongoingEnabled || _todayPrayer == null) {
+    if (!_ongoingEnabled) {
       _notificationService.cancelOngoingNotification();
       return;
     }
+    // Vakit verisi henüz gelmediyse mevcut kalıcı bildirimi iptal etme;
+    // veri geldiğinde tazelenir (app yeniden açılınca kaybolmasın).
+    if (_todayPrayer == null) return;
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
@@ -163,6 +192,7 @@ class AlarmProvider extends ChangeNotifier {
       nextPrayerName: nextEntry.name,
       prayerTime: nextEntry.time,
       remaining: remaining,
+      todayEntries: _todayPrayer!.entries,
     );
   }
 

@@ -17,3 +17,7 @@
 # Kotlin
 -dontwarn kotlin.**
 -keep class kotlin.** { *; }
+
+# Play Core — Flutter deferred components (kullanılmıyor; R8 uyarısını sustur)
+-dontwarn com.google.android.play.core.**
+-keep class com.google.android.play.core.** { *; }

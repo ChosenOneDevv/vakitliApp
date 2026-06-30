@@ -31,6 +31,8 @@ import 'package:vakitli/providers/hutbe_provider.dart';
 import 'package:vakitli/providers/dua_kardesligi_provider.dart';
 import 'package:vakitli/providers/mosque_geofence_provider.dart';
 import 'package:vakitli/providers/quran_provider.dart';
+import 'package:vakitli/providers/hatim_provider.dart';
+import 'package:vakitli/providers/library_provider.dart';
 import 'package:vakitli/screens/auth/auth_screen.dart';
 import 'package:vakitli/screens/main_shell.dart';
 import 'package:vakitli/screens/onboarding/onboarding_screen.dart';
@@ -106,6 +108,8 @@ class VakitliApp extends StatelessWidget {
         ChangeNotifierProvider(
             create: (_) => MosqueGeofenceProvider()..initialize()),
         ChangeNotifierProvider(create: (_) => QuranProvider()),
+        ChangeNotifierProvider(create: (_) => HatimProvider()..initialize()),
+        ChangeNotifierProvider(create: (_) => LibraryProvider()..initialize()),
       ],
       child: Consumer2<ThemeProvider, LocaleProvider>(
         builder: (context, themeProvider, localeProvider, child) {

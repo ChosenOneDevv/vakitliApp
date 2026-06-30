@@ -117,6 +117,7 @@ class AlarmSettings {
     PrayerAlarmSetting(prayerKey: 'asr', prayerName: 'İkindi'),
     PrayerAlarmSetting(prayerKey: 'maghrib', prayerName: 'Akşam'),
     PrayerAlarmSetting(prayerKey: 'isha', prayerName: 'Yatsı'),
+    PrayerAlarmSetting(prayerKey: 'tahajjud', prayerName: 'Teheccüd'),
   ];
 
   AlarmSettings() {

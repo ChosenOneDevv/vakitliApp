@@ -11,6 +11,12 @@ class PrayerTime {
   final String hijriYear;
   final String hijriDay;
 
+  /// Gece yarısı vakti (Aladhan `Midnight`). Eski cache'te yoksa boş.
+  final String midnight;
+
+  /// Gecenin son üçte biri — teheccüd (Aladhan `Lastthird`). Yoksa boş.
+  final String lastThird;
+
   PrayerTime({
     required this.fajr,
     required this.sunrise,
@@ -23,6 +29,8 @@ class PrayerTime {
     required this.hijriMonth,
     required this.hijriYear,
     required this.hijriDay,
+    this.midnight = '',
+    this.lastThird = '',
   });
 
   factory PrayerTime.fromAladhanJson(Map<String, dynamic> json) {
@@ -47,6 +55,8 @@ class PrayerTime {
       hijriMonth: hijri['month']?['en'] ?? '',
       hijriYear: hijri['year'] ?? '',
       hijriDay: hijri['day'] ?? '',
+      midnight: cleanTime(timings['Midnight'] ?? ''),
+      lastThird: cleanTime(timings['Lastthird'] ?? ''),
     );
   }
 
@@ -63,6 +73,8 @@ class PrayerTime {
         'hijriMonth': hijriMonth,
         'hijriYear': hijriYear,
         'hijriDay': hijriDay,
+        'midnight': midnight,
+        'lastThird': lastThird,
       };
 
   factory PrayerTime.fromCacheJson(Map<String, dynamic> json) {
@@ -78,6 +90,8 @@ class PrayerTime {
       hijriMonth: json['hijriMonth'] ?? '',
       hijriYear: json['hijriYear'] ?? '',
       hijriDay: json['hijriDay'] ?? '',
+      midnight: json['midnight'] ?? '',
+      lastThird: json['lastThird'] ?? '',
     );
   }
 

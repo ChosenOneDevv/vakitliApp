@@ -21,6 +21,8 @@ class AlarmSettingsScreen extends StatelessWidget {
         return Icons.nights_stay_outlined;
       case 'isha':
         return Icons.bedtime_outlined;
+      case 'tahajjud':
+        return Icons.nightlight_round;
       default:
         return Icons.access_time_rounded;
     }

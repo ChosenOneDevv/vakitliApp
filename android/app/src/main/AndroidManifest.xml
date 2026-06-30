@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <application
         android:label="vakitli"
         android:name="${applicationName}"
@@ -63,6 +64,54 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/vakitli_widget_info" />
+        </receiver>
+
+        <!-- Günün tüm vakitleri widget'ı -->
+        <receiver
+            android:name=".VakitliTimesWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/vakitli_times_widget_info" />
+        </receiver>
+
+        <!-- Geri sayım widget'ı -->
+        <receiver
+            android:name=".VakitliCountdownWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/vakitli_countdown_widget_info" />
+        </receiver>
+
+        <!-- Günün hadisi widget'ı -->
+        <receiver
+            android:name=".VakitliHadithWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/vakitli_hadith_widget_info" />
+        </receiver>
+
+        <!-- Hicri tarih + kıble widget'ı -->
+        <receiver
+            android:name=".VakitliHijriQiblaWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/vakitli_hijri_qibla_widget_info" />
         </receiver>
 
         <!-- just_audio: arka planda ses için medya oynatma servisi -->

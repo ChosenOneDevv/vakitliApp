@@ -11,6 +11,7 @@ import 'package:vakitli/providers/tracker_provider.dart';
 import 'package:vakitli/services/hadith_service.dart';
 import 'package:vakitli/widgets/countdown_timer.dart';
 import 'package:vakitli/widgets/prayer_card.dart';
+import 'package:vakitli/widgets/teheccud_card.dart';
 import 'package:vakitli/screens/alarm/alarm_settings_screen.dart';
 import 'package:vakitli/screens/hadith/hadith_screen.dart';
 import 'package:vakitli/screens/location/city_selection_screen.dart';
@@ -152,6 +153,13 @@ class _HomeScreenState extends State<HomeScreen> {
               style: Theme.of(context).textTheme.titleMedium),
         ),
         _prayerList(context, provider, prayer),
+        if (prayer.lastThird.isNotEmpty || prayer.midnight.isNotEmpty) ...[
+          const SizedBox(height: 14),
+          TeheccudCard(
+            midnight: prayer.midnight,
+            lastThird: prayer.lastThird,
+          ),
+        ],
       ],
     );
   }

@@ -37,7 +37,44 @@ class NotificationService {
     );
 
     await _plugin.initialize(initSettings);
+    await _createAndroidChannels();
     _initialized = true;
+  }
+
+  /// Android kanallarını ses ayarıyla açıkça oluşturur.
+  /// Kanal sesi ilk oluşturmada önbelleğe alındığından, ezan kanalı doğru
+  /// sesle kurulmazsa ses hiç çalmaz. Eski/sessiz ezan kanalını silip yeniden
+  /// oluşturuyoruz.
+  Future<void> _createAndroidChannels() async {
+    final android = _plugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+    if (android == null) return;
+
+    // Önbelleğe takılı eski ezan kanalını temizle.
+    await android.deleteNotificationChannel(AppConstants.ezanChannelIdLegacy);
+
+    await android.createNotificationChannel(
+      const AndroidNotificationChannel(
+        AppConstants.ezanChannelId,
+        AppConstants.ezanChannelName,
+        description: 'Namaz vakti ezan sesiyle bildirimi',
+        importance: Importance.high,
+        sound: RawResourceAndroidNotificationSound(AppConstants.ezanSoundFile),
+        playSound: true,
+        enableVibration: false,
+      ),
+    );
+
+    await android.createNotificationChannel(
+      const AndroidNotificationChannel(
+        AppConstants.prayerChannelId,
+        AppConstants.prayerChannelName,
+        description: AppConstants.prayerChannelDesc,
+        importance: Importance.high,
+        playSound: true,
+        enableVibration: true,
+      ),
+    );
   }
 
   Future<bool> requestPermissions() async {
@@ -96,6 +133,7 @@ class NotificationService {
             enableVibration: false,
             icon: '@mipmap/ic_launcher',
             styleInformation: BigTextStyleInformation(body),
+            groupKey: AppConstants.prayerGroupKey,
           )
         : AndroidNotificationDetails(
             AppConstants.prayerChannelId,
@@ -107,6 +145,7 @@ class NotificationService {
             enableVibration: true,
             icon: '@mipmap/ic_launcher',
             styleInformation: BigTextStyleInformation(body),
+            groupKey: AppConstants.prayerGroupKey,
           );
 
     final iosDetails = useEzan
@@ -141,12 +180,23 @@ class NotificationService {
   }
 
   /// Sistem bildirim çubuğunda kalıcı "sonraki vakit" göstergesi.
+  ///
+  /// Genişletilince o günün tüm namaz vakitlerini listeler; sonraki vakit
+  /// `▸` ile işaretlenir. [nextPrayerName] o gün içinde yoksa (gün sonu)
+  /// işaret atlanır.
   Future<void> showOngoingNotification({
     required String nextPrayerName,
     required String prayerTime,
     required String remaining,
+    List<PrayerEntry> todayEntries = const [],
   }) async {
-    const androidDetails = AndroidNotificationDetails(
+    final lines = todayEntries
+        .map((e) => e.name == nextPrayerName
+            ? '▸ ${e.name}   ${e.time}'
+            : '${e.name}   ${e.time}')
+        .toList();
+
+    final androidDetails = AndroidNotificationDetails(
       AppConstants.ongoingChannelId,
       AppConstants.ongoingChannelName,
       channelDescription: 'Sonraki namaz vaktini sürekli gösterir',
@@ -159,13 +209,21 @@ class NotificationService {
       playSound: false,
       enableVibration: false,
       icon: '@mipmap/ic_launcher',
+      largeIcon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+      styleInformation: lines.isEmpty
+          ? null
+          : InboxStyleInformation(
+              lines,
+              contentTitle: 'Vakitli — $nextPrayerName',
+              summaryText: '$prayerTime · $remaining kaldı',
+            ),
     );
     const iosDetails = DarwinNotificationDetails(
       presentAlert: false,
       presentBadge: false,
       presentSound: false,
     );
-    const details =
+    final details =
         NotificationDetails(android: androidDetails, iOS: iosDetails);
 
     await _plugin.show(
@@ -231,6 +289,30 @@ class NotificationService {
           scheduledTime: entry.timeOn(day),
           minutesBefore: 0,
           useEzan: setting.useEzan,
+        );
+      }
+    }
+
+    // Teheccüd — vakit listesinde yok, `lastThird` (gecenin son üçte biri) ile kur.
+    final tahajjud = alarmSettings.getSetting('tahajjud');
+    if (tahajjud.enabled &&
+        tahajjud.mode != AlarmMode.off &&
+        prayerTime.lastThird.isNotEmpty) {
+      final parts = prayerTime.lastThird.split(':');
+      if (parts.length == 2) {
+        final t = DateTime(
+          day.year,
+          day.month,
+          day.day,
+          int.tryParse(parts[0]) ?? 0,
+          int.tryParse(parts[1]) ?? 0,
+        );
+        await schedulePrayerNotification(
+          id: idBase + 199,
+          prayerName: 'Teheccüd',
+          scheduledTime: t,
+          minutesBefore: tahajjud.effectiveMinutes,
+          useEzan: tahajjud.useEzan,
         );
       }
     }

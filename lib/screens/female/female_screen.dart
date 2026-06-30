@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:vakitli/config/theme.dart';
+import 'package:vakitli/models/flow_entry.dart';
 import 'package:vakitli/models/hayd_record.dart';
+import 'package:vakitli/models/madhhab.dart';
 import 'package:vakitli/models/sunnah_lesson.dart';
+import 'package:vakitli/providers/alarm_provider.dart';
 import 'package:vakitli/providers/hayd_provider.dart';
+import 'package:vakitli/providers/qada_provider.dart';
+import 'package:vakitli/services/fiqh_engine.dart';
 import 'package:vakitli/services/female_content_service.dart';
 
 class FemaleScreen extends StatefulWidget {
@@ -341,21 +346,25 @@ class _HaydTrackerTab extends StatelessWidget {
         }
         return Stack(
           children: [
-            provider.records.isEmpty
-                ? _EmptyState()
-                : ListView(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-                    children: [
-                      _SummaryCard(provider: provider),
-                      const SizedBox(height: 12),
-                      ...provider.records.map(
-                        (r) => _HaydRecordCard(
-                          record: r,
-                          onDelete: () => provider.removeRecord(r.id),
-                        ),
-                      ),
-                    ],
+            ListView(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+              children: [
+                _FiqhSection(provider: provider),
+                const SizedBox(height: 16),
+                if (provider.records.isEmpty)
+                  _EmptyState()
+                else ...[
+                  _SummaryCard(provider: provider),
+                  const SizedBox(height: 12),
+                  ...provider.records.map(
+                    (r) => _HaydRecordCard(
+                      record: r,
+                      onDelete: () => provider.removeRecord(r.id),
+                    ),
                   ),
+                ],
+              ],
+            ),
             Positioned(
               bottom: 16,
               right: 16,
@@ -391,6 +400,7 @@ class _EmptyState extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.calendar_month_outlined,
               size: 64, color: AppColors.lightText),
@@ -693,6 +703,365 @@ class _DateField extends StatelessWidget {
                   .bodyMedium
                   ?.copyWith(color: AppColors.lightText)
               : null,
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Faz 24: Fıkhi durum motoru UI (mezhep, günlük akıntı, muafiyet, kaza)
+// ---------------------------------------------------------------------------
+
+Color _statusColor(FiqhStatus? s) {
+  switch (s) {
+    case FiqhStatus.hayd:
+      return Colors.redAccent;
+    case FiqhStatus.nifas:
+      return AppColors.navy;
+    case FiqhStatus.istihaze:
+      return AppColors.gold;
+    case FiqhStatus.temiz:
+      return AppColors.primaryGreen;
+    case null:
+      return AppColors.lightText;
+  }
+}
+
+String _statusLabel(FiqhStatus? s) {
+  switch (s) {
+    case FiqhStatus.hayd:
+      return 'Hayız (namaz/oruç muaf)';
+    case FiqhStatus.nifas:
+      return 'Nifas (namaz/oruç muaf)';
+    case FiqhStatus.istihaze:
+      return 'İstihaze (namaza devam)';
+    case FiqhStatus.temiz:
+      return 'Temiz';
+    case null:
+      return 'Bugün için kayıt yok';
+  }
+}
+
+Color _flowColor(FlowType? t) {
+  switch (t) {
+    case FlowType.bleeding:
+      return Colors.redAccent;
+    case FlowType.spotting:
+      return AppColors.gold;
+    case FlowType.clean:
+      return AppColors.primaryGreen;
+    case null:
+      return AppColors.darkCream;
+  }
+}
+
+class _FiqhSection extends StatelessWidget {
+  final HaydProvider provider;
+
+  const _FiqhSection({required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    final status = provider.currentStatus;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: _statusColor(status).withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: _statusColor(status), width: 1.5),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.water_drop_rounded,
+                      color: _statusColor(status), size: 22),
+                  const SizedBox(width: 8),
+                  Text('Fıkhi Durum',
+                      style: Theme.of(context).textTheme.titleMedium),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _statusLabel(status),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: _statusColor(status),
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ],
+          ),
+        ),
+        if (status == FiqhStatus.istihaze)
+          const _InfoBanner(
+            color: AppColors.gold,
+            icon: Icons.info_rounded,
+            text:
+                'Bu kanama istihaze (özür) hükmünde. Namazlarına devam et; '
+                'her vakit için abdest al.',
+          ),
+        if (provider.justEndedHayd)
+          const _InfoBanner(
+            color: AppColors.primaryGreen,
+            icon: Icons.check_circle_rounded,
+            text: 'Hayız bitti. Gusül alıp namaza başlayabilirsin.',
+          ),
+        const SizedBox(height: 16),
+        Text('Bugünkü Akıntı',
+            style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            for (final type in FlowType.values) ...[
+              Expanded(
+                child: _FlowButton(
+                  type: type,
+                  selected: provider.todayFlow == type,
+                  onTap: () => provider.setFlow(DateTime.now(), type),
+                ),
+              ),
+              if (type != FlowType.values.last) const SizedBox(width: 8),
+            ],
+          ],
+        ),
+        const SizedBox(height: 16),
+        Text('Son 14 Gün (dokun → işaretle)',
+            style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: 8),
+        _FlowStrip(provider: provider),
+        const SizedBox(height: 16),
+        _MadhhabRow(provider: provider),
+        const SizedBox(height: 8),
+        _ExemptionToggle(provider: provider),
+        const SizedBox(height: 8),
+        _QadaIntegration(provider: provider),
+      ],
+    );
+  }
+}
+
+class _InfoBanner extends StatelessWidget {
+  final Color color;
+  final IconData icon;
+  final String text;
+
+  const _InfoBanner(
+      {required this.color, required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 10),
+          Expanded(child: Text(text, style: const TextStyle(fontSize: 13))),
+        ],
+      ),
+    );
+  }
+}
+
+class _FlowButton extends StatelessWidget {
+  final FlowType type;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _FlowButton(
+      {required this.type, required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _flowColor(type);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: selected ? color.withValues(alpha: 0.2) : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+              color: selected ? color : AppColors.darkCream,
+              width: selected ? 2 : 1),
+        ),
+        child: Column(
+          children: [
+            Icon(Icons.circle, color: color, size: 14),
+            const SizedBox(height: 4),
+            Text(type.displayName,
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight:
+                        selected ? FontWeight.bold : FontWeight.normal)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FlowStrip extends StatelessWidget {
+  final HaydProvider provider;
+
+  const _FlowStrip({required this.provider});
+
+  /// Tıklamada tip döngüsü: yok → kanama → lekelenme → temiz → yok.
+  FlowType? _next(FlowType? current) {
+    switch (current) {
+      case null:
+        return FlowType.bleeding;
+      case FlowType.bleeding:
+        return FlowType.spotting;
+      case FlowType.spotting:
+        return FlowType.clean;
+      case FlowType.clean:
+        return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final today = DateTime.now();
+    return SizedBox(
+      height: 52,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: 14,
+        separatorBuilder: (_, _) => const SizedBox(width: 6),
+        itemBuilder: (context, i) {
+          final date = DateTime(today.year, today.month, today.day)
+              .subtract(Duration(days: 13 - i));
+          final type = provider.flowOn(date);
+          return GestureDetector(
+            onTap: () {
+              final next = _next(type);
+              if (next == null) {
+                provider.clearFlow(date);
+              } else {
+                provider.setFlow(date, next);
+              }
+            },
+            child: Container(
+              width: 36,
+              decoration: BoxDecoration(
+                color: _flowColor(type)
+                    .withValues(alpha: type == null ? 0.4 : 0.85),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '${date.day}',
+                style: TextStyle(
+                  color: type == null ? AppColors.lightText : AppColors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _MadhhabRow extends StatelessWidget {
+  final HaydProvider provider;
+
+  const _MadhhabRow({required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        child: Row(
+          children: [
+            const Icon(Icons.balance_rounded, color: AppColors.primaryGreen),
+            const SizedBox(width: 12),
+            const Text('Mezhep'),
+            const Spacer(),
+            DropdownButton<Madhhab>(
+              value: provider.madhhab,
+              underline: const SizedBox.shrink(),
+              onChanged: (m) {
+                if (m != null) provider.setMadhhab(m);
+              },
+              items: Madhhab.values
+                  .map((m) => DropdownMenuItem(
+                        value: m,
+                        child: Text(m.displayName),
+                      ))
+                  .toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ExemptionToggle extends StatelessWidget {
+  final HaydProvider provider;
+
+  const _ExemptionToggle({required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    final alarm = context.watch<AlarmProvider>();
+    return Card(
+      child: SwitchListTile(
+        secondary: const Icon(Icons.notifications_off_rounded,
+            color: AppColors.primaryGreen),
+        title: const Text('Hayız Muafiyeti'),
+        subtitle: Text(provider.isExemptToday
+            ? 'Bugün hayız — namaz alarmlarını kapatabilirsin.'
+            : 'Açıkken namaz alarmları kurulmaz.'),
+        value: alarm.exemptionActive,
+        activeTrackColor: AppColors.primaryGreen,
+        onChanged: (v) => alarm.setExemption(v),
+      ),
+    );
+  }
+}
+
+class _QadaIntegration extends StatelessWidget {
+  final HaydProvider provider;
+
+  const _QadaIntegration({required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    final istihaze = provider.istihazeDaysCount();
+    if (istihaze == 0) return const SizedBox.shrink();
+    return Card(
+      child: ListTile(
+        leading: const Icon(Icons.event_repeat_rounded, color: AppColors.gold),
+        title: Text('$istihaze istihaze günü tespit edildi'),
+        subtitle: const Text('İstihaze günleri kazaya sayılır.'),
+        trailing: TextButton(
+          onPressed: () async {
+            final messenger = ScaffoldMessenger.of(context);
+            await context.read<QadaProvider>().addDays(istihaze);
+            messenger.showSnackBar(
+              SnackBar(content: Text('$istihaze gün kazaya eklendi.')),
+            );
+          },
+          child: const Text('Kazaya Ekle'),
         ),
       ),
     );

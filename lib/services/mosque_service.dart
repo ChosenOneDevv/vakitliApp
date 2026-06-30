@@ -6,7 +6,19 @@ import 'package:vakitli/models/mosque.dart';
 
 /// OpenStreetMap Overpass API ile yakındaki camileri bulur (anahtarsız).
 class MosqueService {
-  static const String _endpoint = 'https://overpass-api.de/api/interpreter';
+  /// Overpass instance'ları sırayla denenir (biri 406/429/504 verirse diğeri).
+  static const List<String> _endpoints = [
+    'https://overpass-api.de/api/interpreter',
+    'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+    'https://overpass.kumi.systems/api/interpreter',
+  ];
+
+  /// Overpass/Apache, User-Agent'sız istekleri 406 ile reddeder → bu şart.
+  static const Map<String, String> _headers = {
+    'User-Agent': 'VakitliApp/1.0 (namaz vakitleri; cami bulucu)',
+    'Accept': 'application/json',
+  };
+
   static const Distance _distance = Distance();
 
   Future<List<Mosque>> findNearby({
@@ -23,15 +35,26 @@ class MosqueService {
 out center 60;
 ''';
 
-    try {
-      final response = await http
-          .post(Uri.parse(_endpoint), body: {'data': query})
-          .timeout(const Duration(seconds: 25));
-      if (response.statusCode != 200) {
-        debugPrint('MosqueService: HTTP ${response.statusCode}');
-        return [];
+    http.Response? response;
+    for (final endpoint in _endpoints) {
+      try {
+        final res = await http
+            .post(Uri.parse(endpoint),
+                headers: _headers, body: {'data': query})
+            .timeout(const Duration(seconds: 25));
+        if (res.statusCode == 200) {
+          response = res;
+          break;
+        }
+        debugPrint('MosqueService: $endpoint HTTP ${res.statusCode}');
+      } catch (e) {
+        debugPrint('MosqueService: $endpoint hata: $e');
       }
+    }
 
+    if (response == null) return [];
+
+    try {
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       final elements = (json['elements'] as List?) ?? [];
       final origin = LatLng(latitude, longitude);

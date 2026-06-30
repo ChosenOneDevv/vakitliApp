@@ -33,7 +33,9 @@ class QadaScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'Kıldığın kaza namazını "–" ile düş, borç eklemek için "+" kullan.',
+                'Kaza namazını kılınca "Kıldım" ile düş, borcu elle ayarlamak '
+                'için sayıya dokun. Takipte işaretlenmeyen vakitler ertesi gün '
+                'otomatik kazaya eklenir.',
                 style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center,
               ),
@@ -101,13 +103,18 @@ class _CalculatorSheet extends StatefulWidget {
 }
 
 class _CalculatorSheetState extends State<_CalculatorSheet> {
-  DateTime? _bulughDate;
+  int? _birthYear;
+  int _pubertyAge = 12; // erkek varsayılan; kadın seçilince 9'a düşer
   DateTime? _startDate;
   bool _isFemale = false;
   int _monthlyHaydDays = 5;
   bool _includeWitr = true;
   QadaCalculation? _result;
   bool _confirming = false;
+
+  /// Doğum yılı + buluğ yaşından buluğ tarihi (yıl başı baz alınır).
+  DateTime? get _bulughDate =>
+      _birthYear == null ? null : DateTime(_birthYear! + _pubertyAge, 1, 1);
 
   @override
   Widget build(BuildContext context) {
@@ -148,22 +155,58 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
             ),
             const SizedBox(height: 12),
 
-            // Buluğ tarihi
-            _DateField(
-              label: 'Buluğ tarihi',
-              value: _bulughDate,
-              hint: 'Seç',
-              onTap: () => _pickDate(
-                context,
-                initial: _bulughDate ?? DateTime(2005),
-                firstDate: DateTime(1930),
-                lastDate: DateTime.now(),
-                onPicked: (d) => setState(() {
-                  _bulughDate = d;
-                  _result = null;
-                }),
-              ),
+            // Doğum yılı + buluğ yaşı → buluğ tarihi hesaplanır
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Doğum yılı',
+                      hintText: 'örn. 1995',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (v) => setState(() {
+                      _birthYear = int.tryParse(v);
+                      _result = null;
+                    }),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: InputDecorator(
+                    decoration: const InputDecoration(
+                      labelText: 'Buluğ yaşı',
+                      border: OutlineInputBorder(),
+                    ),
+                    child: DropdownButton<int>(
+                      value: _pubertyAge,
+                      isExpanded: true,
+                      underline: const SizedBox.shrink(),
+                      onChanged: (v) => setState(() {
+                        _pubertyAge = v ?? _pubertyAge;
+                        _result = null;
+                      }),
+                      items: [
+                        for (var age = 9; age <= 18; age++)
+                          DropdownMenuItem(value: age, child: Text('$age')),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
+            if (_bulughDate != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(
+                  'Buluğ yılı: ${_bulughDate!.year}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: AppColors.lightText),
+                ),
+              ),
             const SizedBox(height: 12),
 
             // Namaza başlama tarihi
@@ -197,6 +240,7 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
                       color: !_isFemale ? AppColors.white : null),
                   onSelected: (_) => setState(() {
                     _isFemale = false;
+                    _pubertyAge = 12;
                     _result = null;
                   }),
                 ),
@@ -209,6 +253,7 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
                       color: _isFemale ? AppColors.white : null),
                   onSelected: (_) => setState(() {
                     _isFemale = true;
+                    _pubertyAge = 9;
                     _result = null;
                   }),
                 ),
@@ -507,12 +552,43 @@ class _QadaRow extends StatelessWidget {
 
   const _QadaRow({required this.prayerKey, required this.provider});
 
+  Future<void> _edit(BuildContext context) async {
+    final controller =
+        TextEditingController(text: '${provider.count(prayerKey)}');
+    final result = await showDialog<int>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('${QadaService.prayerNames[prayerKey]!} kaza borcu'),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          autofocus: true,
+          decoration: const InputDecoration(labelText: 'Borç (vakit sayısı)'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Vazgeç'),
+          ),
+          TextButton(
+            onPressed: () =>
+                Navigator.of(ctx).pop(int.tryParse(controller.text)),
+            child: const Text('Kaydet'),
+          ),
+        ],
+      ),
+    );
+    if (result != null) {
+      await provider.setCount(prayerKey, result);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final count = provider.count(prayerKey);
     return Card(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         child: Row(
           children: [
             Expanded(
@@ -521,26 +597,39 @@ class _QadaRow extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
-            IconButton(
-              icon: const Icon(Icons.remove_circle_outline_rounded),
-              color: count > 0 ? AppColors.primaryGreen : AppColors.lightText,
-              onPressed: count > 0 ? () => provider.decrement(prayerKey) : null,
-            ),
-            SizedBox(
-              width: 48,
-              child: Text(
-                '$count',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppColors.primaryGreen,
-                      fontWeight: FontWeight.bold,
+            // Sayıya dokun → düzenle.
+            InkWell(
+              onTap: () => _edit(context),
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                child: Row(
+                  children: [
+                    Text(
+                      '$count',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: AppColors.primaryGreen,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.edit_outlined,
+                        size: 15, color: AppColors.lightText),
+                  ],
+                ),
               ),
             ),
-            IconButton(
-              icon: const Icon(Icons.add_circle_outline_rounded),
-              color: AppColors.gold,
-              onPressed: () => provider.increment(prayerKey),
+            const SizedBox(width: 8),
+            FilledButton(
+              onPressed:
+                  count > 0 ? () => provider.decrement(prayerKey) : null,
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.primaryGreen,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
+              child: const Text('Kıldım'),
             ),
           ],
         ),

@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:geofencing_api/geofencing_api.dart';
+import 'package:vakitli/models/dnd_log_entry.dart';
+import 'package:vakitli/services/dnd_log_service.dart';
 import 'package:vakitli/services/dnd_service.dart';
 import 'package:vakitli/services/saved_mosque_service.dart';
 
 class MosqueGeofenceService {
   final DndService _dnd = DndService();
+  final DndLogService _log = DndLogService();
   bool _running = false;
 
   Future<void> start(List<SavedMosque> mosques) async {
@@ -49,12 +52,17 @@ class MosqueGeofenceService {
     GeofenceStatus status,
     dynamic location,
   ) async {
+    final mosqueName = region.data is String ? region.data as String : 'Cami';
     if (status == GeofenceStatus.enter) {
       await _dnd.setSilent(true);
-      debugPrint('Camiye girildi: ${region.data} — sessize alındı');
+      await _log.add(DndLogEntry(
+          mosqueName: mosqueName, silenced: true, time: DateTime.now()));
+      debugPrint('Camiye girildi: $mosqueName — sessize alındı');
     } else if (status == GeofenceStatus.exit) {
       await _dnd.setSilent(false);
-      debugPrint('Camiden çıkıldı: ${region.data} — ses açıldı');
+      await _log.add(DndLogEntry(
+          mosqueName: mosqueName, silenced: false, time: DateTime.now()));
+      debugPrint('Camiden çıkıldı: $mosqueName — ses açıldı');
     }
   }
 

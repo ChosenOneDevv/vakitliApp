@@ -269,11 +269,14 @@ class PrayerProvider extends ChangeNotifier {
     final remaining =
         h > 0 ? '$h sa $m dk kaldı' : '$m dk kaldı';
 
-    WidgetService.update(
+    WidgetService.updatePrayerData(
       prayerName: next.name,
       time: next.time,
       remaining: remaining,
       city: _locationName,
+      latitude: _latitude,
+      longitude: _longitude,
+      today: _todayPrayer,
     );
   }
 

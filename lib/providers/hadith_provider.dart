@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vakitli/models/hadith.dart';
 import 'package:vakitli/services/hadith_service.dart';
+import 'package:vakitli/services/widget_service.dart';
 
 class HadithProvider extends ChangeNotifier {
   final HadithService _hadithService = HadithService();
@@ -34,6 +35,12 @@ class HadithProvider extends ChangeNotifier {
       _dailyHadith = await _hadithService.getDailyHadith();
       await _loadFavorites();
       _error = null;
+      if (_dailyHadith != null) {
+        WidgetService.updateHadith(
+          text: _dailyHadith!.text,
+          source: _dailyHadith!.source,
+        );
+      }
     } catch (e) {
       _error = 'Hadisler yüklenirken hata oluştu.';
     }

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vakitli — Gizlilik Politikası / Privacy Policy</title>
+  <style>
+    body { font-family: -apple-system, system-ui, Segoe UI, Roboto, sans-serif;
+           max-width: 760px; margin: 0 auto; padding: 24px; line-height: 1.6;
+           color: #1a1a1a; }
+    h1 { color: #1B5E20; }
+    h2 { color: #1A237E; margin-top: 32px; }
+    h3 { margin-top: 20px; }
+    code { background: #f3f3f3; padding: 1px 4px; border-radius: 4px; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
+    th { background: #FFF8E1; }
+    .muted { color: #666; font-size: 14px; }
+    hr { border: none; border-top: 1px solid #eee; margin: 40px 0; }
+  </style>
+</head>
+<body>
+
+<h1>Vakitli — Gizlilik Politikası</h1>
+<p class="muted">Son güncelleme: 30 Haziran 2026 · Uygulama paketi: <code>com.vakitli.vakitli</code></p>
+
+<p>Vakitli, namaz vakitleri ve İslami yaşam uygulamasıdır. Bu politika, uygulamanın
+hangi verileri işlediğini ve nasıl koruduğunu açıklar. Vakitli <strong>reklam içermez,
+takip (tracking) yapmaz ve analitik/izleme SDK'sı kullanmaz</strong>.</p>
+
+<h2>1. İşlenen Veriler</h2>
+
+<h3>Konum</h3>
+<p>Namaz vakitlerini, kıble yönünü ve yakındaki camileri hesaplamak için cihazınızın
+yaklaşık veya kesin konumu kullanılır. Konum:</p>
+<ul>
+  <li>Vakit hesaplaması için Aladhan API'sine enlem/boylam olarak gönderilir;</li>
+  <li>Otomatik vakit güncellemesi için cihazınızda saklanır;</li>
+  <li>Hesabınızla giriş yaptıysanız (isteğe bağlı), ayar yedeği amacıyla şehir/koordinat
+      olarak Firebase Firestore'da saklanabilir.</li>
+</ul>
+<p>Konum izni vermek zorunlu değildir; şehri elle de seçebilirsiniz.</p>
+
+<h3>Hesap Bilgileri (isteğe bağlı)</h3>
+<p>"Dua Kardeşliği" ve bulut yedekleme özelliklerini kullanmak için Google ile giriş
+yapabilirsiniz. Bu durumda Firebase Authentication üzerinden e-posta adresiniz, görünen
+adınız ve kullanıcı kimliğiniz işlenir. Giriş yapmak <strong>zorunlu değildir</strong>;
+anonim olarak da kullanabilirsiniz. Uygulamanın çoğu özelliği giriş gerektirmez.</p>
+
+<h3>Kullanıcı İçeriği</h3>
+<p>"Dua Kardeşliği" özelliğinde paylaştığınız dua metni, diğer kullanıcılarla görünür
+biçimde Firebase Firestore'da saklanır. Anonim paylaşım seçeneği mevcuttur (adınız
+"Anonim" olarak gösterilir).</p>
+
+<h3>Kamera</h3>
+<p>Kıble (AR) özelliği, yön göstergesini gerçek görüntü üzerine bindirmek için kamerayı
+kullanır. Kamera görüntüsü <strong>kaydedilmez, saklanmaz ve hiçbir yere gönderilmez</strong>.</p>
+
+<h3>Cihazda Saklanan Ayarlar</h3>
+<p>Favoriler, namaz takibi, tesbih sayaçları, alarm/bildirim ayarları ve tercihler
+cihazınızda (SharedPreferences) yerel olarak saklanır.</p>
+
+<h2>2. Verilerin Paylaşımı</h2>
+<table>
+  <tr><th>Veri</th><th>Alıcı</th><th>Amaç</th></tr>
+  <tr><td>Konum (enlem/boylam)</td><td>Aladhan API</td><td>Namaz vakti hesaplama</td></tr>
+  <tr><td>Hesap, ayar, koordinat</td><td>Google Firebase</td><td>Kimlik doğrulama, bulut yedek</td></tr>
+  <tr><td>Dua metni</td><td>Diğer uygulama kullanıcıları</td><td>Dua paylaşımı (kullanıcı isteğiyle)</td></tr>
+</table>
+<p>Veriler reklam veya pazarlama amacıyla <strong>satılmaz veya paylaşılmaz</strong>.
+Tüm ağ trafiği HTTPS ile şifrelenir.</p>
+
+<h2>3. Veri Saklama ve Silme</h2>
+<p>Yerel veriler, uygulamayı kaldırdığınızda veya Ayarlar &gt; "Tüm Verileri Sıfırla"
+ile silinir. Hesap ve bulut verilerinizin silinmesini talep etmek için aşağıdaki
+e-posta adresinden bizimle iletişime geçebilirsiniz; talebiniz üzerine hesabınız ve
+ilişkili veriler kaldırılır.</p>
+
+<h2>4. Çocukların Gizliliği</h2>
+<p>Uygulama 13 yaş altı çocuklara yönelik değildir ve bilerek bu yaş grubundan veri
+toplamaz.</p>
+
+<h2>5. Üçüncü Taraf Hizmetleri</h2>
+<ul>
+  <li>Google Firebase (Authentication, Firestore) — <a href="https://firebase.google.com/support/privacy">Gizlilik</a></li>
+  <li>Aladhan API — namaz vakti verisi</li>
+</ul>
+
+<h2>6. İletişim</h2>
+<p>Sorularınız için: <a href="mailto:ahmet98086565@gmail.com">ahmet98086565@gmail.com</a></p>
+
+<hr />
+
+<h1>Vakitli — Privacy Policy (English)</h1>
+<p class="muted">Last updated: 30 June 2026 · Package: <code>com.vakitli.vakitli</code></p>
+
+<p>Vakitli is a prayer times and Islamic lifestyle app. It contains <strong>no ads, no
+tracking, and no analytics SDKs</strong>.</p>
+
+<h2>Data We Process</h2>
+<ul>
+  <li><strong>Location</strong> (approximate or precise): used to compute prayer times,
+      qibla direction and nearby mosques. Sent to the Aladhan API as coordinates, stored
+      on-device, and optionally stored in Firebase if you sign in. Optional — you can
+      pick a city manually instead.</li>
+  <li><strong>Account info</strong> (optional): email, display name and user ID via
+      Firebase Authentication (Google Sign-In), only if you choose to sign in for
+      "Prayer Brotherhood" or cloud backup. Anonymous use is supported.</li>
+  <li><strong>User content</strong>: prayer-request text you share is stored in Firebase
+      Firestore and visible to other users; anonymous posting is available.</li>
+  <li><strong>Camera</strong>: used only for the AR qibla overlay; images are never
+      stored or transmitted.</li>
+  <li><strong>Local settings</strong>: preferences, trackers and alarms stored on-device.</li>
+</ul>
+
+<h2>Sharing</h2>
+<p>Data is shared only with Aladhan API (prayer times), Google Firebase (auth, backup),
+and other users (prayer requests, on your request). Data is never sold. All traffic is
+HTTPS-encrypted.</p>
+
+<h2>Deletion</h2>
+<p>Local data is removed on uninstall or via Settings &gt; "Reset All Data". To delete
+account/cloud data, contact us and your account and associated data will be removed.</p>
+
+<h2>Children</h2>
+<p>Not directed to children under 13; we do not knowingly collect their data.</p>
+
+<h2>Contact</h2>
+<p><a href="mailto:ahmet98086565@gmail.com">ahmet98086565@gmail.com</a></p>
+
+</body>
+</html>

@@ -41,4 +41,31 @@ void main() {
     await p2.initialize();
     expect(p2.count('asr'), 1);
   });
+
+  test('setCount sets exact value and clamps negatives', () async {
+    final p = QadaProvider();
+    await p.initialize();
+    await p.setCount('dhuhr', 42);
+    expect(p.count('dhuhr'), 42);
+    await p.setCount('dhuhr', -5);
+    expect(p.count('dhuhr'), 0);
+  });
+
+  test('addDays adds to every tracked prayer', () async {
+    final p = QadaProvider();
+    await p.initialize();
+    await p.addDays(3);
+    for (final k in ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha', 'witr']) {
+      expect(p.count(k), 3);
+    }
+    await p.addDays(0); // no-op
+    expect(p.total, 18);
+  });
+
+  test('auto-sync does not backfill on first run', () async {
+    final p = QadaProvider();
+    await p.initialize();
+    // İlk çalıştırma sadece tarihi işaretler; geçmiş eklenmez.
+    expect(p.total, 0);
+  });
 }

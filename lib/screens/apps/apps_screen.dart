@@ -6,6 +6,7 @@ import 'package:vakitli/screens/ramadan/ramadan_screen.dart';
 import 'package:vakitli/screens/esma/esma_screen.dart';
 import 'package:vakitli/screens/zakat/zakat_screen.dart';
 import 'package:vakitli/screens/mosque/mosque_screen.dart';
+import 'package:vakitli/screens/location/saved_cities_screen.dart';
 import 'package:vakitli/screens/hijri/hijri_calendar_screen.dart';
 import 'package:vakitli/screens/nafile/nafile_screen.dart';
 import 'package:vakitli/screens/tasbih/tasbih_screen.dart';
@@ -21,6 +22,8 @@ import 'package:vakitli/screens/tebrik/tebrik_screen.dart';
 import 'package:vakitli/screens/hutbe/hutbe_screen.dart';
 import 'package:vakitli/screens/dua_kardesligi/dua_kardesligi_screen.dart';
 import 'package:vakitli/screens/quran/quran_screen.dart';
+import 'package:vakitli/screens/hatim/hatim_screen.dart';
+import 'package:vakitli/screens/library/library_screen.dart';
 
 class _AppItem {
   final IconData icon;
@@ -45,6 +48,18 @@ class AppsScreen extends StatelessWidget {
       label: 'Kuran-ı Kerim',
       subtitle: '114 sure · Uthmani metin',
       screen: QuranScreen(),
+    ),
+    _AppItem(
+      icon: Icons.auto_stories_rounded,
+      label: 'Hatim Takibi',
+      subtitle: 'Kuran okuma ilerlemesi',
+      screen: HatimScreen(),
+    ),
+    _AppItem(
+      icon: Icons.local_library_rounded,
+      label: 'Kütüphane',
+      subtitle: 'İndirilebilir kitaplar',
+      screen: LibraryScreen(),
     ),
     _AppItem(
       icon: Icons.check_circle_rounded,
@@ -81,6 +96,12 @@ class AppsScreen extends StatelessWidget {
       label: 'Cami Bulucu',
       subtitle: 'Yakındaki camiler',
       screen: MosqueScreen(),
+    ),
+    _AppItem(
+      icon: Icons.location_city_rounded,
+      label: 'Çoklu Şehir',
+      subtitle: 'Farklı şehir vakitleri',
+      screen: SavedCitiesScreen(),
     ),
     _AppItem(
       icon: Icons.spa_rounded,
