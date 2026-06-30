@@ -16,8 +16,12 @@ class FastingService {
     final prefs = await SharedPreferences.getInstance();
     final jsonStr = prefs.getString(_key);
     if (jsonStr == null) return {};
-    final list = jsonDecode(jsonStr) as List<dynamic>;
-    return list.map((e) => e as String).toSet();
+    try {
+      final list = jsonDecode(jsonStr) as List<dynamic>;
+      return list.map((e) => e as String).toSet();
+    } catch (_) {
+      return {};
+    }
   }
 
   Future<void> save(Set<String> days) async {

@@ -23,7 +23,9 @@ class RadioService {
   }
 
   Future<void> play(String url) async {
-    await _player.setUrl(url);
+    await _player
+        .setUrl(url)
+        .timeout(const Duration(seconds: 15));
     await _player.play();
   }
 

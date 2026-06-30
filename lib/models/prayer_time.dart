@@ -34,10 +34,10 @@ class PrayerTime {
   });
 
   factory PrayerTime.fromAladhanJson(Map<String, dynamic> json) {
-    final timings = json['timings'] as Map<String, dynamic>;
-    final dateInfo = json['date'] as Map<String, dynamic>;
-    final hijri = dateInfo['hijri'] as Map<String, dynamic>;
-    final gregorian = dateInfo['gregorian'] as Map<String, dynamic>;
+    final timings = (json['timings'] as Map<String, dynamic>?) ?? {};
+    final dateInfo = (json['date'] as Map<String, dynamic>?) ?? {};
+    final hijri = (dateInfo['hijri'] as Map<String, dynamic>?) ?? {};
+    final gregorian = (dateInfo['gregorian'] as Map<String, dynamic>?) ?? {};
 
     String cleanTime(String time) {
       return time.split(' ').first;
@@ -97,20 +97,40 @@ class PrayerTime {
 
   static const Map<String, String> hijriMonthsTr = {
     'Muharram': 'Muharrem',
+    'Muḥarram': 'Muharrem',
     'Safar': 'Safer',
+    'Ṣafar': 'Safer',
     'Rabi al-Awwal': 'Rebîülevvel',
+    'Rabī al-Awwal': 'Rebîülevvel',
+    'Rabi\' al-Awwal': 'Rebîülevvel',
+    'Rabi I': 'Rebîülevvel',
     'Rabi al-Thani': 'Rebîülâhir',
+    'Rabī al-Thānī': 'Rebîülâhir',
+    'Rabi\' al-Thani': 'Rebîülâhir',
+    'Rabi II': 'Rebîülâhir',
     'Jumada al-Ula': 'Cemâziyelevvel',
+    'Jumādā al-Ūlā': 'Cemâziyelevvel',
+    'Jumada I': 'Cemâziyelevvel',
     'Jumada al-Thani': 'Cemâziyelâhir',
+    'Jumādā al-Ākhirah': 'Cemâziyelâhir',
+    'Jumada II': 'Cemâziyelâhir',
     'Rajab': 'Recep',
     'Sha\'ban': 'Şaban',
+    'Shaʻbān': 'Şaban',
+    'Sha\'bān': 'Şaban',
     'Ramadan': 'Ramazan',
+    'Ramaḍān': 'Ramazan',
     'Shawwal': 'Şevval',
+    'Shawwāl': 'Şevval',
     'Dhul Qi\'dah': 'Zilkade',
+    'Dhū al-Qaʻdah': 'Zilkade',
+    'Dhu al-Qi\'dah': 'Zilkade',
     'Dhul Hijjah': 'Zilhicce',
+    'Dhū al-Ḥijjah': 'Zilhicce',
+    'Dhu al-Hijjah': 'Zilhicce',
   };
 
-  String get hijriMonthTr => hijriMonthsTr[hijriMonth] ?? hijriMonth;
+  String get hijriMonthTr => hijriMonthsTr[hijriMonth] ?? (hijriMonth.isEmpty ? '' : 'Bilinmeyen Ay');
 
   String get hijriFormatted => '$hijriDay $hijriMonthTr $hijriYear';
 

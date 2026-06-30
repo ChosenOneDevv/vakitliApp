@@ -1,9 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vakitli/config/theme.dart';
 import 'package:vakitli/models/quran_models.dart';
 import 'package:vakitli/providers/quran_provider.dart';
+
+enum QuranTheme { light, sepia, dark }
+
+extension _QuranThemeX on QuranTheme {
+  Color get background {
+    switch (this) {
+      case QuranTheme.light:
+        return Colors.white;
+      case QuranTheme.sepia:
+        return const Color(0xFFFFF8E1);
+      case QuranTheme.dark:
+        return const Color(0xFF121212);
+    }
+  }
+
+  Color get textColor {
+    switch (this) {
+      case QuranTheme.light:
+        return const Color(0xFF212121);
+      case QuranTheme.sepia:
+        return const Color(0xFF4E342E);
+      case QuranTheme.dark:
+        return const Color(0xFFE8D5A3);
+    }
+  }
+
+  Color get accentColor {
+    switch (this) {
+      case QuranTheme.light:
+        return AppColors.primaryGreen;
+      case QuranTheme.sepia:
+        return const Color(0xFF6D4C41);
+      case QuranTheme.dark:
+        return AppColors.gold;
+    }
+  }
+
+  Color get cardColor {
+    switch (this) {
+      case QuranTheme.light:
+        return const Color(0xFFF5F5F5);
+      case QuranTheme.sepia:
+        return const Color(0xFFF0E4C0);
+      case QuranTheme.dark:
+        return const Color(0xFF1E1E2E);
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case QuranTheme.light:
+        return Icons.light_mode_rounded;
+      case QuranTheme.sepia:
+        return Icons.auto_stories_rounded;
+      case QuranTheme.dark:
+        return Icons.dark_mode_rounded;
+    }
+  }
+
+  String get label {
+    switch (this) {
+      case QuranTheme.light:
+        return 'Açık';
+      case QuranTheme.sepia:
+        return 'Sepia';
+      case QuranTheme.dark:
+        return 'Koyu';
+    }
+  }
+
+  QuranTheme get next =>
+      QuranTheme.values[(index + 1) % QuranTheme.values.length];
+}
 
 class SurahScreen extends StatefulWidget {
   final Surah surah;
@@ -20,17 +94,47 @@ class _SurahScreenState extends State<SurahScreen> {
   double _fontSize = 24;
   static const double _minFont = 18;
   static const double _maxFont = 40;
+  static const String _themeKey = 'quran_theme';
+  static const String _fontKey = 'quran_font_size';
+
+  QuranTheme _theme = QuranTheme.light;
 
   @override
   void initState() {
     super.initState();
+    _loadPrefs();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Save last read position
       context.read<QuranProvider>().saveLastRead(
             widget.surah.number,
             widget.initialAyah,
           );
     });
+  }
+
+  Future<void> _loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final themeIdx =
+        (prefs.getInt(_themeKey) ?? 0).clamp(0, QuranTheme.values.length - 1);
+    final fontSize = (prefs.getDouble(_fontKey) ?? 24).clamp(_minFont, _maxFont);
+    if (mounted) {
+      setState(() {
+        _theme = QuranTheme.values[themeIdx];
+        _fontSize = fontSize;
+      });
+    }
+  }
+
+  Future<void> _cycleTheme() async {
+    final next = _theme.next;
+    setState(() => _theme = next);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_themeKey, next.index);
+  }
+
+  Future<void> _setFontSize(double size) async {
+    setState(() => _fontSize = size);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(_fontKey, size);
   }
 
   @override
@@ -42,35 +146,48 @@ class _SurahScreenState extends State<SurahScreen> {
   @override
   Widget build(BuildContext context) {
     final surah = widget.surah;
-    final hasBismillah =
-        surah.number != 1 && surah.number != 9; // Fatiha zaten içinde, Tevbe'de yok
+    final hasBismillah = surah.number != 1 && surah.number != 9;
+    final bg = _theme.background;
+    final tc = _theme.textColor;
+    final ac = _theme.accentColor;
+    final cc = _theme.cardColor;
 
     return Scaffold(
+      backgroundColor: bg,
       appBar: AppBar(
+        backgroundColor: bg,
+        foregroundColor: tc,
+        iconTheme: IconThemeData(color: tc),
         title: Column(
           children: [
-            Text(surah.turkishName),
+            Text(surah.turkishName, style: TextStyle(color: tc)),
             Text(
               surah.arabicName,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'Amiri',
                 fontSize: 14,
                 fontWeight: FontWeight.normal,
+                color: tc.withValues(alpha: 0.7),
               ),
             ),
           ],
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.text_decrease_rounded),
+            icon: Icon(_theme.icon, color: ac),
+            tooltip: _theme.label,
+            onPressed: _cycleTheme,
+          ),
+          IconButton(
+            icon: Icon(Icons.text_decrease_rounded, color: ac),
             onPressed: _fontSize > _minFont
-                ? () => setState(() => _fontSize -= 2)
+                ? () => _setFontSize(_fontSize - 2)
                 : null,
           ),
           IconButton(
-            icon: const Icon(Icons.text_increase_rounded),
+            icon: Icon(Icons.text_increase_rounded, color: ac),
             onPressed: _fontSize < _maxFont
-                ? () => setState(() => _fontSize += 2)
+                ? () => _setFontSize(_fontSize + 2)
                 : null,
           ),
         ],
@@ -93,7 +210,7 @@ class _SurahScreenState extends State<SurahScreen> {
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: _fontSize + 2,
-                        color: AppColors.primaryGreen,
+                        color: ac,
                         height: 2.0,
                       ),
                     ),
@@ -105,11 +222,14 @@ class _SurahScreenState extends State<SurahScreen> {
                   ayah: ayah,
                   surahNumber: surah.number,
                   fontSize: _fontSize,
+                  textColor: tc,
+                  accentColor: ac,
+                  cardColor: cc,
                 );
               },
             ),
           ),
-          _PageIndicator(surah: surah),
+          _PageIndicator(surah: surah, bgColor: bg, textColor: tc),
         ],
       ),
     );
@@ -120,11 +240,17 @@ class _AyahTile extends StatelessWidget {
   final Ayah ayah;
   final int surahNumber;
   final double fontSize;
+  final Color textColor;
+  final Color accentColor;
+  final Color cardColor;
 
   const _AyahTile({
     required this.ayah,
     required this.surahNumber,
     required this.fontSize,
+    required this.textColor,
+    required this.accentColor,
+    required this.cardColor,
   });
 
   @override
@@ -138,7 +264,7 @@ class _AyahTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       decoration: BoxDecoration(
         color: ayah.numberInSurah % 2 == 0
-            ? Theme.of(context).cardColor.withValues(alpha: 0.6)
+            ? cardColor.withValues(alpha: 0.6)
             : null,
         borderRadius: BorderRadius.circular(8),
       ),
@@ -148,27 +274,25 @@ class _AyahTile extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Ayet numarası
               Container(
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryGreen.withValues(alpha: 0.08),
+                  color: accentColor.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Center(
                   child: Text(
                     '${ayah.numberInSurah}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: AppColors.primaryGreen,
+                      color: accentColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
               const Spacer(),
-              // Yer imi butonu
               GestureDetector(
                 onTap: () => context
                     .read<QuranProvider>()
@@ -178,13 +302,14 @@ class _AyahTile extends StatelessWidget {
                       ? Icons.bookmark_rounded
                       : Icons.bookmark_border_rounded,
                   size: 18,
-                  color: isBookmarked ? AppColors.gold : AppColors.lightText,
+                  color: isBookmarked
+                      ? AppColors.gold
+                      : textColor.withValues(alpha: 0.35),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          // Ayet metni
           GestureDetector(
             onLongPress: () {
               Clipboard.setData(ClipboardData(text: ayah.text));
@@ -200,17 +325,17 @@ class _AyahTile extends StatelessWidget {
                 fontFamily: 'Amiri',
                 fontSize: fontSize,
                 height: 1.8,
-                color: Theme.of(context).textTheme.bodyLarge?.color,
+                color: textColor,
               ),
             ),
           ),
           const SizedBox(height: 4),
           Text(
             'Sayfa ${ayah.page}',
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(fontSize: 10),
+            style: TextStyle(
+              fontSize: 10,
+              color: textColor.withValues(alpha: 0.45),
+            ),
           ),
         ],
       ),
@@ -220,19 +345,28 @@ class _AyahTile extends StatelessWidget {
 
 class _PageIndicator extends StatelessWidget {
   final Surah surah;
+  final Color bgColor;
+  final Color textColor;
 
-  const _PageIndicator({required this.surah});
+  const _PageIndicator({
+    required this.surah,
+    required this.bgColor,
+    required this.textColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: bgColor,
       child: Text(
         '${surah.turkishName} — ${surah.ayahCount} ayet · '
         '${surah.isMeccan ? "Mekki" : "Medeni"}',
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 11),
+        style: TextStyle(
+          fontSize: 11,
+          color: textColor.withValues(alpha: 0.55),
+        ),
       ),
     );
   }

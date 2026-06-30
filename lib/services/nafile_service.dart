@@ -33,13 +33,17 @@ class NafileService {
     final prefs = await SharedPreferences.getInstance();
     final jsonStr = prefs.getString(_key);
     if (jsonStr == null) return {};
-    final decoded = jsonDecode(jsonStr) as Map<String, dynamic>;
-    return decoded.map((date, value) {
-      final inner = (value as Map<String, dynamic>).map(
-        (k, v) => MapEntry(k, v as bool),
-      );
-      return MapEntry(date, inner);
-    });
+    try {
+      final decoded = jsonDecode(jsonStr) as Map<String, dynamic>;
+      return decoded.map((date, value) {
+        final inner = (value as Map<String, dynamic>).map(
+          (k, v) => MapEntry(k, v as bool),
+        );
+        return MapEntry(date, inner);
+      });
+    } catch (_) {
+      return {};
+    }
   }
 
   Future<void> save(Map<String, Map<String, bool>> logs) async {

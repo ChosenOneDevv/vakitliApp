@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:vakitli/models/radio_station.dart';
@@ -11,19 +13,19 @@ class RadioProvider extends ChangeNotifier {
       id: 'mecca',
       name: 'Mekke Canlı',
       description: 'Mescid-i Haram canlı yayını',
-      streamUrl: 'https://live.mp3quran.net/afs/stream.mp3',
+      streamUrl: 'https://n03.radiojar.com/8s5u5tpdtwzuv',
     ),
     RadioStation(
       id: 'medina',
       name: 'Medine Canlı',
       description: 'Mescid-i Nebevî canlı yayını',
-      streamUrl: 'https://live.mp3quran.net/mhj/stream.mp3',
+      streamUrl: 'https://n03.radiojar.com/qs0mq8rkg1quv',
     ),
     RadioStation(
-      id: 'tarateel',
-      name: 'Terâtîl',
-      description: 'Tertil üslubuyla Kur\'an tilaveti',
-      streamUrl: 'https://radio.islamweb.net/quranradio/quranplaylist.m3u8',
+      id: 'husary',
+      name: 'Mahmud Halil Husari',
+      description: 'Mahmud Halil el-Husari tilâveti',
+      streamUrl: 'https://live.mp3quran.net/husary/stream.mp3',
     ),
     RadioStation(
       id: 'quran_kareem',
@@ -38,10 +40,10 @@ class RadioProvider extends ChangeNotifier {
       streamUrl: 'https://stream.radiojar.com/0tpy1h0kxtzuv',
     ),
     RadioStation(
-      id: 'children',
-      name: 'Çocuk Kur\'an',
-      description: 'Çocuklara yönelik Kur\'an eğitimi',
-      streamUrl: 'https://stream.radiojar.com/sp5x2sspxtzuv',
+      id: 'minshawi',
+      name: 'Muhammed Sıddık Minşâvî',
+      description: 'Minşâvî mücevved tilâveti',
+      streamUrl: 'https://live.mp3quran.net/minsh/stream.mp3',
     ),
   ];
 
@@ -89,8 +91,14 @@ class RadioProvider extends ChangeNotifier {
     notifyListeners();
     try {
       await _service.play(station.streamUrl);
+    } on TimeoutException {
+      _error = 'Bağlantı zaman aşımına uğradı. İnternet bağlantınızı kontrol edin.';
+      _isPlaying = false;
+      _isBuffering = false;
+      notifyListeners();
     } catch (e) {
       _error = 'Kanal açılamadı. Bağlantınızı kontrol edin.';
+      _isPlaying = false;
       _isBuffering = false;
       notifyListeners();
     }

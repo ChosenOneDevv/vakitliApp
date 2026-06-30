@@ -3,8 +3,12 @@ class TebrikCard {
   final String title;
   final String occasion;
 
-  /// assets/images/cards/ içindeki dosya adı; null ise renkli metin kartı gösterilir.
+  /// Yerel asset yolu (assets/images/cards/). Firestore kartlarında null.
   final String? imagePath;
+
+  /// Firebase Storage görsel URL'si. Varsa öncelikli olarak gösterilir.
+  final String? imageUrl;
+
   final String shareText;
 
   const TebrikCard({
@@ -12,8 +16,40 @@ class TebrikCard {
     required this.title,
     required this.occasion,
     this.imagePath,
+    this.imageUrl,
     required this.shareText,
   });
+
+  /// Firestore dokümanından TebrikCard oluşturur.
+  factory TebrikCard.fromFirestoreJson(String docId, Map<String, dynamic> json) {
+    return TebrikCard(
+      id: json['order'] as int? ?? 0,
+      title: json['title'] as String? ?? '',
+      occasion: json['occasion'] as String? ?? json['title'] as String? ?? '',
+      imageUrl: json['imageUrl'] as String?,
+      shareText: json['shareText'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'occasion': occasion,
+        if (imagePath != null) 'imagePath': imagePath,
+        if (imageUrl != null) 'imageUrl': imageUrl,
+        'shareText': shareText,
+      };
+
+  factory TebrikCard.fromJson(Map<String, dynamic> json) {
+    return TebrikCard(
+      id: json['id'] as int? ?? 0,
+      title: json['title'] as String? ?? '',
+      occasion: json['occasion'] as String? ?? '',
+      imagePath: json['imagePath'] as String?,
+      imageUrl: json['imageUrl'] as String?,
+      shareText: json['shareText'] as String? ?? '',
+    );
+  }
 
   static const List<TebrikCard> defaults = [
     TebrikCard(

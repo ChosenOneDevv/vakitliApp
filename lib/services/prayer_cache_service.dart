@@ -18,7 +18,11 @@ class PrayerCacheService {
     final prefs = await SharedPreferences.getInstance();
     final jsonStr = prefs.getString(_key);
     if (jsonStr == null) return {};
-    return jsonDecode(jsonStr) as Map<String, dynamic>;
+    try {
+      return jsonDecode(jsonStr) as Map<String, dynamic>;
+    } catch (_) {
+      return {};
+    }
   }
 
   Future<PrayerTime?> get(double lat, double lng, DateTime date) async {
@@ -53,11 +57,11 @@ class PrayerCacheService {
       // p.date "dd-MM-yyyy" Aladhan formatında gelir.
       final parts = p.date.split('-');
       if (parts.length != 3) continue;
-      final date = DateTime(
-        int.parse(parts[2]),
-        int.parse(parts[1]),
-        int.parse(parts[0]),
-      );
+      final y = int.tryParse(parts[2]);
+      final m = int.tryParse(parts[1]);
+      final d = int.tryParse(parts[0]);
+      if (y == null || m == null || d == null) continue;
+      final date = DateTime(y, m, d);
       all[buildKey(lat, lng, date)] = p.toCacheJson();
     }
     if (all.length > _maxEntries) {

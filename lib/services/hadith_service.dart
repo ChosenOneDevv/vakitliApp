@@ -9,10 +9,14 @@ class HadithService {
     if (_cachedHadiths != null) return _cachedHadiths!;
 
     final jsonString = await rootBundle.loadString('assets/data/hadiths.json');
-    final List<dynamic> jsonList = jsonDecode(jsonString);
-    _cachedHadiths = jsonList
-        .map((item) => Hadith.fromJson(item as Map<String, dynamic>))
-        .toList();
+    try {
+      final List<dynamic> jsonList = jsonDecode(jsonString);
+      _cachedHadiths = jsonList
+          .map((item) => Hadith.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      _cachedHadiths = [];
+    }
     return _cachedHadiths!;
   }
 

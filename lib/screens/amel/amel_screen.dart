@@ -20,7 +20,165 @@ class _AmelScreenState extends State<AmelScreen> {
     });
   }
 
-  void _showAddDialog(BuildContext context) {
+  // ─── Hızlı ekleme preset listesi ──────────────────────────────────────────
+
+  static const List<_Preset> _presets = [
+    _Preset('Sabah Namazı', AmelCategory.namaz),
+    _Preset('Öğle Namazı', AmelCategory.namaz),
+    _Preset('İkindi Namazı', AmelCategory.namaz),
+    _Preset('Akşam Namazı', AmelCategory.namaz),
+    _Preset('Yatsı Namazı', AmelCategory.namaz),
+    _Preset('Teheccüd Namazı', AmelCategory.namaz),
+    _Preset('Kuşluk (Duha) Namazı', AmelCategory.namaz),
+    _Preset('Sübhanallah', AmelCategory.zikir, count: 33),
+    _Preset('Elhamdülillah', AmelCategory.zikir, count: 33),
+    _Preset('Allahu Ekber', AmelCategory.zikir, count: 34),
+    _Preset('Estağfirullah', AmelCategory.zikir, count: 100),
+    _Preset('Salavat-ı Şerife', AmelCategory.zikir, count: 100),
+    _Preset('La ilahe illallah', AmelCategory.zikir, count: 100),
+    _Preset('Kuran Okuma', AmelCategory.kuran),
+    _Preset('Yasin Suresi', AmelCategory.kuran),
+    _Preset('Mülk Suresi', AmelCategory.kuran),
+    _Preset('Sure Ezberleme', AmelCategory.kuran),
+    _Preset('Sadaka Verme', AmelCategory.sadaka),
+    _Preset('İyilik Yapma', AmelCategory.sadaka),
+    _Preset('Dua Etme', AmelCategory.sadaka),
+  ];
+
+  // ─── Bottom sheet: hızlı ekle + özel ekle ─────────────────────────────────
+
+  void _showQuickAddSheet(BuildContext context) {
+    final provider = context.read<AmelProvider>();
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetCtx) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.65,
+          maxChildSize: 0.92,
+          minChildSize: 0.4,
+          builder: (_, ctrl) => Padding(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withValues(alpha: 0.35),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 4),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'Hızlı Ekle',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      TextButton.icon(
+                        icon: const Icon(Icons.edit_rounded, size: 16),
+                        label: const Text('Özel Ekle'),
+                        onPressed: () {
+                          Navigator.pop(sheetCtx);
+                          _showCustomDialog(context);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                    controller: ctrl,
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+                    children: AmelCategory.values
+                        .where((cat) =>
+                            _presets.any((p) => p.category == cat))
+                        .map((cat) {
+                      final items = _presets
+                          .where((p) => p.category == cat)
+                          .toList();
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(4, 12, 4, 4),
+                            child: Text(
+                              cat.label,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.primaryGreen,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                          ),
+                          ...items.map((preset) => ListTile(
+                                dense: true,
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                leading: const Icon(Icons.add_circle_outline_rounded,
+                                    color: AppColors.primaryGreen, size: 20),
+                                title: Text(preset.text),
+                                trailing: preset.count > 1
+                                    ? Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.gold
+                                              .withValues(alpha: 0.15),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          '×${preset.count}',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: AppColors.gold,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      )
+                                    : null,
+                                onTap: () {
+                                  provider.addEntry(
+                                    text: preset.text,
+                                    category: preset.category,
+                                    count: preset.count,
+                                  );
+                                  Navigator.pop(sheetCtx);
+                                },
+                              )),
+                          const Divider(height: 4),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // ─── Özel amel diyalogu ────────────────────────────────────────────────────
+
+  void _showCustomDialog(BuildContext context) {
     final textCtrl = TextEditingController();
     AmelCategory selected = AmelCategory.diger;
     int count = 1;
@@ -29,7 +187,7 @@ class _AmelScreenState extends State<AmelScreen> {
       context: context,
       builder: (dialogCtx) => StatefulBuilder(
         builder: (ctx, setSt) => AlertDialog(
-          title: const Text('Amel Ekle'),
+          title: const Text('Özel Amel Ekle'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -65,7 +223,8 @@ class _AmelScreenState extends State<AmelScreen> {
                         setSt(() => count = (count - 1).clamp(1, 999)),
                   ),
                   Text('$count',
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                      style:
+                          const TextStyle(fontWeight: FontWeight.bold)),
                   IconButton(
                     icon: const Icon(Icons.add_rounded),
                     onPressed: () =>
@@ -100,12 +259,14 @@ class _AmelScreenState extends State<AmelScreen> {
     );
   }
 
+  // ─── Build ─────────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Amel Defteri')),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddDialog(context),
+        onPressed: () => _showQuickAddSheet(context),
         backgroundColor: AppColors.primaryGreen,
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),
@@ -144,6 +305,18 @@ class _AmelScreenState extends State<AmelScreen> {
     );
   }
 }
+
+// ─── Preset veri sınıfı ───────────────────────────────────────────────────────
+
+class _Preset {
+  final String text;
+  final AmelCategory category;
+  final int count;
+
+  const _Preset(this.text, this.category, {this.count = 1});
+}
+
+// ─── Amel kartı ───────────────────────────────────────────────────────────────
 
 class _AmelTile extends StatelessWidget {
   final AmelEntry entry;
@@ -187,10 +360,12 @@ class _AmelTile extends StatelessWidget {
                 Text(entry.text,
                     style: Theme.of(context).textTheme.bodyMedium),
                 if (entry.count > 1)
-                  Text('× ${entry.count}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.gold,
-                          )),
+                  Text(
+                    '× ${entry.count}',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.gold,
+                        ),
+                  ),
               ],
             ),
           ),

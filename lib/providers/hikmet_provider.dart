@@ -66,8 +66,12 @@ class HikmetProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final jsonStr = prefs.getString(_favKey);
     if (jsonStr != null) {
-      final List<dynamic> ids = jsonDecode(jsonStr);
-      _favoriteIds = ids.map((e) => e as int).toSet();
+      try {
+        final List<dynamic> ids = jsonDecode(jsonStr);
+        _favoriteIds = ids.map((e) => e as int).toSet();
+      } catch (_) {
+        _favoriteIds = {};
+      }
     }
   }
 

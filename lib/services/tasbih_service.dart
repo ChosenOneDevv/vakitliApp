@@ -19,11 +19,15 @@ class TasbihService {
     final jsonStr = prefs.getString(_profilesKey);
     if (jsonStr == null) return defaultProfiles();
 
-    final list = jsonDecode(jsonStr) as List<dynamic>;
-    final profiles = list
-        .map((e) => TasbihProfile.fromJson(e as Map<String, dynamic>))
-        .toList();
-    return profiles.isEmpty ? defaultProfiles() : profiles;
+    try {
+      final list = jsonDecode(jsonStr) as List<dynamic>;
+      final profiles = list
+          .map((e) => TasbihProfile.fromJson(e as Map<String, dynamic>))
+          .toList();
+      return profiles.isEmpty ? defaultProfiles() : profiles;
+    } catch (_) {
+      return defaultProfiles();
+    }
   }
 
   Future<void> saveProfiles(List<TasbihProfile> profiles) async {

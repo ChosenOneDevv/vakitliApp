@@ -74,7 +74,15 @@ out center 60;
         }
         if (lat == null || lng == null) continue;
 
-        final name = (tags?['name'] as String?) ?? 'İsimsiz Cami';
+        final name = (tags?['name:tr'] as String?)?.trim().isNotEmpty == true
+            ? tags!['name:tr'] as String
+            : (tags?['name'] as String?)?.trim().isNotEmpty == true
+                ? tags!['name'] as String
+                : (tags?['alt_name'] as String?)?.trim().isNotEmpty == true
+                    ? tags!['alt_name'] as String
+                    : (tags?['operator'] as String?)?.trim().isNotEmpty == true
+                        ? tags!['operator'] as String
+                        : 'İsimsiz Cami';
         final dist = _distance.as(LengthUnit.Meter, origin, LatLng(lat, lng));
         mosques.add(Mosque(
           name: name,

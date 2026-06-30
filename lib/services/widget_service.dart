@@ -39,7 +39,7 @@ class WidgetService {
         }
         await HomeWidget.saveWidgetData<String>(
           'w_hijri',
-          '${today.hijriDay} ${today.hijriMonth} ${today.hijriYear}',
+          '${today.hijriDay} ${today.hijriMonthTr} ${today.hijriYear}',
         );
       }
 

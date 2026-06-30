@@ -19,13 +19,17 @@ class TrackerService {
     final jsonStr = prefs.getString(_key);
     if (jsonStr == null) return {};
 
-    final decoded = jsonDecode(jsonStr) as Map<String, dynamic>;
-    return decoded.map(
-      (date, value) => MapEntry(
-        date,
-        PrayerLog.fromJson(date, value as Map<String, dynamic>),
-      ),
-    );
+    try {
+      final decoded = jsonDecode(jsonStr) as Map<String, dynamic>;
+      return decoded.map(
+        (date, value) => MapEntry(
+          date,
+          PrayerLog.fromJson(date, value as Map<String, dynamic>),
+        ),
+      );
+    } catch (_) {
+      return {};
+    }
   }
 
   Future<void> saveLogs(Map<String, PrayerLog> logs) async {

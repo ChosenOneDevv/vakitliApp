@@ -29,9 +29,13 @@ class QadaService {
     final jsonStr = prefs.getString(_key);
     final result = {for (final k in prayerKeys) k: 0};
     if (jsonStr != null) {
-      final decoded = jsonDecode(jsonStr) as Map<String, dynamic>;
-      for (final k in prayerKeys) {
-        result[k] = (decoded[k] as int?) ?? 0;
+      try {
+        final decoded = jsonDecode(jsonStr) as Map<String, dynamic>;
+        for (final k in prayerKeys) {
+          result[k] = (decoded[k] as int?) ?? 0;
+        }
+      } catch (_) {
+        // Bozuk cache → sıfır sayaçlarla devam et
       }
     }
     return result;
