@@ -61,4 +61,3 @@ lib/
   data/       statik veri (iller)
 ```
 
-Ayrıntılı yol haritası ve iyileştirme planı için [progress.md](progress.md), geliştirme kuralları için [CLAUDE.md](CLAUDE.md).
