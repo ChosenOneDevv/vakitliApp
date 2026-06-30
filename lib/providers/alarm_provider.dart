@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vakitli/models/alarm_settings.dart';
@@ -13,6 +14,7 @@ class AlarmProvider extends ChangeNotifier {
   bool _initialized = false;
   bool _ongoingEnabled = false;
   bool _exemptionActive = false;
+  Timer? _ongoingRefreshTimer;
 
   // Son bilinen vakitler — ayar değişince yeniden kurmak için saklanır.
   PrayerTime? _todayPrayer;
@@ -39,6 +41,7 @@ class AlarmProvider extends ChangeNotifier {
     await _reschedule();
     _lastScheduledKey = '${_todayPrayer?.date}|${_tomorrowPrayer?.date}';
     _updateOngoingNotif();
+    if (_ongoingEnabled) _startOngoingTimer();
   }
 
   Future<bool> requestPermissions() async {
@@ -102,9 +105,23 @@ class AlarmProvider extends ChangeNotifier {
     notifyListeners();
     if (value) {
       _updateOngoingNotif();
+      _startOngoingTimer();
     } else {
+      _stopOngoingTimer();
       await _notificationService.cancelOngoingNotification();
     }
+  }
+
+  void _startOngoingTimer() {
+    _ongoingRefreshTimer?.cancel();
+    _ongoingRefreshTimer = Timer.periodic(const Duration(minutes: 1), (_) {
+      _updateOngoingNotif();
+    });
+  }
+
+  void _stopOngoingTimer() {
+    _ongoingRefreshTimer?.cancel();
+    _ongoingRefreshTimer = null;
   }
 
   /// PrayerProvider güncellenince çağrılır (bugün + yarın vakitleri).
@@ -198,5 +215,11 @@ class AlarmProvider extends ChangeNotifier {
 
   Future<void> cancelAll() async {
     await _notificationService.cancelAllNotifications();
+  }
+
+  @override
+  void dispose() {
+    _stopOngoingTimer();
+    super.dispose();
   }
 }
