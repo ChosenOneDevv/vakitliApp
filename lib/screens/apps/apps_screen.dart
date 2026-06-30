@@ -22,7 +22,6 @@ import 'package:vakitli/screens/hutbe/hutbe_screen.dart';
 import 'package:vakitli/screens/dua_kardesligi/dua_kardesligi_screen.dart';
 import 'package:vakitli/screens/quran/quran_screen.dart';
 import 'package:vakitli/screens/hatim/hatim_screen.dart';
-import 'package:vakitli/screens/library/library_screen.dart';
 
 class _AppItem {
   final IconData icon;
@@ -53,12 +52,6 @@ class AppsScreen extends StatelessWidget {
       label: 'Hatim Takibi',
       subtitle: 'Kuran okuma ilerlemesi',
       screen: HatimScreen(),
-    ),
-    _AppItem(
-      icon: Icons.local_library_rounded,
-      label: 'Kütüphane',
-      subtitle: 'İndirilebilir kitaplar',
-      screen: LibraryScreen(),
     ),
     _AppItem(
       icon: Icons.check_circle_rounded,
