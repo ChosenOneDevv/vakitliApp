@@ -1,5 +1,8 @@
-# Release signing — never commit these
+# Release signing + Firebase config — never commit these
+key.properties
 android/key.properties
+google-services.json
+android/google-services.json
 android/app/google-services.json
 *.jks
 *.keystore
@@ -58,3 +61,7 @@ app.*.map.json
 # Logo kaynak dosyaları (büyük, üretim için gerekmez)
 /logo.png
 /magnific_*.png
+
+# Claude Code worktrees + geçici dosyalar
+.claude/worktrees/
+.claude/jobs/
