@@ -27,9 +27,10 @@ void main() {
       expect(d.hasHoliday, true);
     });
 
-    test('unknown holiday falls back to Dini Gün', () {
+    test('unknown holiday is silently dropped', () {
       final d = HijriDay.fromAladhanJson(day(['Some Local Day']));
-      expect(d.holidays.first, 'Dini Gün');
+      expect(d.holidays, isEmpty);
+      expect(d.hasHoliday, false);
     });
   });
 

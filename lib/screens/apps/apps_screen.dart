@@ -15,7 +15,6 @@ import 'package:vakitli/screens/duas/duas_screen.dart';
 import 'package:vakitli/screens/female/female_screen.dart';
 import 'package:vakitli/screens/settings/settings_screen.dart';
 import 'package:vakitli/screens/sunnah/sunnah_screen.dart';
-import 'package:vakitli/screens/radio/radio_screen.dart';
 import 'package:vakitli/screens/hikmet/hikmet_screen.dart';
 import 'package:vakitli/screens/amel/amel_screen.dart';
 import 'package:vakitli/screens/tebrik/tebrik_screen.dart';
@@ -144,12 +143,6 @@ class AppsScreen extends StatelessWidget {
       label: 'Dua & Zikir',
       subtitle: 'Dua koleksiyonu',
       screen: DuasScreen(),
-    ),
-    _AppItem(
-      icon: Icons.radio_rounded,
-      label: 'Kuran Radyosu',
-      subtitle: 'Canlı Kuran yayını',
-      screen: RadioScreen(),
     ),
     _AppItem(
       icon: Icons.settings_rounded,

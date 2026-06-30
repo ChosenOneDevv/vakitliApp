@@ -5,7 +5,6 @@ import 'package:vakitli/providers/prayer_provider.dart';
 import 'package:vakitli/screens/home/home_screen.dart';
 import 'package:vakitli/screens/qibla/qibla_screen.dart';
 import 'package:vakitli/screens/apps/apps_screen.dart';
-import 'package:vakitli/widgets/radio_mini_player.dart';
 
 class _TabItem {
   final IconData icon;
@@ -91,7 +90,6 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
               }),
             ),
           ),
-          const RadioMiniPlayer(),
         ],
       ),
       bottomNavigationBar: Container(

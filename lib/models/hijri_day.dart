@@ -88,12 +88,12 @@ class HijriDay {
     'last friday of ramadan': 'Veda Cuması',
   };
 
-  static String _translateHoliday(String en) {
+  static String? _translateHoliday(String en) {
     final lower = en.toLowerCase();
     for (final entry in _holidayTr.entries) {
       if (lower.contains(entry.key)) return entry.value;
     }
-    return 'Dini Gün';
+    return null; // Tanınmayan string → gösterme
   }
 
   factory HijriDay.fromAladhanJson(Map<String, dynamic> json) {
@@ -111,7 +111,10 @@ class HijriDay {
     final monthTr = PrayerTime.hijriMonthsTr[monthEn] ?? monthEn;
 
     final rawHolidays = (hijri['holidays'] as List?)?.cast<String>() ?? [];
-    final holidays = rawHolidays.map(_translateHoliday).toList();
+    final holidays = rawHolidays
+        .map(_translateHoliday)
+        .whereType<String>()
+        .toList();
 
     return HijriDay(
       gregorian: date,

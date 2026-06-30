@@ -24,7 +24,6 @@ import 'package:vakitli/providers/dnd_provider.dart';
 import 'package:vakitli/providers/hayd_provider.dart';
 import 'package:vakitli/providers/profile_provider.dart';
 import 'package:vakitli/providers/theme_provider.dart';
-import 'package:vakitli/providers/radio_provider.dart';
 import 'package:vakitli/providers/hikmet_provider.dart';
 import 'package:vakitli/providers/amel_provider.dart';
 import 'package:vakitli/providers/hutbe_provider.dart';
@@ -101,7 +100,6 @@ class VakitliApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => HaydProvider()..initialize()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()..initialize()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()..initialize()),
-        ChangeNotifierProvider(create: (_) => RadioProvider()..initialize()),
         ChangeNotifierProvider(create: (_) => HikmetProvider()..initialize()),
         ChangeNotifierProvider(create: (_) => AmelProvider()..initialize()),
         ChangeNotifierProvider(create: (_) => HutbeProvider()),
