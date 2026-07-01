@@ -166,7 +166,7 @@ class _HikmetCard extends StatelessWidget {
             child: Text(
               '— ${hikmet.author}',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.primaryGreen,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.w500,
                   ),
             ),

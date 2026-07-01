@@ -28,8 +28,8 @@ class _DuasScreenState extends State<DuasScreen> {
       body: Consumer<DuaProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            return Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             );
           }
           if (provider.error != null) {
@@ -128,7 +128,7 @@ class _CategoryBar extends StatelessWidget {
             label: Text(cat),
             selected: selected,
             onSelected: (_) => provider.selectCategory(cat),
-            selectedColor: AppColors.primaryGreen,
+            selectedColor: Theme.of(context).colorScheme.primary,
             labelStyle: TextStyle(
               color: selected
                   ? AppColors.white
@@ -201,7 +201,7 @@ class _DuaCard extends StatelessWidget {
             Text(
               dua.transliteration,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.primaryGreen,
+                    color: Theme.of(context).colorScheme.primary,
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w600,
                   ),

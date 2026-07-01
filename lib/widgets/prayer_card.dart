@@ -43,7 +43,7 @@ class PrayerCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(14, 13, 16, 13),
       decoration: BoxDecoration(
         color: isNext
-            ? AppColors.primaryGreen.withValues(alpha: 0.10)
+            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.10)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(16),
       ),
@@ -54,7 +54,7 @@ class PrayerCard extends StatelessWidget {
             width: 3,
             height: 22,
             decoration: BoxDecoration(
-              color: isNext ? AppColors.primaryGreen : Colors.transparent,
+              color: isNext ? Theme.of(context).colorScheme.primary : Colors.transparent,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -62,7 +62,7 @@ class PrayerCard extends StatelessWidget {
           Icon(
             _getIcon(),
             size: 21,
-            color: isNext ? AppColors.primaryGreen : AppColors.lightText,
+            color: isNext ? Theme.of(context).colorScheme.primary : AppColors.lightText,
           ),
           const SizedBox(width: 12),
           Text(
@@ -71,7 +71,7 @@ class PrayerCard extends StatelessWidget {
               fontFamily: 'Cairo',
               fontSize: 15.5,
               fontWeight: isNext ? FontWeight.w700 : FontWeight.w500,
-              color: isNext ? AppColors.primaryGreen : onSurface,
+              color: isNext ? Theme.of(context).colorScheme.primary : onSurface,
             ),
           ),
           const Spacer(),
@@ -87,7 +87,7 @@ class PrayerCard extends StatelessWidget {
               fontFamily: 'Cairo',
               fontSize: 17,
               fontWeight: FontWeight.w700,
-              color: isNext ? AppColors.primaryGreen : onSurface,
+              color: isNext ? Theme.of(context).colorScheme.primary : onSurface,
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),

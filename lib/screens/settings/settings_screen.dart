@@ -35,8 +35,8 @@ class SettingsScreen extends StatelessWidget {
               return Column(
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.location_city_rounded,
-                        color: AppColors.primaryGreen),
+                    leading: Icon(Icons.location_city_rounded,
+                        color: Theme.of(context).colorScheme.primary),
                     title: const Text('Şehir'),
                     subtitle: Text(cityName),
                     trailing: const Icon(Icons.chevron_right_rounded),
@@ -52,8 +52,8 @@ class SettingsScreen extends StatelessWidget {
                             height: 24,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Icon(Icons.my_location_rounded,
-                            color: AppColors.primaryGreen),
+                        : Icon(Icons.my_location_rounded,
+                            color: Theme.of(context).colorScheme.primary),
                     title: const Text('Konumu otomatik bul'),
                     subtitle: const Text('GPS ile mevcut konumu kullan'),
                     onTap: location.isLoading
@@ -74,16 +74,16 @@ class SettingsScreen extends StatelessWidget {
               return Column(
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.calculate_rounded,
-                        color: AppColors.primaryGreen),
+                    leading: Icon(Icons.calculate_rounded,
+                        color: Theme.of(context).colorScheme.primary),
                     title: const Text('Hesaplama Metodu'),
                     subtitle: Text(prayer.calculationMethodName),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => _showMethodDialog(context, prayer),
                   ),
                   ListTile(
-                    leading: const Icon(Icons.public_rounded,
-                        color: AppColors.primaryGreen),
+                    leading: Icon(Icons.public_rounded,
+                        color: Theme.of(context).colorScheme.primary),
                     title: const Text('Yüksek Enlem Kuralı'),
                     subtitle: Text(prayer.latitudeRuleName),
                     trailing: const Icon(Icons.chevron_right_rounded),
@@ -96,8 +96,8 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ),
                   ListTile(
-                    leading: const Icon(Icons.calendar_month_outlined,
-                        color: AppColors.primaryGreen),
+                    leading: Icon(Icons.calendar_month_outlined,
+                        color: Theme.of(context).colorScheme.primary),
                     title: const Text('Hicri Tarih Ofseti'),
                     subtitle: Text(_hijriLabel(prayer.hijriAdjustment)),
                     trailing: Row(
@@ -130,8 +130,8 @@ class SettingsScreen extends StatelessWidget {
           const _SectionHeader(
               title: 'Bildirimler', icon: Icons.notifications_rounded),
           ListTile(
-            leading: const Icon(Icons.alarm_rounded,
-                color: AppColors.primaryGreen),
+            leading: Icon(Icons.alarm_rounded,
+                color: Theme.of(context).colorScheme.primary),
             title: const Text('Alarm Ayarları'),
             subtitle: const Text('Her vakit için bildirim/alarm'),
             trailing: const Icon(Icons.chevron_right_rounded),
@@ -140,8 +140,8 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.notifications_active_rounded,
-                color: AppColors.primaryGreen),
+            leading: Icon(Icons.notifications_active_rounded,
+                color: Theme.of(context).colorScheme.primary),
             title: const Text('Bildirim İzni'),
             subtitle: const Text('Bildirim iznini iste / kontrol et'),
             onTap: () => _requestPermission(context),
@@ -151,14 +151,14 @@ class SettingsScreen extends StatelessWidget {
               return Column(
                 children: [
                   SwitchListTile(
-                    secondary: const Icon(Icons.do_not_disturb_on_rounded,
-                        color: AppColors.primaryGreen),
+                    secondary: Icon(Icons.do_not_disturb_on_rounded,
+                        color: Theme.of(context).colorScheme.primary),
                     title: const Text('Namaz Vaktinde Sessiz'),
                     subtitle: Text(dnd.hasAccess
                         ? 'Vakit girince ${dnd.durationMinutes} dk sessize alır'
                         : 'İzin gerekli — dokunup ver'),
                     value: dnd.enabled,
-                    activeThumbColor: AppColors.primaryGreen,
+                    activeThumbColor: Theme.of(context).colorScheme.primary,
                     onChanged: (value) async {
                       if (value && !dnd.hasAccess) {
                         await dnd.openSettings();
@@ -169,8 +169,8 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   if (dnd.enabled && dnd.hasAccess)
                     ListTile(
-                      leading: const Icon(Icons.timer_outlined,
-                          color: AppColors.primaryGreen),
+                      leading: Icon(Icons.timer_outlined,
+                          color: Theme.of(context).colorScheme.primary),
                       title: const Text('Sessiz Süresi'),
                       subtitle: Text('${dnd.durationMinutes} dakika'),
                       trailing: const Icon(Icons.chevron_right_rounded),
@@ -187,8 +187,8 @@ class SettingsScreen extends StatelessWidget {
           Consumer<ProfileProvider>(
             builder: (context, profile, child) {
               return ListTile(
-                leading: const Icon(Icons.wc_rounded,
-                    color: AppColors.primaryGreen),
+                leading: Icon(Icons.wc_rounded,
+                    color: Theme.of(context).colorScheme.primary),
                 title: const Text('Cinsiyet'),
                 subtitle: Text(profile.isFemale ? 'Kadın' : 'Erkek'),
                 trailing: const Icon(Icons.chevron_right_rounded),
@@ -202,8 +202,8 @@ class SettingsScreen extends StatelessWidget {
                 builder: (context, profile, child) {
                   if (!profile.isFemale) return const SizedBox.shrink();
                   return ListTile(
-                    leading: const Icon(Icons.water_drop_rounded,
-                        color: AppColors.primaryGreen),
+                    leading: Icon(Icons.water_drop_rounded,
+                        color: Theme.of(context).colorScheme.primary),
                     title: const Text('Hayız Takip'),
                     subtitle: Text('${hayd.records.length} kayıt · ${hayd.totalHaydDays} gün'),
                     trailing: const Icon(Icons.chevron_right_rounded),
@@ -224,29 +224,29 @@ class SettingsScreen extends StatelessWidget {
               return Column(
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.brightness_6_rounded,
-                        color: AppColors.primaryGreen),
+                    leading: Icon(Icons.brightness_6_rounded,
+                        color: Theme.of(context).colorScheme.primary),
                     title: const Text('Tema'),
                     subtitle: Text(theme.label),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => _showThemeDialog(context, theme),
                   ),
                   ListTile(
-                    leading: const Icon(Icons.color_lens_rounded,
-                        color: AppColors.primaryGreen),
+                    leading: Icon(Icons.color_lens_rounded,
+                        color: Theme.of(context).colorScheme.primary),
                     title: const Text('Renk Teması'),
                     subtitle: Text(theme.preset.label),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => _showPresetDialog(context, theme),
                   ),
                   SwitchListTile(
-                    secondary: const Icon(Icons.palette_outlined,
-                        color: AppColors.primaryGreen),
+                    secondary: Icon(Icons.palette_outlined,
+                        color: Theme.of(context).colorScheme.primary),
                     title: const Text('Material You Renkleri'),
                     subtitle: const Text(
                         'Cihaz duvar kağıdı renklerini kullan (Android 12+)'),
                     value: theme.useDynamicColor,
-                    activeThumbColor: AppColors.primaryGreen,
+                    activeThumbColor: Theme.of(context).colorScheme.primary,
                     onChanged: theme.setDynamicColor,
                   ),
                 ],
@@ -254,8 +254,8 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.share_rounded,
-                color: AppColors.primaryGreen),
+            leading: Icon(Icons.share_rounded,
+                color: Theme.of(context).colorScheme.primary),
             title: const Text('Uygulamayı Paylaş'),
             onTap: () => Share.share(
               'Vakitli — namaz vakitleri ve İslami yaşam uygulaması.',
@@ -263,7 +263,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           ListTile(
             leading:
-                const Icon(Icons.info_rounded, color: AppColors.primaryGreen),
+                Icon(Icons.info_rounded, color: Theme.of(context).colorScheme.primary),
             title: const Text('Hakkında'),
             subtitle: const Text('Sürüm $_appVersion'),
             onTap: () => _showAbout(context),
@@ -274,15 +274,15 @@ class SettingsScreen extends StatelessWidget {
           const _SectionHeader(
               title: 'Veri', icon: Icons.storage_rounded),
           ListTile(
-            leading: const Icon(Icons.upload_rounded,
-                color: AppColors.primaryGreen),
+            leading: Icon(Icons.upload_rounded,
+                color: Theme.of(context).colorScheme.primary),
             title: const Text('Yedeği Dışa Aktar'),
             subtitle: const Text('Tüm veriyi JSON olarak paylaş'),
             onTap: () => _exportBackup(context),
           ),
           ListTile(
-            leading: const Icon(Icons.download_rounded,
-                color: AppColors.primaryGreen),
+            leading: Icon(Icons.download_rounded,
+                color: Theme.of(context).colorScheme.primary),
             title: const Text('Yedekten İçe Aktar'),
             subtitle: const Text('JSON yedeği yapıştırarak geri yükle'),
             onTap: () => _importBackup(context),
@@ -417,7 +417,7 @@ class SettingsScreen extends StatelessWidget {
                     .map((e) => RadioListTile<int>(
                           value: e.key,
                           title: Text(e.value),
-                          activeColor: AppColors.primaryGreen,
+                          activeColor: Theme.of(context).colorScheme.primary,
                         ))
                     .toList(),
               ),
@@ -454,7 +454,7 @@ class SettingsScreen extends StatelessWidget {
                   .map((m) => RadioListTile<int>(
                         value: m,
                         title: Text('$m dakika'),
-                        activeColor: AppColors.primaryGreen,
+                        activeColor: Theme.of(context).colorScheme.primary,
                       ))
                   .toList(),
             ),
@@ -518,7 +518,7 @@ class SettingsScreen extends StatelessWidget {
                   return RadioListTile<int>(
                     value: e.key,
                     title: Text(e.value),
-                    activeColor: AppColors.primaryGreen,
+                    activeColor: Theme.of(context).colorScheme.primary,
                   );
                 }).toList(),
               ),
@@ -552,8 +552,8 @@ class SettingsScreen extends StatelessWidget {
       context: context,
       applicationName: 'Vakitli',
       applicationVersion: _appVersion,
-      applicationIcon: const Icon(Icons.mosque_rounded,
-          color: AppColors.primaryGreen, size: 40),
+      applicationIcon: Icon(Icons.mosque_rounded,
+          color: Theme.of(context).colorScheme.primary, size: 40),
       children: const [
         SizedBox(height: 12),
         Text(
@@ -661,7 +661,7 @@ class _SectionHeader extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.primaryGreen,
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                 ),
           ),

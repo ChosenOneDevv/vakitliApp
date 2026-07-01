@@ -15,8 +15,8 @@ class LibraryScreen extends StatelessWidget {
       body: Consumer<LibraryProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            return Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             );
           }
           if (provider.error != null) {
@@ -103,11 +103,11 @@ class _BookCard extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: AppColors.primaryGreen.withValues(alpha: 0.12),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.menu_book_rounded,
-                  color: AppColors.primaryGreen),
+              child: Icon(Icons.menu_book_rounded,
+                  color: Theme.of(context).colorScheme.primary),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -128,7 +128,7 @@ class _BookCard extends StatelessWidget {
                   ],
                   const SizedBox(height: 8),
                   if (downloading)
-                    const SizedBox(
+                    SizedBox(
                       height: 32,
                       child: Row(
                         children: [
@@ -137,7 +137,7 @@ class _BookCard extends StatelessWidget {
                             height: 16,
                             child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: AppColors.primaryGreen),
+                                color: Theme.of(context).colorScheme.primary),
                           ),
                           SizedBox(width: 8),
                           Text('İndiriliyor…'),
@@ -153,7 +153,7 @@ class _BookCard extends StatelessWidget {
                               size: 18),
                           label: const Text('Oku'),
                           style: FilledButton.styleFrom(
-                              backgroundColor: AppColors.primaryGreen),
+                              backgroundColor: Theme.of(context).colorScheme.primary),
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete_outline_rounded,
@@ -169,9 +169,9 @@ class _BookCard extends StatelessWidget {
                       icon: const Icon(Icons.download_rounded, size: 18),
                       label: const Text('İndir'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.primaryGreen,
+                        foregroundColor: Theme.of(context).colorScheme.primary,
                         side:
-                            const BorderSide(color: AppColors.primaryGreen),
+                            BorderSide(color: Theme.of(context).colorScheme.primary),
                       ),
                     ),
                 ],

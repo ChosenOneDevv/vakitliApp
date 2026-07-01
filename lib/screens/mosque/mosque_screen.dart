@@ -160,8 +160,8 @@ class _MosqueScreenState extends State<MosqueScreen> {
                           point: LatLng(m.latitude, m.longitude),
                           width: 40,
                           height: 40,
-                          child: const Icon(Icons.mosque_rounded,
-                              color: AppColors.primaryGreen, size: 28),
+                          child: Icon(Icons.mosque_rounded,
+                              color: Theme.of(context).colorScheme.primary, size: 28),
                         )),
                   ],
                 ),
@@ -181,8 +181,8 @@ class _MosqueScreenState extends State<MosqueScreen> {
 
   Widget _buildList() {
     if (_loading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primaryGreen),
+      return Center(
+        child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
       );
     }
     if (_mosques.isEmpty) {
@@ -212,8 +212,8 @@ class _MosqueScreenState extends State<MosqueScreen> {
       itemBuilder: (context, index) {
         final m = _mosques[index];
         return ListTile(
-          leading: const Icon(Icons.mosque_rounded,
-              color: AppColors.primaryGreen),
+          leading: Icon(Icons.mosque_rounded,
+              color: Theme.of(context).colorScheme.primary),
           title: Text(m.name),
           subtitle: Text(m.distanceLabel),
           trailing: Row(
@@ -228,7 +228,7 @@ class _MosqueScreenState extends State<MosqueScreen> {
                   return IconButton(
                     icon: Icon(
                       saved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
-                      color: saved ? AppColors.primaryGreen : AppColors.lightText,
+                      color: saved ? Theme.of(context).colorScheme.primary : AppColors.lightText,
                     ),
                     tooltip: saved ? 'Kayıtlı' : 'Kaydet',
                     onPressed: () async {

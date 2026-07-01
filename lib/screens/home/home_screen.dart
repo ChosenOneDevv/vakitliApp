@@ -86,8 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildBody(BuildContext context, PrayerProvider provider) {
     if (provider.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primaryGreen),
+      return Center(
+        child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
       );
     }
 
@@ -229,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 2),
               Text(hijri,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.primaryGreen,
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.w600,
                       )),
             ],
@@ -244,19 +244,19 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
             decoration: BoxDecoration(
-              color: AppColors.primaryGreen.withValues(alpha: 0.08),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.location_on_rounded,
-                    size: 15, color: AppColors.primaryGreen),
+                Icon(Icons.location_on_rounded,
+                    size: 15, color: Theme.of(context).colorScheme.primary),
                 const SizedBox(width: 5),
                 Text(
                   provider.locationName,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.primaryGreen,
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.w600,
                       ),
                 ),
@@ -311,13 +311,13 @@ class _VaktindeKilBanner extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AppColors.primaryGreen, Color(0xFF2E7D32)],
+              gradient: LinearGradient(
+                colors: [Theme.of(context).colorScheme.primary, Color(0xFF2E7D32)],
               ),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryGreen.withValues(alpha: 0.3),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
@@ -413,7 +413,7 @@ class _VaktinHadisiCard extends StatelessWidget {
                   Text(
                     hadith.source,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: AppColors.primaryGreen,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                   ),
                 ],

@@ -153,7 +153,7 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: AppColors.primaryGreen, width: 1.5),
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5),
                 ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               ),
@@ -200,13 +200,13 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? AppColors.primaryGreen.withValues(alpha: 0.12)
+                              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.12)
                               : AppColors.gold.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Icon(
                           isSelected ? Icons.check_circle_rounded : Icons.location_city_rounded,
-                          color: isSelected ? AppColors.primaryGreen : AppColors.gold,
+                          color: isSelected ? Theme.of(context).colorScheme.primary : AppColors.gold,
                           size: 22,
                         ),
                       ),
@@ -214,13 +214,13 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
                         city.name,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               color: isSelected
-                                  ? AppColors.primaryGreen
+                                  ? Theme.of(context).colorScheme.primary
                                   : Theme.of(context).colorScheme.onSurface,
                               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                             ),
                       ),
                       trailing: isSelected
-                          ? const Icon(Icons.check_rounded, color: AppColors.primaryGreen)
+                          ? Icon(Icons.check_rounded, color: Theme.of(context).colorScheme.primary)
                           : const Icon(Icons.chevron_right_rounded, color: AppColors.lightText),
                       onTap: () async {
                         await provider.selectCity(city);

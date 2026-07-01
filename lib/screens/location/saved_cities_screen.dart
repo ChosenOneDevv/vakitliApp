@@ -78,7 +78,7 @@ class _SavedCitiesScreenState extends State<SavedCitiesScreen> {
       appBar: AppBar(title: const Text('Çoklu Şehir')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addCity,
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         icon: const Icon(Icons.add_location_alt_rounded),
         label: const Text('Şehir Ekle'),
       ),
@@ -88,8 +88,8 @@ class _SavedCitiesScreenState extends State<SavedCitiesScreen> {
 
   Widget _buildBody() {
     if (_loading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primaryGreen),
+      return Center(
+        child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
       );
     }
     if (_cities.isEmpty) {
@@ -114,7 +114,7 @@ class _SavedCitiesScreenState extends State<SavedCitiesScreen> {
     }
 
     return RefreshIndicator(
-      color: AppColors.primaryGreen,
+      color: Theme.of(context).colorScheme.primary,
       onRefresh: _load,
       child: ListView.builder(
         padding: const EdgeInsets.fromLTRB(12, 12, 12, 96),
@@ -219,7 +219,7 @@ class _VakitCell extends StatelessWidget {
           time,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppColors.primaryGreen,
+                color: Theme.of(context).colorScheme.primary,
               ),
         ),
       ],

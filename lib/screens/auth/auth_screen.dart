@@ -112,7 +112,7 @@ class _AuthScreenState extends State<AuthScreen>
                 Tab(text: 'Giriş Yap'),
                 Tab(text: 'Kayıt Ol'),
               ],
-              labelColor: AppColors.darkGreen,
+              labelColor: Theme.of(context).colorScheme.primary,
               unselectedLabelColor: Colors.grey,
               indicatorColor: AppColors.gold,
             ),
@@ -166,19 +166,19 @@ class _Logo extends StatelessWidget {
           width: 72,
           height: 72,
           decoration: BoxDecoration(
-            color: AppColors.darkGreen,
+            color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(20),
           ),
           child: const Icon(Icons.mosque_rounded,
               color: AppColors.gold, size: 40),
         ),
         const SizedBox(height: 12),
-        const Text(
+        Text(
           'Vakitli',
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
-            color: AppColors.darkGreen,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         const SizedBox(height: 4),
@@ -236,8 +236,8 @@ class _LoginTab extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: onForgot,
-                child: const Text('Şifremi Unuttum',
-                    style: TextStyle(color: AppColors.darkGreen)),
+                child: Text('Şifremi Unuttum',
+                    style: TextStyle(color: Theme.of(context).colorScheme.primary)),
               ),
             ),
             const SizedBox(height: 8),
@@ -451,7 +451,7 @@ class _SubmitButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: loading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.darkGreen,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

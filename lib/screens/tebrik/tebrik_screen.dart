@@ -26,8 +26,8 @@ class TebrikScreen extends StatelessWidget {
       body: Consumer<TebrikProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading && provider.cards.isEmpty) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            return Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             );
           }
           return GridView.builder(
@@ -52,7 +52,7 @@ class _TebrikTile extends StatelessWidget {
 
   const _TebrikTile({required this.card});
 
-  static const List<Color> _colors = [
+  static final List<Color> _colors = [
     AppColors.primaryGreen,
     AppColors.navy,
     AppColors.gold,

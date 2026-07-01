@@ -15,8 +15,8 @@ class TrackerScreen extends StatelessWidget {
       body: Consumer<TrackerProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            return Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             );
           }
 
@@ -57,15 +57,15 @@ class _StreakCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.darkGreen, AppColors.primaryGreen],
+          colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary],
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryGreen.withValues(alpha: 0.3),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -123,7 +123,7 @@ class _TodayCard extends StatelessWidget {
                   Text(
                     '${log.completedCount}/${PrayerLog.prayerKeys.length}',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: AppColors.primaryGreen,
+                          color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -146,7 +146,7 @@ class _TodayCard extends StatelessWidget {
                             ? Icons.check_circle_rounded
                             : Icons.circle_outlined,
                         color:
-                            done ? AppColors.primaryGreen : AppColors.lightText,
+                            done ? Theme.of(context).colorScheme.primary : AppColors.lightText,
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -235,8 +235,8 @@ class _WeeklyCard extends StatelessWidget {
                           height: 80 * ratio + 4,
                           decoration: BoxDecoration(
                             color: ratio == 1.0
-                                ? AppColors.primaryGreen
-                                : AppColors.lightGreen
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.primaryContainer
                                     .withValues(alpha: 0.4 + ratio * 0.5),
                             borderRadius: BorderRadius.circular(6),
                           ),
@@ -294,10 +294,10 @@ class _HeatmapCard extends StatelessWidget {
 
   const _HeatmapCard({required this.days});
 
-  Color _cellColor(int completed) {
+  Color _cellColor(BuildContext context, int completed) {
     if (completed == 0) return AppColors.lightText.withValues(alpha: 0.15);
     final ratio = completed / 5;
-    return AppColors.primaryGreen.withValues(alpha: 0.25 + ratio * 0.6);
+    return Theme.of(context).colorScheme.primary.withValues(alpha: 0.25 + ratio * 0.6);
   }
 
   @override
@@ -326,7 +326,7 @@ class _HeatmapCard extends StatelessWidget {
                         width: 30,
                         height: 30,
                         decoration: BoxDecoration(
-                          color: _cellColor(d.completed),
+                          color: _cellColor(context, d.completed),
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ))
@@ -449,7 +449,7 @@ class _StatBox extends StatelessWidget {
             Text(
               value,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: AppColors.primaryGreen,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
             ),
             const SizedBox(height: 2),

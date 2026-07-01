@@ -67,8 +67,8 @@ class _BugunTab extends StatelessWidget {
       builder: (context, prayer, child) {
         final today = prayer.todayPrayer;
         if (today == null) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.primaryGreen),
+          return Center(
+            child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
           );
         }
 
@@ -251,8 +251,8 @@ class _ImsakiyeTabState extends State<_ImsakiyeTab> {
               ),
               if (_monthData != null)
                 IconButton(
-                  icon: const Icon(Icons.share_rounded,
-                      color: AppColors.primaryGreen),
+                  icon: Icon(Icons.share_rounded,
+                      color: Theme.of(context).colorScheme.primary),
                   onPressed: () =>
                       Share.share(_shareText(_monthData!)),
                 ),
@@ -260,10 +260,10 @@ class _ImsakiyeTabState extends State<_ImsakiyeTab> {
           ),
         ),
         if (_loading)
-          const Expanded(
+          Expanded(
             child: Center(
               child: CircularProgressIndicator(
-                  color: AppColors.primaryGreen),
+                  color: Theme.of(context).colorScheme.primary),
             ),
           )
         else if (_error != null)
@@ -313,9 +313,9 @@ class _ImsakiyeTabState extends State<_ImsakiyeTab> {
                   Expanded(
                       flex: 2,
                       child: Row(
-                        children: const [
+                        children: [
                           Icon(Icons.bedtime_rounded,
-                              size: 14, color: AppColors.primaryGreen),
+                              size: 14, color: Theme.of(context).colorScheme.primary),
                           SizedBox(width: 4),
                           Text('İmsak',
                               style: TextStyle(
@@ -383,7 +383,7 @@ class _ImsakiyeRow extends StatelessWidget {
 
     return Container(
       color: isToday
-          ? AppColors.primaryGreen.withValues(alpha: 0.08)
+          ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.08)
           : null,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
       child: Row(
@@ -399,7 +399,7 @@ class _ImsakiyeRow extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
                     color: isToday
-                        ? AppColors.primaryGreen
+                        ? Theme.of(context).colorScheme.primary
                         : isFriday
                             ? AppColors.gold
                             : null,
@@ -418,7 +418,7 @@ class _ImsakiyeRow extends StatelessWidget {
               fajr.time,
               style: TextStyle(
                 fontSize: 14,
-                color: isToday ? AppColors.primaryGreen : null,
+                color: isToday ? Theme.of(context).colorScheme.primary : null,
                 fontWeight: isToday ? FontWeight.w600 : null,
               ),
             ),
@@ -429,7 +429,7 @@ class _ImsakiyeRow extends StatelessWidget {
               magh.time,
               style: TextStyle(
                 fontSize: 14,
-                color: isToday ? AppColors.primaryGreen : null,
+                color: isToday ? Theme.of(context).colorScheme.primary : null,
                 fontWeight: isToday ? FontWeight.w600 : null,
               ),
             ),
@@ -481,10 +481,10 @@ class _CountdownCardState extends State<_CountdownCard> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 28),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.darkGreen, AppColors.primaryGreen],
+          colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary],
         ),
         borderRadius: BorderRadius.circular(20),
       ),
@@ -538,7 +538,7 @@ class _TimeCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(time,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: AppColors.primaryGreen,
+                      color: Theme.of(context).colorScheme.primary,
                     )),
             const SizedBox(height: 2),
             Text(title, style: Theme.of(context).textTheme.bodySmall),
@@ -589,7 +589,7 @@ class _FastingCard extends StatelessWidget {
                         fasted ? 'Bugün oruç tutuldu ✓' : 'Bugün oruç tuttum'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
-                          fasted ? AppColors.lightGreen : AppColors.primaryGreen,
+                          fasted ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),
@@ -614,7 +614,7 @@ class _Stat extends StatelessWidget {
       children: [
         Text(value,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: AppColors.primaryGreen,
+                  color: Theme.of(context).colorScheme.primary,
                 )),
         Text(label, style: Theme.of(context).textTheme.bodySmall),
       ],

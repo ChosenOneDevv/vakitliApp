@@ -64,10 +64,10 @@ class _CountdownTimerState extends State<CountdownTimer> {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(24, 22, 24, 20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [AppColors.primaryGreen, AppColors.darkGreen],
+          colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary],
         ),
         borderRadius: BorderRadius.circular(24),
       ),

@@ -69,8 +69,8 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               ),
             )
           else if (!_ready)
-            const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             ),
         ],
       ),

@@ -48,8 +48,8 @@ class _HadithScreenState extends State<HadithScreen>
       body: Consumer<HadithProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            return Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             );
           }
 
@@ -139,7 +139,7 @@ class _CollectionsTab extends StatelessWidget {
     if (cats.isEmpty) {
       return Center(
         child: provider.isApiLoading
-            ? const CircularProgressIndicator(color: AppColors.primaryGreen)
+            ? CircularProgressIndicator(color: Theme.of(context).colorScheme.primary)
             : Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -173,10 +173,10 @@ class _CollectionsTab extends StatelessWidget {
               return FilterChip(
                 label: Text(cat.title),
                 selected: isSelected,
-                selectedColor: AppColors.primaryGreen.withValues(alpha: 0.15),
-                checkmarkColor: AppColors.primaryGreen,
+                selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+                checkmarkColor: Theme.of(context).colorScheme.primary,
                 labelStyle: TextStyle(
-                  color: isSelected ? AppColors.primaryGreen : null,
+                  color: isSelected ? Theme.of(context).colorScheme.primary : null,
                   fontWeight:
                       isSelected ? FontWeight.w600 : FontWeight.normal,
                 ),
@@ -242,8 +242,8 @@ class _ApiHadithListState extends State<_ApiHadithList> {
     }
 
     if (provider.isApiLoading && provider.apiHadiths.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primaryGreen),
+      return Center(
+        child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
       );
     }
 
@@ -261,11 +261,11 @@ class _ApiHadithListState extends State<_ApiHadithList> {
       itemBuilder: (context, i) {
         if (i == provider.apiHadiths.length) {
           return provider.isApiLoading
-              ? const Padding(
+              ? Padding(
                   padding: EdgeInsets.symmetric(vertical: 24),
                   child: Center(
                     child: CircularProgressIndicator(
-                        color: AppColors.primaryGreen),
+                        color: Theme.of(context).colorScheme.primary),
                   ),
                 )
               : Padding(
@@ -353,12 +353,12 @@ class _HadithCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: isDaily
-            ? AppColors.primaryGreen.withValues(alpha: 0.05)
+            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.05)
             : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isDaily
-              ? AppColors.primaryGreen.withValues(alpha: 0.3)
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
               : AppColors.darkCream,
           width: isDaily ? 1.5 : 0.5,
         ),
@@ -378,8 +378,8 @@ class _HadithCard extends StatelessWidget {
               width: double.infinity,
               padding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: const BoxDecoration(
-                color: AppColors.primaryGreen,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(16),
@@ -434,7 +434,7 @@ class _HadithCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.primaryGreen
+                          color: Theme.of(context).colorScheme.primary
                               .withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -444,7 +444,7 @@ class _HadithCard extends StatelessWidget {
                               .textTheme
                               .bodySmall
                               ?.copyWith(
-                                color: AppColors.primaryGreen,
+                                color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 11,
                               ),
@@ -469,8 +469,8 @@ class _HadithCard extends StatelessWidget {
                 if (hadith.narrator.isNotEmpty)
                   Row(
                     children: [
-                      const Icon(Icons.person_outline_rounded,
-                          size: 16, color: AppColors.primaryGreen),
+                      Icon(Icons.person_outline_rounded,
+                          size: 16, color: Theme.of(context).colorScheme.primary),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
@@ -479,7 +479,7 @@ class _HadithCard extends StatelessWidget {
                               .textTheme
                               .bodySmall
                               ?.copyWith(
-                                color: AppColors.primaryGreen,
+                                color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.w600,
                               ),
                         ),

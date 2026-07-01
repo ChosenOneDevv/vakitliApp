@@ -16,8 +16,8 @@ class QadaScreen extends StatelessWidget {
       body: Consumer<QadaProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            return Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             );
           }
 
@@ -83,8 +83,8 @@ class _CalculateButton extends StatelessWidget {
       icon: const Icon(Icons.calculate_rounded),
       label: const Text('Tarihten Hesapla'),
       style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.primaryGreen,
-        side: const BorderSide(color: AppColors.primaryGreen),
+        foregroundColor: Theme.of(context).colorScheme.primary,
+        side: BorderSide(color: Theme.of(context).colorScheme.primary),
         padding: const EdgeInsets.symmetric(vertical: 12),
       ),
     );
@@ -128,12 +128,12 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
           children: [
             Row(
               children: [
-                const Icon(Icons.calculate_rounded, color: AppColors.primaryGreen),
+                Icon(Icons.calculate_rounded, color: Theme.of(context).colorScheme.primary),
                 const SizedBox(width: 8),
                 Text(
                   'Kaza Borcu Hesapla',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: AppColors.primaryGreen,
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                 ),
@@ -144,7 +144,7 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
               children: [
                 Checkbox(
                   value: _includeWitr,
-                  activeColor: AppColors.primaryGreen,
+                  activeColor: Theme.of(context).colorScheme.primary,
                   onChanged: (v) => setState(() {
                     _includeWitr = v ?? true;
                     _result = null;
@@ -235,7 +235,7 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
                 ChoiceChip(
                   label: const Text('Erkek'),
                   selected: !_isFemale,
-                  selectedColor: AppColors.primaryGreen,
+                  selectedColor: Theme.of(context).colorScheme.primary,
                   labelStyle: TextStyle(
                       color: !_isFemale ? AppColors.white : null),
                   onSelected: (_) => setState(() {
@@ -248,7 +248,7 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
                 ChoiceChip(
                   label: const Text('Kadın'),
                   selected: _isFemale,
-                  selectedColor: AppColors.primaryGreen,
+                  selectedColor: Theme.of(context).colorScheme.primary,
                   labelStyle: TextStyle(
                       color: _isFemale ? AppColors.white : null),
                   onSelected: (_) => setState(() {
@@ -272,7 +272,7 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
                 min: 1,
                 max: 10,
                 divisions: 9,
-                activeColor: AppColors.primaryGreen,
+                activeColor: Theme.of(context).colorScheme.primary,
                 label: '$_monthlyHaydDays gün',
                 onChanged: (v) => setState(() {
                   _monthlyHaydDays = v.round();
@@ -297,7 +297,7 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
                 child: ElevatedButton(
                   onPressed: _canCalculate ? _calculate : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryGreen,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: AppColors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
@@ -322,7 +322,7 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
                     child: ElevatedButton(
                       onPressed: _confirming ? null : _confirm,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryGreen,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: AppColors.white,
                       ),
                       child: _confirming
@@ -380,7 +380,7 @@ class _CalculatorSheetState extends State<_CalculatorSheet> {
       builder: (ctx, child) => Theme(
         data: Theme.of(ctx).copyWith(
           colorScheme: Theme.of(ctx).colorScheme.copyWith(
-                primary: AppColors.primaryGreen,
+                primary: Theme.of(context).colorScheme.primary,
               ),
         ),
         child: child!,
@@ -451,7 +451,7 @@ class _ResultTable extends StatelessWidget {
     ];
 
     return Card(
-      color: AppColors.primaryGreen.withValues(alpha: 0.08),
+      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -460,7 +460,7 @@ class _ResultTable extends StatelessWidget {
             Text(
               'Hesaplanan borç',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: AppColors.primaryGreen,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -474,9 +474,9 @@ class _ResultTable extends StatelessWidget {
                     Text(r.$1),
                     Text(
                       '${r.$2} vakit',
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.primaryGreen),
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                   ],
                 ),
@@ -515,10 +515,10 @@ class _TotalCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 24),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.darkGreen, AppColors.primaryGreen],
+          colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary],
         ),
         borderRadius: BorderRadius.circular(20),
       ),
@@ -609,7 +609,7 @@ class _QadaRow extends StatelessWidget {
                     Text(
                       '$count',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: AppColors.primaryGreen,
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.bold,
                           ),
                     ),
@@ -625,7 +625,7 @@ class _QadaRow extends StatelessWidget {
               onPressed:
                   count > 0 ? () => provider.decrement(prayerKey) : null,
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primaryGreen,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               ),

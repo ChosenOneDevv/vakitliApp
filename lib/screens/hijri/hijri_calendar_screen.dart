@@ -54,10 +54,10 @@ class _HijriCalendarScreenState extends State<HijriCalendarScreen> {
         children: [
           _header(monthLabel),
           if (_loading)
-            const Expanded(
+            Expanded(
               child: Center(
                 child:
-                    CircularProgressIndicator(color: AppColors.primaryGreen),
+                    CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
               ),
             )
           else
@@ -82,7 +82,7 @@ class _HijriCalendarScreenState extends State<HijriCalendarScreen> {
     final prayer = context.watch<PrayerProvider>();
     final hijri = prayer.todayPrayer?.hijriFormatted;
     return Container(
-      color: AppColors.primaryGreen.withValues(alpha: 0.08),
+      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       child: Row(
         children: [
@@ -98,7 +98,7 @@ class _HijriCalendarScreenState extends State<HijriCalendarScreen> {
                 if (hijri != null)
                   Text('Bugün: $hijri',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.primaryGreen,
+                            color: Theme.of(context).colorScheme.primary,
                           )),
               ],
             ),
@@ -149,7 +149,7 @@ class _HijriCalendarScreenState extends State<HijriCalendarScreen> {
       margin: const EdgeInsets.only(bottom: 6),
       decoration: BoxDecoration(
         color: d.isToday
-            ? AppColors.primaryGreen.withValues(alpha: 0.12)
+            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.12)
             : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
         border: d.hasHoliday
@@ -162,7 +162,7 @@ class _HijriCalendarScreenState extends State<HijriCalendarScreen> {
           children: [
             Text('${d.gregorian.day}',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: d.isToday ? AppColors.primaryGreen : null,
+                      color: d.isToday ? Theme.of(context).colorScheme.primary : null,
                       fontWeight: FontWeight.bold,
                     )),
           ],

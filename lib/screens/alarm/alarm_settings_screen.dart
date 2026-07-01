@@ -143,12 +143,12 @@ class AlarmSettingsScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: setting.enabled
-            ? AppColors.primaryGreen.withValues(alpha: 0.06)
+            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.06)
             : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: setting.enabled
-              ? AppColors.primaryGreen.withValues(alpha: 0.3)
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
               : AppColors.darkCream,
           width: setting.enabled ? 1.5 : 0.5,
         ),
@@ -162,13 +162,13 @@ class AlarmSettingsScreen extends StatelessWidget {
               height: 42,
               decoration: BoxDecoration(
                 color: setting.enabled
-                    ? AppColors.primaryGreen.withValues(alpha: 0.12)
+                    ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.12)
                     : AppColors.gold.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(11),
               ),
               child: Icon(
                 _getIcon(setting.prayerKey),
-                color: setting.enabled ? AppColors.primaryGreen : AppColors.gold,
+                color: setting.enabled ? Theme.of(context).colorScheme.primary : AppColors.gold,
                 size: 22,
               ),
             ),
@@ -182,14 +182,14 @@ class AlarmSettingsScreen extends StatelessWidget {
                 ? Text(
                     setting.mode.label,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.primaryGreen,
+                          color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.w500,
                         ),
                   )
                 : null,
             trailing: Switch.adaptive(
               value: setting.enabled,
-              activeTrackColor: AppColors.primaryGreen,
+              activeTrackColor: Theme.of(context).colorScheme.primary,
               onChanged: (value) async {
                 if (value) {
                   final granted = await alarmProvider.requestPermissions();
@@ -266,7 +266,7 @@ class AlarmSettingsScreen extends StatelessWidget {
                       Icons.alarm_add_rounded,
                       size: 16,
                       color: setting.alsoOnTime
-                          ? AppColors.primaryGreen
+                          ? Theme.of(context).colorScheme.primary
                           : Theme.of(context)
                               .colorScheme
                               .onSurface
@@ -277,7 +277,7 @@ class AlarmSettingsScreen extends StatelessWidget {
                       'Ayrıca vakitte de bildir',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: setting.alsoOnTime
-                                ? AppColors.primaryGreen
+                                ? Theme.of(context).colorScheme.primary
                                 : Theme.of(context)
                                     .colorScheme
                                     .onSurface
@@ -292,7 +292,7 @@ class AlarmSettingsScreen extends StatelessWidget {
                       scale: 0.85,
                       child: Switch.adaptive(
                         value: setting.alsoOnTime,
-                        activeTrackColor: AppColors.primaryGreen,
+                        activeTrackColor: Theme.of(context).colorScheme.primary,
                         onChanged: (v) => alarmProvider.setAlsoOnTime(
                             setting.prayerKey, v),
                       ),
@@ -335,12 +335,12 @@ class AlarmSettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
             decoration: BoxDecoration(
               color: isSelected
-                  ? AppColors.primaryGreen
+                  ? Theme.of(context).colorScheme.primary
                   : Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: isSelected
-                    ? AppColors.primaryGreen
+                    ? Theme.of(context).colorScheme.primary
                     : Theme.of(context).dividerColor,
               ),
             ),

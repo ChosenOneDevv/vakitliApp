@@ -121,7 +121,7 @@ class _AmelScreenState extends State<AmelScreen> {
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.primaryGreen,
+                                color: Theme.of(context).colorScheme.primary,
                                 letterSpacing: 0.8,
                               ),
                             ),
@@ -130,8 +130,8 @@ class _AmelScreenState extends State<AmelScreen> {
                                 dense: true,
                                 contentPadding:
                                     const EdgeInsets.symmetric(horizontal: 8),
-                                leading: const Icon(Icons.add_circle_outline_rounded,
-                                    color: AppColors.primaryGreen, size: 20),
+                                leading: Icon(Icons.add_circle_outline_rounded,
+                                    color: Theme.of(context).colorScheme.primary, size: 20),
                                 title: Text(preset.text),
                                 trailing: preset.count > 1
                                     ? Container(
@@ -267,7 +267,7 @@ class _AmelScreenState extends State<AmelScreen> {
       appBar: AppBar(title: const Text('Amel Defteri')),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showQuickAddSheet(context),
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         child: const Icon(Icons.add_rounded, color: Colors.white),
       ),
       body: Consumer<AmelProvider>(
@@ -341,13 +341,13 @@ class _AmelTile extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.primaryGreen.withValues(alpha: 0.1),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               entry.category.label,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: AppColors.primaryGreen,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.w600,
                   ),
             ),

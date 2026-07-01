@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vakitli/config/theme.dart';
 import 'package:vakitli/screens/tracker/tracker_screen.dart';
 import 'package:vakitli/screens/qada/qada_screen.dart';
 import 'package:vakitli/screens/ramadan/ramadan_screen.dart';
@@ -216,11 +215,11 @@ class _AppTile extends StatelessWidget {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryGreen.withValues(alpha: 0.12),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(item.icon,
-                    color: AppColors.primaryGreen, size: 30),
+                    color: Theme.of(context).colorScheme.primary, size: 30),
               ),
               const SizedBox(height: 12),
               Text(

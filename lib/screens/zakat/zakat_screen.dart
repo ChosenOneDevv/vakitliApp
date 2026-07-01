@@ -102,7 +102,7 @@ class _ZakatScreenState extends State<ZakatScreen> {
         ],
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon, color: AppColors.primaryGreen),
+          prefixIcon: Icon(icon, color: Theme.of(context).colorScheme.primary),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -116,8 +116,8 @@ class _ZakatScreenState extends State<ZakatScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.darkGreen, AppColors.primaryGreen],
+        gradient: LinearGradient(
+          colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary],
         ),
         borderRadius: BorderRadius.circular(16),
       ),

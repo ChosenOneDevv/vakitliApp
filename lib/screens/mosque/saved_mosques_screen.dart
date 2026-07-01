@@ -30,8 +30,8 @@ class _SavedMosquesScreenState extends State<SavedMosquesScreen> {
       body: Consumer<MosqueGeofenceProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            return Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             );
           }
 
@@ -39,13 +39,13 @@ class _SavedMosquesScreenState extends State<SavedMosquesScreen> {
             padding: const EdgeInsets.only(bottom: 16),
             children: [
               SwitchListTile(
-                secondary: const Icon(Icons.sensors_rounded,
-                    color: AppColors.primaryGreen),
+                secondary: Icon(Icons.sensors_rounded,
+                    color: Theme.of(context).colorScheme.primary),
                 title: const Text('Camide Sessize Al'),
                 subtitle: const Text(
                     'Kayıtlı camilere girince telefon otomatik sessize alınır'),
                 value: provider.geofencingEnabled,
-                activeTrackColor: AppColors.primaryGreen,
+                activeTrackColor: Theme.of(context).colorScheme.primary,
                 onChanged: (v) => provider.toggleGeofencing(v),
               ),
               if (provider.geofencingEnabled && provider.batteryOptimized)
@@ -157,7 +157,7 @@ class _LogSection extends StatelessWidget {
                   ? Icons.notifications_off_rounded
                   : Icons.notifications_active_rounded,
               color:
-                  log.silenced ? AppColors.primaryGreen : AppColors.lightText,
+                  log.silenced ? Theme.of(context).colorScheme.primary : AppColors.lightText,
             ),
             title: Text(log.mosqueName),
             subtitle: Text(log.silenced ? 'Sessize alındı' : 'Ses açıldı'),
@@ -181,7 +181,7 @@ class _MosqueTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.mosque_rounded, color: AppColors.primaryGreen),
+      leading: Icon(Icons.mosque_rounded, color: Theme.of(context).colorScheme.primary),
       title: Text(mosque.name),
       subtitle: Text(
         '${mosque.latitude.toStringAsFixed(5)}, ${mosque.longitude.toStringAsFixed(5)}',

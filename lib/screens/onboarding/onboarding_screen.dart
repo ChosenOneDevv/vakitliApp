@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vakitli/config/theme.dart';
 import 'package:vakitli/providers/location_provider.dart';
 import 'package:vakitli/providers/profile_provider.dart';
 import 'package:vakitli/screens/location/city_selection_screen.dart';
@@ -122,7 +121,7 @@ class _ProgressBar extends StatelessWidget {
               height: 4,
               margin: const EdgeInsets.symmetric(horizontal: 2),
               decoration: BoxDecoration(
-                color: i <= current ? AppColors.darkGreen : Colors.grey[300],
+                color: i <= current ? Theme.of(context).colorScheme.primary : Colors.grey[300],
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -164,8 +163,8 @@ class _NavBar extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: onPrev,
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: AppColors.darkGreen),
-                  foregroundColor: AppColors.darkGreen,
+                  side: BorderSide(color: Theme.of(context).colorScheme.primary),
+                  foregroundColor: Theme.of(context).colorScheme.primary,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
@@ -181,7 +180,7 @@ class _NavBar extends StatelessWidget {
                   ? (isLast ? onFinish : onNext)
                   : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.darkGreen,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
@@ -304,29 +303,29 @@ class _GenderCard extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           border: Border.all(
-            color: selected ? AppColors.darkGreen : Colors.grey[300]!,
+            color: selected ? Theme.of(context).colorScheme.primary : Colors.grey[300]!,
             width: selected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(16),
           color: selected
-              ? AppColors.darkGreen.withValues(alpha: 0.08)
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.08)
               : Colors.transparent,
         ),
         child: Row(
           children: [
             Icon(icon,
-                color: selected ? AppColors.darkGreen : Colors.grey, size: 32),
+                color: selected ? Theme.of(context).colorScheme.primary : Colors.grey, size: 32),
             const SizedBox(width: 16),
             Text(label,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: selected ? AppColors.darkGreen : null,
+                  color: selected ? Theme.of(context).colorScheme.primary : null,
                 )),
             const Spacer(),
             if (selected)
-              const Icon(Icons.check_circle_rounded,
-                  color: AppColors.darkGreen),
+              Icon(Icons.check_circle_rounded,
+                  color: Theme.of(context).colorScheme.primary),
           ],
         ),
       ),
@@ -368,8 +367,8 @@ class _CityPage extends StatelessWidget {
                 : const Icon(Icons.gps_fixed_rounded),
             label: const Text('GPS ile Otomatik Bul'),
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.darkGreen,
-              side: const BorderSide(color: AppColors.darkGreen),
+              foregroundColor: Theme.of(context).colorScheme.primary,
+              side: BorderSide(color: Theme.of(context).colorScheme.primary),
               minimumSize: const Size.fromHeight(52),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
@@ -384,8 +383,8 @@ class _CityPage extends StatelessWidget {
             icon: const Icon(Icons.location_city_rounded),
             label: const Text('Şehir Listesinden Seç'),
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.darkGreen,
-              side: const BorderSide(color: AppColors.darkGreen),
+              foregroundColor: Theme.of(context).colorScheme.primary,
+              side: BorderSide(color: Theme.of(context).colorScheme.primary),
               minimumSize: const Size.fromHeight(52),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
@@ -396,20 +395,20 @@ class _CityPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.darkGreen.withValues(alpha: 0.08),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                    color: AppColors.darkGreen.withValues(alpha: 0.3)),
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.check_circle_rounded,
-                      color: AppColors.darkGreen),
+                  Icon(Icons.check_circle_rounded,
+                      color: Theme.of(context).colorScheme.primary),
                   const SizedBox(width: 12),
                   Text(cityName,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.darkGreen,
+                          color: Theme.of(context).colorScheme.primary,
                           fontSize: 16)),
                 ],
               ),

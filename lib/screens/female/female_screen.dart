@@ -113,8 +113,8 @@ class _FemaleContentTabState extends State<_FemaleContentTab> {
   @override
   Widget build(BuildContext context) {
     if (_loading && _categories.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primaryGreen),
+      return Center(
+        child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
       );
     }
     return Column(
@@ -126,9 +126,9 @@ class _FemaleContentTabState extends State<_FemaleContentTab> {
         ),
         Expanded(
           child: _loading
-              ? const Center(
+              ? Center(
                   child: CircularProgressIndicator(
-                      color: AppColors.primaryGreen))
+                      color: Theme.of(context).colorScheme.primary))
               : ListView.builder(
                   padding: const EdgeInsets.all(16),
                   itemCount: _lessons.length,
@@ -169,7 +169,7 @@ class _CategoryBar extends StatelessWidget {
                 label: Text(cat),
                 selected: isSelected,
                 onSelected: (_) => onSelect(cat),
-                selectedColor: AppColors.primaryGreen,
+                selectedColor: Theme.of(context).colorScheme.primary,
                 checkmarkColor: AppColors.white,
                 labelStyle: TextStyle(
                   color: isSelected ? AppColors.white : null,
@@ -204,8 +204,8 @@ class _ContentCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.info_outline_rounded,
-                      color: AppColors.primaryGreen, size: 20),
+                  Icon(Icons.info_outline_rounded,
+                      color: Theme.of(context).colorScheme.primary, size: 20),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -295,7 +295,7 @@ class _ContentDetail extends StatelessWidget {
             lesson.title,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.primaryGreen,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
           ),
           const SizedBox(height: 16),
@@ -309,14 +309,14 @@ class _ContentDetail extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.menu_book_rounded,
-                    size: 16, color: AppColors.primaryGreen),
+                Icon(Icons.menu_book_rounded,
+                    size: 16, color: Theme.of(context).colorScheme.primary),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     lesson.source!,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.primaryGreen,
+                          color: Theme.of(context).colorScheme.primary,
                           fontStyle: FontStyle.italic,
                         ),
                   ),
@@ -340,8 +340,8 @@ class _HaydTrackerTab extends StatelessWidget {
     return Consumer<HaydProvider>(
       builder: (context, provider, _) {
         if (provider.isLoading) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.primaryGreen),
+          return Center(
+            child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
           );
         }
         return Stack(
@@ -370,7 +370,7 @@ class _HaydTrackerTab extends StatelessWidget {
               right: 16,
               child: FloatingActionButton.extended(
                 onPressed: () => _addRecord(context, provider),
-                backgroundColor: AppColors.primaryGreen,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: AppColors.white,
                 icon: const Icon(Icons.add_rounded),
                 label: const Text('Kayıt Ekle'),
@@ -435,8 +435,8 @@ class _SummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.darkGreen, AppColors.primaryGreen],
+        gradient: LinearGradient(
+          colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -490,11 +490,11 @@ class _HaydRecordCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.primaryGreen.withValues(alpha: 0.12),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(Icons.water_drop_rounded,
-                  color: AppColors.primaryGreen, size: 20),
+              child: Icon(Icons.water_drop_rounded,
+                  color: Theme.of(context).colorScheme.primary, size: 20),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -510,7 +510,7 @@ class _HaydRecordCard extends StatelessWidget {
                   Text(
                     '${record.durationDays} gün',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.primaryGreen,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                   ),
                 ],
@@ -578,7 +578,7 @@ class _AddHaydSheetState extends State<_AddHaydSheet> {
           Text(
             'Hayız Kaydı Ekle',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.primaryGreen,
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                 ),
           ),
@@ -610,7 +610,7 @@ class _AddHaydSheetState extends State<_AddHaydSheet> {
             child: ElevatedButton(
               onPressed: _canSave && !_saving ? _save : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryGreen,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: AppColors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
@@ -647,7 +647,7 @@ class _AddHaydSheetState extends State<_AddHaydSheet> {
         data: Theme.of(ctx).copyWith(
           colorScheme: Theme.of(ctx)
               .colorScheme
-              .copyWith(primary: AppColors.primaryGreen),
+              .copyWith(primary: Theme.of(context).colorScheme.primary),
         ),
         child: child!,
       ),
@@ -713,7 +713,7 @@ class _DateField extends StatelessWidget {
 // Faz 24: Fıkhi durum motoru UI (mezhep, günlük akıntı, muafiyet, kaza)
 // ---------------------------------------------------------------------------
 
-Color _statusColor(FiqhStatus? s) {
+Color _statusColor(FiqhStatus? s, Color primary) {
   switch (s) {
     case FiqhStatus.hayd:
       return Colors.redAccent;
@@ -722,7 +722,7 @@ Color _statusColor(FiqhStatus? s) {
     case FiqhStatus.istihaze:
       return AppColors.gold;
     case FiqhStatus.temiz:
-      return AppColors.primaryGreen;
+      return primary;
     case null:
       return AppColors.lightText;
   }
@@ -743,14 +743,14 @@ String _statusLabel(FiqhStatus? s) {
   }
 }
 
-Color _flowColor(FlowType? t) {
+Color _flowColor(FlowType? t, Color primary) {
   switch (t) {
     case FlowType.bleeding:
       return Colors.redAccent;
     case FlowType.spotting:
       return AppColors.gold;
     case FlowType.clean:
-      return AppColors.primaryGreen;
+      return primary;
     case null:
       return AppColors.darkCream;
   }
@@ -771,9 +771,9 @@ class _FiqhSection extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: _statusColor(status).withValues(alpha: 0.12),
+            color: _statusColor(status, Theme.of(context).colorScheme.primary).withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: _statusColor(status), width: 1.5),
+            border: Border.all(color: _statusColor(status, Theme.of(context).colorScheme.primary), width: 1.5),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -781,7 +781,7 @@ class _FiqhSection extends StatelessWidget {
               Row(
                 children: [
                   Icon(Icons.water_drop_rounded,
-                      color: _statusColor(status), size: 22),
+                      color: _statusColor(status, Theme.of(context).colorScheme.primary), size: 22),
                   const SizedBox(width: 8),
                   Text('Fıkhi Durum',
                       style: Theme.of(context).textTheme.titleMedium),
@@ -791,7 +791,7 @@ class _FiqhSection extends StatelessWidget {
               Text(
                 _statusLabel(status),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: _statusColor(status),
+                      color: _statusColor(status, Theme.of(context).colorScheme.primary),
                       fontWeight: FontWeight.bold,
                     ),
               ),
@@ -807,8 +807,8 @@ class _FiqhSection extends StatelessWidget {
                 'her vakit için abdest al.',
           ),
         if (provider.justEndedHayd)
-          const _InfoBanner(
-            color: AppColors.primaryGreen,
+          _InfoBanner(
+            color: Theme.of(context).colorScheme.primary,
             icon: Icons.check_circle_rounded,
             text: 'Hayız bitti. Gusül alıp namaza başlayabilirsin.',
           ),
@@ -885,7 +885,7 @@ class _FlowButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _flowColor(type);
+    final color = _flowColor(type, Theme.of(context).colorScheme.primary);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -958,7 +958,7 @@ class _FlowStrip extends StatelessWidget {
             child: Container(
               width: 36,
               decoration: BoxDecoration(
-                color: _flowColor(type)
+                color: _flowColor(type, Theme.of(context).colorScheme.primary)
                     .withValues(alpha: type == null ? 0.4 : 0.85),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -991,7 +991,7 @@ class _MadhhabRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         child: Row(
           children: [
-            const Icon(Icons.balance_rounded, color: AppColors.primaryGreen),
+            Icon(Icons.balance_rounded, color: Theme.of(context).colorScheme.primary),
             const SizedBox(width: 12),
             const Text('Mezhep'),
             const Spacer(),
@@ -1025,14 +1025,14 @@ class _ExemptionToggle extends StatelessWidget {
     final alarm = context.watch<AlarmProvider>();
     return Card(
       child: SwitchListTile(
-        secondary: const Icon(Icons.notifications_off_rounded,
-            color: AppColors.primaryGreen),
+        secondary: Icon(Icons.notifications_off_rounded,
+            color: Theme.of(context).colorScheme.primary),
         title: const Text('Hayız Muafiyeti'),
         subtitle: Text(provider.isExemptToday
             ? 'Bugün hayız — namaz alarmlarını kapatabilirsin.'
             : 'Açıkken namaz alarmları kurulmaz.'),
         value: alarm.exemptionActive,
-        activeTrackColor: AppColors.primaryGreen,
+        activeTrackColor: Theme.of(context).colorScheme.primary,
         onChanged: (v) => alarm.setExemption(v),
       ),
     );

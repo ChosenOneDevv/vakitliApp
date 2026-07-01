@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vakitli/config/theme.dart';
 import 'package:vakitli/providers/prayer_provider.dart';
 import 'package:vakitli/screens/home/home_screen.dart';
 import 'package:vakitli/screens/qibla/qibla_screen.dart';
@@ -96,7 +95,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: AppColors.darkGreen.withValues(alpha: 0.1),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),

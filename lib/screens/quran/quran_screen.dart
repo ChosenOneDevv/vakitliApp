@@ -70,8 +70,8 @@ class _QuranScreenState extends State<QuranScreen> {
       body: Consumer<QuranProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            return Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             );
           }
           if (provider.error != null) {
@@ -142,16 +142,16 @@ class _SurahTile extends StatelessWidget {
               width: 38,
               height: 38,
               decoration: BoxDecoration(
-                color: AppColors.primaryGreen.withValues(alpha: 0.1),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
                 child: Text(
                   '${surah.number}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primaryGreen,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
@@ -174,10 +174,10 @@ class _SurahTile extends StatelessWidget {
             ),
             Text(
               surah.arabicName,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'Amiri',
                 fontSize: 18,
-                color: AppColors.primaryGreen,
+                color: Theme.of(context).colorScheme.primary,
               ),
               textDirection: TextDirection.rtl,
             ),

@@ -23,8 +23,8 @@ class TasbihScreen extends StatelessWidget {
       body: Consumer<TasbihProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading || provider.active == null) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            return Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             );
           }
 
@@ -115,7 +115,7 @@ class _ProfileSelector extends StatelessWidget {
               label: Text(profile.name),
               selected: selected,
               onSelected: (_) => provider.selectProfile(profile.id),
-              selectedColor: AppColors.primaryGreen,
+              selectedColor: Theme.of(context).colorScheme.primary,
               labelStyle: TextStyle(
                 color: selected
                   ? AppColors.white
@@ -183,8 +183,8 @@ class _CounterArea extends StatelessWidget {
                       value: profile.progress,
                       strokeWidth: 12,
                       backgroundColor: AppColors.darkCream,
-                      valueColor: const AlwaysStoppedAnimation(
-                        AppColors.primaryGreen,
+                      valueColor: AlwaysStoppedAnimation(
+                        Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ),
@@ -198,7 +198,7 @@ class _CounterArea extends StatelessWidget {
                             .headlineLarge
                             ?.copyWith(
                               fontSize: 72,
-                              color: AppColors.primaryGreen,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                       ),
                       Text(

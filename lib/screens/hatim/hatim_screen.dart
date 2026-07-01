@@ -13,8 +13,8 @@ class HatimScreen extends StatelessWidget {
       body: Consumer<HatimProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            return Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             );
           }
 
@@ -93,8 +93,8 @@ class _ProgressHeader extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.darkGreen, AppColors.primaryGreen],
+        gradient: LinearGradient(
+          colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary],
         ),
         borderRadius: BorderRadius.circular(20),
       ),
@@ -177,12 +177,12 @@ class _StatTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
         child: Column(
           children: [
-            Icon(icon, color: AppColors.primaryGreen, size: 28),
+            Icon(icon, color: Theme.of(context).colorScheme.primary, size: 28),
             const SizedBox(height: 8),
             Text(
               value,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: AppColors.primaryGreen,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -214,8 +214,8 @@ class _AddPagesGrid extends StatelessWidget {
             child: OutlinedButton(
               onPressed: () => provider.addPages(amount),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primaryGreen,
-                side: const BorderSide(color: AppColors.primaryGreen),
+                foregroundColor: Theme.of(context).colorScheme.primary,
+                side: BorderSide(color: Theme.of(context).colorScheme.primary),
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
               child: Text('+$amount'),
@@ -245,14 +245,14 @@ class _GoalCard extends StatelessWidget {
           children: [
             IconButton(
               icon: const Icon(Icons.remove_circle_outline),
-              color: AppColors.primaryGreen,
+              color: Theme.of(context).colorScheme.primary,
               onPressed: provider.dailyGoal > 1
                   ? () => provider.setDailyGoal(provider.dailyGoal - 1)
                   : null,
             ),
             IconButton(
               icon: const Icon(Icons.add_circle_outline),
-              color: AppColors.primaryGreen,
+              color: Theme.of(context).colorScheme.primary,
               onPressed: () => provider.setDailyGoal(provider.dailyGoal + 1),
             ),
           ],

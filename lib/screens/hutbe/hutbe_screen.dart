@@ -40,11 +40,11 @@ class _HutbeScreenState extends State<HutbeScreen> {
       body: Consumer<HutbeProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(color: AppColors.primaryGreen),
+                  CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
                   SizedBox(height: 16),
                   Text('Hutbe yükleniyor…'),
                 ],
@@ -86,17 +86,17 @@ class _HutbeScreenState extends State<HutbeScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryGreen.withValues(alpha: 0.07),
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.07),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
                       color:
-                          AppColors.primaryGreen.withValues(alpha: 0.25),
+                          Theme.of(context).colorScheme.primary.withValues(alpha: 0.25),
                     ),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.mosque_rounded,
-                          color: AppColors.primaryGreen, size: 24),
+                      Icon(Icons.mosque_rounded,
+                          color: Theme.of(context).colorScheme.primary, size: 24),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
@@ -108,7 +108,7 @@ class _HutbeScreenState extends State<HutbeScreen> {
                                     .titleMedium
                                     ?.copyWith(
                                       fontWeight: FontWeight.w700,
-                                      color: AppColors.primaryGreen,
+                                      color: Theme.of(context).colorScheme.primary,
                                     )),
                             const SizedBox(height: 2),
                             Text(hutbe.date,
@@ -138,7 +138,7 @@ class _HutbeScreenState extends State<HutbeScreen> {
                 Text(
                   '— ${hutbe.source}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.primaryGreen,
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.w500,
                       ),
                 ),

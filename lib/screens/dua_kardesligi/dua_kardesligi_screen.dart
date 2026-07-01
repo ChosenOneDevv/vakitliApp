@@ -51,7 +51,7 @@ class _DuaKardesligiScreenState extends State<DuaKardesligiScreen> {
                 onChanged: (v) => setSt(() => anon = v ?? false),
                 title: const Text('Anonim gönder'),
                 contentPadding: EdgeInsets.zero,
-                activeColor: AppColors.primaryGreen,
+                activeColor: Theme.of(context).colorScheme.primary,
               ),
             ],
           ),
@@ -96,7 +96,7 @@ class _DuaKardesligiScreenState extends State<DuaKardesligiScreen> {
             builder: (_, p, _) => TextButton(
               onPressed: () => p.toggleShowMine(!p.showMine),
               child: Text(p.showMine ? 'Tümü' : 'Benimkiler',
-                  style: const TextStyle(color: AppColors.primaryGreen)),
+                  style: TextStyle(color: Theme.of(context).colorScheme.primary)),
             ),
           ),
         ],
@@ -105,7 +105,7 @@ class _DuaKardesligiScreenState extends State<DuaKardesligiScreen> {
         builder: (_, p, _) => p.isSignedIn
             ? FloatingActionButton.extended(
                 onPressed: () => _showAddDialog(context),
-                backgroundColor: AppColors.primaryGreen,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 icon: const Icon(Icons.add_rounded, color: Colors.white),
                 label: const Text('Dua İste',
                     style: TextStyle(color: Colors.white)),
@@ -225,11 +225,11 @@ class _DuaTile extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              const Icon(Icons.favorite, size: 14, color: AppColors.primaryGreen),
+              Icon(Icons.favorite, size: 14, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 4),
               Text('${item.prayedCount} kişi dua etti',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.primaryGreen,
+                        color: Theme.of(context).colorScheme.primary,
                       )),
               const Spacer(),
               if (!isOwner)
@@ -237,10 +237,10 @@ class _DuaTile extends StatelessWidget {
                   onPressed: () => context
                       .read<DuaKardesligiProvider>()
                       .markPrayed(item.id),
-                  icon: const Icon(Icons.volunteer_activism_rounded,
-                      size: 16, color: AppColors.primaryGreen),
-                  label: const Text('Dua Ettim',
-                      style: TextStyle(color: AppColors.primaryGreen)),
+                  icon: Icon(Icons.volunteer_activism_rounded,
+                      size: 16, color: Theme.of(context).colorScheme.primary),
+                  label: Text('Dua Ettim',
+                      style: TextStyle(color: Theme.of(context).colorScheme.primary)),
                   style: TextButton.styleFrom(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

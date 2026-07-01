@@ -83,9 +83,9 @@ class _QiblaArScreenState extends State<QiblaArScreen> {
       body: _error != null
           ? _errorView(_error!)
           : !_ready
-              ? const Center(
+              ? Center(
                   child:
-                      CircularProgressIndicator(color: AppColors.primaryGreen))
+                      CircularProgressIndicator(color: Theme.of(context).colorScheme.primary))
               : ChangeNotifierProvider.value(
                   value: _qibla!,
                   child: Consumer<QiblaProvider>(
@@ -106,7 +106,7 @@ class _QiblaArScreenState extends State<QiblaArScreen> {
   Widget _overlay(QiblaProvider qibla) {
     final angle = _normalized(qibla.qiblaAngle);
     final aligned = angle.abs() < 10;
-    final color = aligned ? AppColors.lightGreen : AppColors.gold;
+    final color = aligned ? Theme.of(context).colorScheme.primaryContainer : AppColors.gold;
 
     return Stack(
       alignment: Alignment.center,
@@ -133,7 +133,7 @@ class _QiblaArScreenState extends State<QiblaArScreen> {
                   aligned ? 'Kıbleye dönüksünüz ✓' : 'Telefonu oku takip ederek çevirin',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: aligned ? AppColors.lightGreen : AppColors.white,
+                        color: aligned ? Theme.of(context).colorScheme.primaryContainer : AppColors.white,
                         fontWeight: FontWeight.bold,
                       ),
                 ),

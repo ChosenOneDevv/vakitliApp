@@ -62,8 +62,8 @@ class _QiblaScreenState extends State<QiblaScreen> {
         body: Consumer<QiblaProvider>(
           builder: (context, provider, _) {
             if (!provider.initialized) {
-              return const Center(
-                child: CircularProgressIndicator(color: AppColors.primaryGreen),
+              return Center(
+                child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
               );
             }
 
@@ -98,7 +98,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
               builder: (context, provider, _) => Text(
                 'Kıble yönü: ${provider.formattedQiblaDirection}',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: AppColors.primaryGreen,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
               ),
             ),
@@ -147,9 +147,9 @@ class _QiblaScreenState extends State<QiblaScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen.withValues(alpha: 0.06),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primaryGreen.withValues(alpha: 0.2)),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -157,10 +157,10 @@ class _QiblaScreenState extends State<QiblaScreen> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.primaryGreen.withValues(alpha: 0.15),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.mosque_rounded, color: AppColors.primaryGreen, size: 26),
+            child: Icon(Icons.mosque_rounded, color: Theme.of(context).colorScheme.primary, size: 26),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -177,7 +177,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
                 Text(
                   '$cityName → ${provider.formattedQiblaDirection}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.primaryGreen,
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.w500,
                       ),
                 ),
@@ -244,10 +244,7 @@ class _CompassWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: _CompassPainter(
-        heading: compassHeading,
-        qiblaAngle: qiblaDirection,
-      ),
+      painter: _CompassPainter(heading: compassHeading, qiblaAngle: qiblaDirection, primaryColor: Theme.of(context).colorScheme.primary),
       child: const SizedBox.expand(),
     );
   }
@@ -256,8 +253,9 @@ class _CompassWidget extends StatelessWidget {
 class _CompassPainter extends CustomPainter {
   final double heading;
   final double qiblaAngle;
+  final Color primaryColor;
 
-  _CompassPainter({required this.heading, required this.qiblaAngle});
+  _CompassPainter({required this.heading, required this.qiblaAngle, required this.primaryColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -279,7 +277,7 @@ class _CompassPainter extends CustomPainter {
 
     // İç dekoratif daireler
     final innerBorderPaint = Paint()
-      ..color = AppColors.primaryGreen.withValues(alpha: 0.15)
+      ..color = primaryColor.withValues(alpha: 0.15)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
     canvas.drawCircle(center, radius * 0.85, innerBorderPaint);
@@ -397,7 +395,7 @@ class _CompassPainter extends CustomPainter {
 
     // Ok gövdesi
     final arrowPaint = Paint()
-      ..color = AppColors.primaryGreen
+      ..color = primaryColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
@@ -416,7 +414,7 @@ class _CompassPainter extends CustomPainter {
     canvas.drawPath(
       arrowHeadPath,
       Paint()
-        ..color = AppColors.primaryGreen
+        ..color = primaryColor
         ..style = PaintingStyle.fill,
     );
 
@@ -435,7 +433,7 @@ class _CompassPainter extends CustomPainter {
     canvas.drawRRect(
       RRect.fromRectAndRadius(kaabaRect, const Radius.circular(3)),
       Paint()
-        ..color = AppColors.primaryGreen
+        ..color = primaryColor
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5,
     );

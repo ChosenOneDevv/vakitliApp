@@ -42,8 +42,8 @@ class _EsmaScreenState extends State<EsmaScreen>
         title: const Text('Esma-ül Hüsna'),
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppColors.primaryGreen,
-          labelColor: AppColors.primaryGreen,
+          indicatorColor: Theme.of(context).colorScheme.primary,
+          labelColor: Theme.of(context).colorScheme.primary,
           tabs: const [
             Tab(text: 'Liste'),
             Tab(text: 'Ezber'),
@@ -51,8 +51,8 @@ class _EsmaScreenState extends State<EsmaScreen>
         ),
       ),
       body: !_loaded
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+          ? Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             )
           : TabBarView(
               controller: _tabController,
@@ -146,13 +146,13 @@ class _EsmaCard extends StatelessWidget {
               height: 40,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: AppColors.primaryGreen.withValues(alpha: 0.1),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Text(
                 '${esma.id}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.primaryGreen,
+                      color: Theme.of(context).colorScheme.primary,
                       fontWeight: FontWeight.bold,
                     ),
               ),
@@ -168,7 +168,7 @@ class _EsmaCard extends StatelessWidget {
                       Text(
                         esma.transliteration,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: AppColors.primaryGreen,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                       ),
                       Text(
@@ -252,8 +252,8 @@ class _EzberTabState extends State<_EzberTab> {
   @override
   Widget build(BuildContext context) {
     if (widget.names.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primaryGreen),
+      return Center(
+        child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
       );
     }
     final esma = widget.names[_index];
@@ -278,7 +278,7 @@ class _EzberTabState extends State<_EzberTab> {
                   Text(
                     '${_memorized.length} ezberlendi',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.primaryGreen,
+                          color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.w600,
                         ),
                   ),
@@ -291,8 +291,8 @@ class _EzberTabState extends State<_EzberTab> {
                   value: progress,
                   minHeight: 5,
                   backgroundColor:
-                      AppColors.primaryGreen.withValues(alpha: 0.12),
-                  valueColor: const AlwaysStoppedAnimation(AppColors.primaryGreen),
+                      Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
+                  valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.primary),
                 ),
               ),
             ],
@@ -390,22 +390,22 @@ class _CardFront extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (isMemorized)
-              const Icon(Icons.check_circle_rounded,
-                  color: AppColors.primaryGreen, size: 22),
+              Icon(Icons.check_circle_rounded,
+                  color: Theme.of(context).colorScheme.primary, size: 22),
             const SizedBox(height: 12),
             Container(
               width: 52,
               height: 52,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: AppColors.primaryGreen.withValues(alpha: 0.1),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Text(
                 '${esma.id}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
-                  color: AppColors.primaryGreen,
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -462,7 +462,7 @@ class _CardBack extends StatelessWidget {
             Text(
               esma.transliteration,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: AppColors.primaryGreen,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.w600,
                   ),
               textAlign: TextAlign.center,
@@ -485,10 +485,10 @@ class _CardBack extends StatelessWidget {
               label: Text(isMemorized ? 'Ezberledim ✓' : 'Ezberlendi olarak işaretle'),
               style: FilledButton.styleFrom(
                 backgroundColor: isMemorized
-                    ? AppColors.primaryGreen
-                    : AppColors.primaryGreen.withValues(alpha: 0.15),
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
                 foregroundColor:
-                    isMemorized ? Colors.white : AppColors.primaryGreen,
+                    isMemorized ? Colors.white : Theme.of(context).colorScheme.primary,
               ),
             ),
           ],

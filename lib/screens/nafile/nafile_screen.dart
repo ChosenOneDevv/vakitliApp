@@ -14,8 +14,8 @@ class NafileScreen extends StatelessWidget {
       body: Consumer<NafileProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            return Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             );
           }
 
@@ -26,8 +26,8 @@ class NafileScreen extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 22),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.darkGreen, AppColors.primaryGreen],
+                  gradient: LinearGradient(
+                    colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary],
                   ),
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -57,7 +57,7 @@ class NafileScreen extends StatelessWidget {
                       done
                           ? Icons.check_circle_rounded
                           : Icons.circle_outlined,
-                      color: done ? AppColors.primaryGreen : AppColors.lightText,
+                      color: done ? Theme.of(context).colorScheme.primary : AppColors.lightText,
                     ),
                     title: Text(NafileService.names[key]!),
                     subtitle: Text('Toplam: ${provider.totalFor(key)}'),

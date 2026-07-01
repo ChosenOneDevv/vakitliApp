@@ -26,8 +26,8 @@ class _SunnahView extends StatelessWidget {
       body: Consumer<SunnahProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading && provider.categories.isEmpty) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryGreen),
+            return Center(
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
             );
           }
 
@@ -49,9 +49,9 @@ class _SunnahView extends StatelessWidget {
               ),
               Expanded(
                 child: provider.isLoading
-                    ? const Center(
+                    ? Center(
                         child: CircularProgressIndicator(
-                            color: AppColors.primaryGreen),
+                            color: Theme.of(context).colorScheme.primary),
                       )
                     : ListView.builder(
                         padding: const EdgeInsets.all(16),
@@ -97,7 +97,7 @@ class _CategoryBar extends StatelessWidget {
                 label: Text(cat),
                 selected: isSelected,
                 onSelected: (_) => onSelect(cat),
-                selectedColor: AppColors.primaryGreen,
+                selectedColor: Theme.of(context).colorScheme.primary,
                 checkmarkColor: AppColors.white,
                 labelStyle: TextStyle(
                   color: isSelected ? AppColors.white : null,
@@ -136,14 +136,14 @@ class _LessonCard extends StatelessWidget {
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryGreen.withValues(alpha: 0.12),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Center(
                       child: Text(
                         '${lesson.id}',
-                        style: const TextStyle(
-                          color: AppColors.primaryGreen,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -243,7 +243,7 @@ class _LessonDetail extends StatelessWidget {
             lesson.title,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.primaryGreen,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
           ),
           const SizedBox(height: 16),
@@ -262,14 +262,14 @@ class _LessonDetail extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.menu_book_rounded,
-                    size: 16, color: AppColors.primaryGreen),
+                Icon(Icons.menu_book_rounded,
+                    size: 16, color: Theme.of(context).colorScheme.primary),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     lesson.source!,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.primaryGreen,
+                          color: Theme.of(context).colorScheme.primary,
                           fontStyle: FontStyle.italic,
                         ),
                   ),
