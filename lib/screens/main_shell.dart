@@ -4,6 +4,7 @@ import 'package:vakitli/providers/prayer_provider.dart';
 import 'package:vakitli/screens/home/home_screen.dart';
 import 'package:vakitli/screens/qibla/qibla_screen.dart';
 import 'package:vakitli/screens/apps/apps_screen.dart';
+import 'package:vakitli/services/update_service.dart';
 
 class _TabItem {
   final IconData icon;
@@ -56,6 +57,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    UpdateService.checkForUpdate();
   }
 
   @override
